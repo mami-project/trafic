@@ -1,0 +1,50 @@
+# 1-1 mapping of iperf 3.5 (cJSON 1.5.2) CLI
+#
+# [KMG] indicates options that support a K/M/G suffix for kilo-, mega-, or giga-
+
+# server port to listen on/connect to
+#server-port: 1234
+# seconds between periodic throughput reports
+report-interval-s: 0.1
+
+# output in JSON format
+json: true
+
+# send output to a log file
+logfile: /tmp/iperf3-server.log
+
+# force flushing output at every interval
+#forceflush: false
+
+# run the server as a daemon
+# XXX should be always false and readonly: we want the test scheduler to be in
+# complete control
+#daemon: false
+
+# write PID to file
+#pidfile: /path/to/pid/file
+
+# if set to true, handle one client connection then exit
+#one-off: false
+
+# format to report: Kbits, Mbits, Gbits, Tbits [kmgtKMGT]
+#format: k
+
+# xmit/recv the specified file
+#file: /path/to/file/to/send/recv
+
+# bind to the interface associated with the address
+#bind: 1.2.3.4
+
+# more detailed output
+#verbose: false
+
+# emit debugging output
+#debug: false
+
+# path to the configuration file containing user credentials
+#authorized-users-path: /path/to/authorized/users/file
+
+# path to the RSA public key used to decrypt
+# authentication credentials
+#rsa-private-key-path: /path/to/rsa.priv

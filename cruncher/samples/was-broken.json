@@ -1,0 +1,312 @@
+{
+  "start": {
+    "connected": [
+      {
+        "socket": 7,
+        "local_host": "::1",
+        "local_port": 61861,
+        "remote_host": "::1",
+        "remote_port": 5001
+      }
+    ],
+    "version": "iperf 3.5",
+    "system_info": "Darwin bongo 17.4.0 Darwin Kernel Version 17.4.0: Sun Dec 17 09:19:54 PST 2017; root:xnu-4570.41.2~1/RELEASE_X86_64 x86_64",
+    "timestamp": {
+      "time": "Sun, 18 Mar 2018 10:59:31 GMT",
+      "timesecs": 1521370771
+    },
+    "connecting_to": {
+      "host": "localhost",
+      "port": 5001
+    },
+    "cookie": "5ogqnw6kiuydmpdrdebbsnkxdixyxo66nlwd",
+    "sock_bufsize": 0,
+    "sndbuf_actual": 9216,
+    "rcvbuf_actual": 196724,
+    "test_start": {
+      "protocol": "UDP",
+      "num_streams": 1,
+      "blksize": 126,
+      "omit": 0,
+      "duration": 3,
+      "bytes": 0,
+      "blocks": 0,
+      "reverse": 0,
+      "tos": 0
+    }
+  },
+  "intervals": [
+    {
+      "streams": [
+        {
+          "socket": 7,
+          "start": 0,
+          "end": 1.000312089920044,
+          "seconds": 1.000312089920044,
+          "bytes": 8064,
+          "bits_per_second": 64491.87273659415,
+          "packets": 64,
+          "omitted": false
+        }
+      ],
+      "sum": {
+        "start": 0,
+        "end": 1.000312089920044,
+        "seconds": 1.000312089920044,
+        "bytes": 8064,
+        "bits_per_second": 64491.87273659415,
+        "packets": 64,
+        "omitted": false
+      }
+    },
+    {
+      "streams": [
+        {
+          "socket": 7,
+          "start": 1.000312089920044,
+          "end": 2.000098943710327,
+          "seconds": 0.9997868537902832,
+          "bytes": 7938,
+          "bits_per_second": 63517.53852258663,
+          "packets": 63,
+          "omitted": false
+        }
+      ],
+      "sum": {
+        "start": 1.000312089920044,
+        "end": 2.000098943710327,
+        "seconds": 0.9997868537902832,
+        "bytes": 7938,
+        "bits_per_second": 63517.53852258663,
+        "packets": 63,
+        "omitted": false
+      }
+    },
+    {
+      "streams": [
+        {
+          "socket": 7,
+          "start": 2.000098943710327,
+          "end": 3.0002329349517822,
+          "seconds": 1.000133991241455,
+          "bytes": 8064,
+          "bits_per_second": 64503.357115102124,
+          "packets": 64,
+          "omitted": false
+        }
+      ],
+      "sum": {
+        "start": 2.000098943710327,
+        "end": 3.0002329349517822,
+        "seconds": 1.000133991241455,
+        "bytes": 8064,
+        "bits_per_second": 64503.357115102124,
+        "packets": 64,
+        "omitted": false
+      }
+    }
+  ],
+  "end": {
+    "streams": [
+      {
+        "udp": {
+          "socket": 7,
+          "start": 0,
+          "end": 3.0002329349517822,
+          "seconds": 3.0002329349517822,
+          "bytes": 24066,
+          "bits_per_second": 64171.01744238208,
+          "jitter_ms": 0.014067908090973295,
+          "lost_packets": 0,
+          "packets": 191,
+          "lost_percent": 0,
+          "out_of_order": 0
+        }
+      }
+    ],
+    "sum": {
+      "start": 0,
+      "end": 3.0003068447113037,
+      "seconds": 3.0003068447113037,
+      "bytes": 24066,
+      "bits_per_second": 64171.01744238208,
+      "jitter_ms": 0.014067908090973295,
+      "lost_packets": 0,
+      "packets": 191,
+      "lost_percent": 0
+    },
+    "cpu_utilization_percent": {
+      "host_total": 4.162336343753849,
+      "host_user": 0.6963026088461756,
+      "host_system": 3.465834001884148,
+      "remote_total": 0.02310144088949782,
+      "remote_user": 0.005323016441551497,
+      "remote_system": 0.017774670557649037
+    }
+  },
+  "server_output_json": {
+    "start": {
+      "connected": [
+        {
+          "socket": 7,
+          "local_host": "::1",
+          "local_port": 5001,
+          "remote_host": "::1",
+          "remote_port": 61861
+        }
+      ],
+      "version": "iperf 3.5",
+      "system_info": "Darwin bongo 17.4.0 Darwin Kernel Version 17.4.0: Sun Dec 17 09:19:54 PST 2017; root:xnu-4570.41.2~1/RELEASE_X86_64 x86_64",
+      "timestamp": {
+        "time": "Sun, 18 Mar 2018 10:59:31 GMT",
+        "timesecs": 1521370771
+      },
+      "accepted_connection": {
+        "host": "::1",
+        "port": 56266
+      },
+      "cookie": "5ogqnw6kiuydmpdrdebbsnkxdixyxo66nlwd",
+      "sock_bufsize": 0,
+      "sndbuf_actual": 9216,
+      "rcvbuf_actual": 196724,
+      "test_start": {
+        "protocol": "UDP",
+        "num_streams": 1,
+        "blksize": 126,
+        "omit": 0,
+        "duration": 3,
+        "bytes": 0,
+        "blocks": 0,
+        "reverse": 0,
+        "tos": 0
+      }
+    },
+    "intervals": [
+      {
+        "streams": [
+          {
+            "socket": 7,
+            "start": 0,
+            "end": 1.0003509521484375,
+            "seconds": 1.0003509521484375,
+            "bytes": 8064,
+            "bits_per_second": 64489.36731798838,
+            "jitter_ms": 0.007251079445147411,
+            "lost_packets": 0,
+            "packets": 64,
+            "lost_percent": 0,
+            "omitted": false
+          }
+        ],
+        "sum": {
+          "start": 0,
+          "end": 1.0003509521484375,
+          "seconds": 1.0003509521484375,
+          "bytes": 8064,
+          "bits_per_second": 64489.36731798838,
+          "jitter_ms": 0.007251079445147411,
+          "lost_packets": 0,
+          "packets": 64,
+          "lost_percent": 0,
+          "omitted": false
+        }
+      },
+      {
+        "streams": [
+          {
+            "socket": 7,
+            "start": 1.0003509521484375,
+            "end": 2.000126838684082,
+            "seconds": 0.9997758865356445,
+            "bytes": 7938,
+            "bits_per_second": 63518.23529176098,
+            "jitter_ms": 0.013906114362580147,
+            "lost_packets": 0,
+            "packets": 63,
+            "lost_percent": 0,
+            "omitted": false
+          }
+        ],
+        "sum": {
+          "start": 1.0003509521484375,
+          "end": 2.000126838684082,
+          "seconds": 0.9997758865356445,
+          "bytes": 7938,
+          "bits_per_second": 63518.23529176098,
+          "jitter_ms": 0.013906114362580147,
+          "lost_packets": 0,
+          "packets": 63,
+          "lost_percent": 0,
+          "omitted": false
+        }
+      },
+      {
+        "streams": [
+          {
+            "socket": 7,
+            "start": 2.000126838684082,
+            "end": 3.0002589225769043,
+            "seconds": 1.0001320838928223,
+            "bytes": 8064,
+            "bits_per_second": 64503.480129243944,
+            "jitter_ms": 0.014067908090973295,
+            "lost_packets": 0,
+            "packets": 64,
+            "lost_percent": 0,
+            "omitted": false
+          }
+        ],
+        "sum": {
+          "start": 2.000126838684082,
+          "end": 3.0002589225769043,
+          "seconds": 1.0001320838928223,
+          "bytes": 8064,
+          "bits_per_second": 64503.480129243944,
+          "jitter_ms": 0.014067908090973295,
+          "lost_packets": 0,
+          "packets": 64,
+          "lost_percent": 0,
+          "omitted": false
+        }
+      }
+    ],
+    "end": {
+      "streams": [
+        {
+          "udp": {
+            "socket": 7,
+            "start": 0,
+            "end": 3.0003068447113037,
+            "seconds": 3.0003068447113037,
+            "bytes": 0,
+            "bits_per_second": 0,
+            "jitter_ms": 0.014067908090973295,
+            "lost_packets": 0,
+            "packets": 191,
+            "lost_percent": 0,
+            "out_of_order": 0
+          }
+        }
+      ],
+      "sum": {
+        "start": 0,
+        "end": 3.0003068447113037,
+        "seconds": 3.0003068447113037,
+        "bytes": 0,
+        "bits_per_second": 0,
+        "jitter_ms": 0.014067908090973295,
+        "lost_packets": 0,
+        "packets": 191,
+        "lost_percent": 0
+      },
+      "cpu_utilization_percent": {
+        "host_total": 0.02310144088949782,
+        "host_user": 0.005323016441551497,
+        "host_system": 0.017774670557649037,
+        "remote_total": 4.285055092566698,
+        "remote_user": 0.7016411911819932,
+        "remote_system": 3.583314023635071
+      }
+    }
+  }
+}

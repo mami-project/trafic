@@ -1,0 +1,28 @@
+label: udp-voip-5s
+
+collector: http://logstash:12345/
+
+client:
+  at:
+    - 5s
+    - 10s
+    - 15s
+  config:
+    server-address: localhost
+    server-port: 5001
+    get-server-output: true
+    json: true
+    # logfile: /tmp/udp-voip-client.log
+    time-s: 3
+    udp: true
+    length: 126
+    target-bitrate: 63901
+
+server:
+  at:
+    - 1s
+  config:
+    server-port: 5001
+    json: true
+    logfile: /dev/null
+    one-off: false

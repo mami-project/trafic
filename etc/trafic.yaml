@@ -1,0 +1,9 @@
+log:
+  tag: trafic
+
+flows:
+  dir: /etc/trafic/flows
+
+schedule:
+  tick: 100ms
+

@@ -1,0 +1,124 @@
+# 1-1 mapping of iperf 3.5 (cJSON 1.5.2) CLI
+#
+# [KMG] indicates options that support a K/M/G suffix for kilo-, mega-, or giga-
+
+# connect to host
+server-address: "localhost"
+
+# server port to listen on/connect to
+#server-port: 1234
+
+# get results from server
+get-server-output: true
+
+# seconds between periodic throughput reports
+report-interval-s: 0.1
+
+# output in JSON format
+json: true
+
+# send output to a log file
+logfile: /tmp/iperf3-client.log
+
+# use UDP rather than TCP
+#udp: false
+
+# target bitrate in bits/sec (0 for unlimited)
+# (default 1 Mbit/sec for UDP, unlimited for TCP)
+# (optional slash and packet count for burst mode)
+# #[KMG][/#]
+#target-bitrate: 1M
+
+# time in seconds to transmit for (default 10 secs)
+time-s: 5
+
+# number of bytes to transmit (instead of time-s)
+# [KMG]
+#bytes: 1M
+
+# number of blocks (packets) to transmit (instead of time-s or bytes)
+# [KMG]
+#blockcount: 10K
+
+# number of parallel client streams to run
+#parallel: 1
+
+# run in reverse mode (server sends, client receives)
+#reverse: false
+
+# set the IP type of service, 0-255
+# The usual prefixes for octal and hex can be used
+# i.e. 52, 064 and 0x34 all specify the same value
+#tos: 0x01
+
+# format to report: Kbits, Mbits, Gbits, Tbits [kmgtKMGT]
+format: k
+
+# xmit/recv the specified file
+#file: /path/to/file/to/send/recv
+
+# bind to the interface associated with the address
+#bind: 1.2.3.4
+
+# more detailed output
+#verbose: false
+
+# force flushing output at every interval
+#forceflush: false
+
+# emit debugging output
+#debug: false
+
+# timeout for control connection setup (ms)
+#connect-timeout-ms: 1000
+
+# set the timing for pacing, in microseconds (default 1000)
+#pacing-timer-ms: 1000
+
+# length of buffer to read or write
+# (default 128 KB for TCP, dynamic or 1460 for UDP)
+# [KMG]
+#length: 1M 
+
+# bind to a specific client port (TCP and UDP, default: ephemeral port)
+#cport: 1028
+
+# set window size / socket buffer size
+# [KMG]
+#window: 1K 
+
+# set TCP/SCTP maximum segment size (default MTU-40 bytes)
+#set-mss: 1023
+
+# set TCP/SCTP no delay, disabling Nagle's Algorithm
+#no-delay: false
+
+# only use IPv4
+#version4: false
+
+# only use IPv6
+#version6: true
+
+# set the IP dscp value, either 0-63 or symbolic
+# Numeric values can be specified in decimal,
+# octal and hex (see tos above).
+#dscp: af12
+
+# use a 'zero copy' method of sending data
+#zerocopy: false
+
+# omit the first n seconds
+#omit-s: 0
+
+# prefix every output line with this string
+#title: some title
+
+# use 64-bit counters in UDP test packets
+#udp-counters-64bit: true
+
+# username for authentication
+#username: pippo
+
+# path to the RSA public key used to encrypt
+# authentication credentials
+#rsa-public-key-path: /path/to/rsa.pub
