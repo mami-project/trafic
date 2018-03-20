@@ -1,0 +1,23 @@
+label: tcp
+
+collector: http://logstash:12345/
+
+client:
+  at:
+    - 10s
+    - 20s
+  config:
+    server-address: iperf-server
+    server-port: 5000
+    get-server-output: true
+    json: true
+    time-s: 5
+    title: tcp-smoke
+
+server:
+  at:
+    - 5s
+  config:
+    json: true
+    server-port: 5000
+    one-off: false

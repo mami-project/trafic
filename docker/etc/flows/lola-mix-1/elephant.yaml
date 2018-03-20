@@ -1,0 +1,18 @@
+label: elephant
+
+client:
+  at:
+    - 2s
+  config:
+    server-address: iperf-server
+    server-port: 5000
+    time-s: 20
+    title: elephant
+
+server:
+  at:
+    - 0s
+  config:
+    server-port: 5000
+    one-off: true
+    label: elephant

@@ -1,0 +1,73 @@
+version: '3'
+
+services:
+  iperf-client:
+    build:
+      context: image
+    entrypoint: /root/entrypoint.bash "client"
+    container_name: iperf-client
+    networks:
+      traffic:
+      measure:
+    volumes:
+      - ./etc/flows:/root/share
+    cap_add:
+      - NET_ADMIN
+      - SYS_ADMIN
+    stdin_open: true
+    tty: true
+
+  iperf-server:
+    build:
+      context: image
+    entrypoint: /root/entrypoint.bash "server"
+    container_name: iperf-server
+    networks:
+      traffic:
+      measure:
+    volumes:
+      - ./etc/flows:/root/share
+    cap_add:
+      - NET_ADMIN
+      - SYS_ADMIN
+    stdin_open: true
+    tty: true
+
+  # measurement store, analysis & graphing infra
+  telegraf:
+    image: telegraf:1.4.0
+    container_name: telegraf
+    volumes:
+      - ./etc/telegraf/telegraf.conf:/etc/telegraf/telegraf.conf
+    networks:
+      measure:
+    ports:
+      - "8092:8092/udp"
+      - "8094:8094"
+      - "8125:8125/udp"
+
+  influxdb:
+    image: influxdb:1.3.5
+    container_name: influxdb
+    networks:
+      measure:
+    volumes:
+      - ./data/influxdb:/var/lib/influxdb
+    ports:
+      - "8086:8086"
+
+  chronograf:
+    image: chronograf:1.3.8
+    container_name: chronograf
+    environment:
+      INFLUXDB_URL: http://influxdb:8086
+    networks:
+      measure:
+    ports:
+      - "8888:8888"
+
+networks:
+  traffic:
+  measure:
+
+# vim: ai ts=2 sw=2 et sts=2 ft=yaml
