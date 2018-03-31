@@ -62,7 +62,7 @@ func (r *Runner) Wait() ([]byte, error) {
 
 	// Run test data through a filter if we have been configured to do so
 	if r.Cruncher != nil {
-		return r.Cruncher.Crunch(r.Stdout.Bytes())
+		return cruncher.Crunch(r.Cruncher, r.Stdout.Bytes())
 	}
 
 	return r.Stdout.Bytes(), nil

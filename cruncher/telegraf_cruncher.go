@@ -2,9 +2,6 @@ package cruncher
 
 import (
 	"encoding/json"
-	"fmt"
-	"math"
-	"time"
 )
 
 type TelegrafCruncher struct{}
@@ -13,34 +10,7 @@ func NewTelegrafCruncher() Cruncher {
 	return &TelegrafCruncher{}
 }
 
-// Crunch takes an iperf3 JSON report and transforms it into a
-// Telegraf-friendly representation
-func (t *TelegrafCruncher) Crunch(j []byte) ([]byte, error) {
-	var tcpFlowStats TCPFlowStats
-	var udpFlowStats UDPFlowStats
-
-	err := json.Unmarshal(j, &tcpFlowStats)
-	if err == nil && tcpFlowStats.Start.TestStart.Protocol == "TCP" {
-		return crunchTCP(tcpFlowStats)
-	} else if err = json.Unmarshal(j, &udpFlowStats); err == nil {
-		return crunchUDP(udpFlowStats)
-	} else {
-		return nil, err
-	}
-}
-
-func formatFlowID(title string, cookie string, start int, sd int) string {
-	// Use the auto-generated cookie if title has not been explicitly set
-	if title == "" {
-		title = cookie
-	}
-
-	flowID := fmt.Sprintf("%s-%d-%d", title, start, sd)
-
-	return flowID
-}
-
-func crunchTCP(tcpFlowStats TCPFlowStats) ([]byte, error) {
+func (c *TelegrafCruncher) CrunchTCP(tcpFlowStats TCPFlowStats) ([]byte, error) {
 	// TCPFlowSample contains a set of measures relative to a TCP flow, sampled
 	// in the [.Start, .End] period.
 	type TCPFlowSample struct {
@@ -87,13 +57,7 @@ func crunchTCP(tcpFlowStats TCPFlowStats) ([]byte, error) {
 	return json.Marshal(tcpFlowSamples)
 }
 
-func formatTimestamp(flowStart int, sampleStart float64) string {
-	tsec, tnsec := math.Modf(float64(flowStart) + sampleStart)
-
-	return time.Unix(int64(tsec), int64(tnsec*(1e9))).String()
-}
-
-func crunchUDP(udpFlowStats UDPFlowStats) ([]byte, error) {
+func (c *TelegrafCruncher) CrunchUDP(udpFlowStats UDPFlowStats) ([]byte, error) {
 	// UDPFlowSample contains a set of measures relative to a UDP flow, sampled
 	// in the [.Start, .End] period.
 	type UDPFlowSample struct {

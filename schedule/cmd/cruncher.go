@@ -28,7 +28,7 @@ func crunch(cmd *cobra.Command, args []string) {
 
 	c := cruncher.NewTelegrafCruncher()
 
-	out, err := c.Crunch(raw)
+	out, err := cruncher.Crunch(c, raw)
 	if err != nil {
 		log.Fatal(err)
 	}
