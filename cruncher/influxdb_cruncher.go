@@ -32,7 +32,7 @@ func (c *InfluxDBCruncher) CrunchTCP(tcpFlowStats TCPFlowStats) ([]byte, error) 
 		for _, stream := range interval.Streams {
 			flowID := formatFlowID(tcpFlowStats.Title, tcpFlowStats.Start.Cookie, start, stream.Socket)
 
-			line := fmt.Sprintf("%s,flowid=%s,type=tcp,tos=%x,pmtu=%d bytes=%d,bps=%f,rtx=%d,sndcwnd=%d,rtt_ms=%f,rtt_var=%d %f\n",
+			line := fmt.Sprintf("%s,flowid=%s,type=tcp,tos=0x%02x,pmtu=%d bytes=%d,bps=%f,rtx=%d,sndcwnd=%d,rtt_ms=%f,rtt_var=%d %d\n",
 				c.measurement,
 				flowID,
 				tcpFlowStats.Start.TestStart.Tos,
@@ -43,7 +43,8 @@ func (c *InfluxDBCruncher) CrunchTCP(tcpFlowStats TCPFlowStats) ([]byte, error) 
 				stream.SndCwnd,
 				float64(stream.Rtt)/1000,
 				stream.Rttvar,
-				stream.Start)
+				// InfluxDB timestamps are unix time in nanoseconds
+				int((float64(start)+stream.Start)*1e9))
 
 			// Don't bother about the bytes written, just check the return status
 			_, err := lines.WriteString(line)
@@ -65,7 +66,7 @@ func (c *InfluxDBCruncher) CrunchUDP(udpFlowStats UDPFlowStats) ([]byte, error) 
 		for _, stream := range interval.Streams {
 			flowID := formatFlowID(udpFlowStats.Title, udpFlowStats.Start.Cookie, start, stream.Socket)
 
-			line := fmt.Sprintf("%s,flowid=%s,type=udp,tos=%x bytes=%d,bps=%f,jitter=%f,pkts=%d,lost_pkts=%d,lost_percent=%f %f\n",
+			line := fmt.Sprintf("%s,flowid=%s,type=udp,tos=0x%02x bytes=%d,bps=%f,jitter=%f,pkts=%d,lost_pkts=%d,lost_percent=%f %d\n",
 				c.measurement,
 				flowID,
 				udpFlowStats.Start.TestStart.Tos,
@@ -75,7 +76,7 @@ func (c *InfluxDBCruncher) CrunchUDP(udpFlowStats UDPFlowStats) ([]byte, error) 
 				stream.Packets,
 				stream.LostPackets,
 				stream.LostPercent,
-				stream.Start)
+				int((float64(start)+stream.Start)*1e9))
 
 			_, err := lines.WriteString(line)
 			if err != nil {

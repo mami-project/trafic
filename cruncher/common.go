@@ -12,7 +12,7 @@ func formatFlowID(title string, cookie string, start int, sd int) string {
 		title = cookie
 	}
 
-	flowID := fmt.Sprintf("%s-%d-%d", title, start, sd)
+	flowID := fmt.Sprintf("%s_%d_%d", title, start, sd)
 
 	return flowID
 }

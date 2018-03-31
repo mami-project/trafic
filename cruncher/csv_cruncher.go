@@ -16,7 +16,7 @@ func (c *CSVCruncher) CrunchTCP(tcpFlowStats TCPFlowStats) ([]byte, error) {
 	var lines bytes.Buffer
 
 	// CSV header
-	lines.WriteString("Timestamp,FlowID,FlowType,ToS,PMTU,Bytes,BitsPerSecond,Retransmissions,SenderCWND,RTTms,RTTvar")
+	lines.WriteString("Timestamp,FlowID,FlowType,ToS,PMTU,Bytes,BitsPerSecond,Retransmissions,SenderCWND,RTTms,RTTvar\n")
 
 	start := tcpFlowStats.Start.Timestamp.Timesecs
 
@@ -24,8 +24,8 @@ func (c *CSVCruncher) CrunchTCP(tcpFlowStats TCPFlowStats) ([]byte, error) {
 		for _, stream := range interval.Streams {
 			flowID := formatFlowID(tcpFlowStats.Title, tcpFlowStats.Start.Cookie, start, stream.Socket)
 
-			line := fmt.Sprintf("%f,%s,tcp,%x,%d,%d,%f,%d,%d,%f,%d\n",
-				stream.Start,
+			line := fmt.Sprintf("%f,%s,tcp,0x%02x,%d,%d,%f,%d,%d,%f,%d\n",
+				float64(start)+stream.Start,
 				flowID,
 				tcpFlowStats.Start.TestStart.Tos,
 				stream.Pmtu,
@@ -51,7 +51,7 @@ func (c *CSVCruncher) CrunchUDP(udpFlowStats UDPFlowStats) ([]byte, error) {
 	var lines bytes.Buffer
 
 	// CSV header
-	lines.WriteString("Timestamp,FlowID,FlowType,ToS,Bytes,BitsPerSecond,Jitterms,Packets,LostPackets,LostPercent")
+	lines.WriteString("Timestamp,FlowID,FlowType,ToS,Bytes,BitsPerSecond,Jitterms,Packets,LostPackets,LostPercent\n")
 
 	start := udpFlowStats.Start.Timestamp.Timesecs
 
@@ -59,8 +59,8 @@ func (c *CSVCruncher) CrunchUDP(udpFlowStats UDPFlowStats) ([]byte, error) {
 		for _, stream := range interval.Streams {
 			flowID := formatFlowID(udpFlowStats.Title, udpFlowStats.Start.Cookie, start, stream.Socket)
 
-			line := fmt.Sprintf("%f,%s,udp,%x,%d,%f,%f,%d,%d,%f\n",
-				stream.Start,
+			line := fmt.Sprintf("%f,%s,udp,0x%02x,%d,%f,%f,%d,%d,%f\n",
+				float64(start)+stream.Start,
 				flowID,
 				udpFlowStats.Start.TestStart.Tos,
 				stream.Bytes,
