@@ -9,9 +9,19 @@ A UNIX or UNIX-like OS
 
 Follow instructions at https://golang.org/doc/install
 
+Also, a few 3rd party packages trafic depends on:
+```
+go get -u gopkg.in/yaml.v2 github.com/spf13/cobra github.com/spf13/viper
+```
+
 ### Iperf3
 
 A variety of binaries are available [here](https://iperf.fr/iperf-download.php)
+
+### Docker
+
+[Docker](https://docs.docker.com/install/) and [Docker Compose](https://docs.docker.com/compose/install/).
+
 
 ***
 
