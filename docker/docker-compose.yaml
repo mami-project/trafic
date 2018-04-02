@@ -33,19 +33,6 @@ services:
     stdin_open: true
     tty: true
 
-  # measurement store, analysis & graphing infra
-  telegraf:
-    image: telegraf:1.4.0
-    container_name: telegraf
-    volumes:
-      - ./etc/telegraf/telegraf.conf:/etc/telegraf/telegraf.conf
-    networks:
-      measure:
-    ports:
-      - "8092:8092/udp"
-      - "8094:8094"
-      - "8125:8125/udp"
-
   influxdb:
     image: influxdb:1.3.5
     container_name: influxdb
