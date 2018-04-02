@@ -43,8 +43,7 @@ func (c *InfluxDBCruncher) CrunchTCP(tcpFlowStats TCPFlowStats) ([]byte, error) 
 				stream.SndCwnd,
 				float64(stream.Rtt)/1000,
 				stream.Rttvar,
-				// InfluxDB timestamps are unix time in nanoseconds
-				int((float64(start)+stream.Start)*1e9))
+				makeInfluxDBTimestamp(start, stream.Start))
 
 			// Don't bother about the bytes written, just check the return status
 			_, err := lines.WriteString(line)
@@ -76,7 +75,7 @@ func (c *InfluxDBCruncher) CrunchUDP(udpFlowStats UDPFlowStats) ([]byte, error) 
 				stream.Packets,
 				stream.LostPackets,
 				stream.LostPercent,
-				int((float64(start)+stream.Start)*1e9))
+				makeInfluxDBTimestamp(start, stream.Start))
 
 			_, err := lines.WriteString(line)
 			if err != nil {
@@ -86,4 +85,9 @@ func (c *InfluxDBCruncher) CrunchUDP(udpFlowStats UDPFlowStats) ([]byte, error) 
 	}
 
 	return lines.Bytes(), nil
+}
+
+// InfluxDB timestamps are unix time in nanoseconds
+func makeInfluxDBTimestamp(flowStart int, sampleStart float64) int {
+	return int((float64(flowStart) + sampleStart) * 1e9)
 }

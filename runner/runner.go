@@ -8,35 +8,32 @@ import (
 	"time"
 
 	"github.com/mami-project/trafic/config"
-	"github.com/mami-project/trafic/cruncher"
 )
 
 type Runner struct {
-	Role     Role
-	Command  *exec.Cmd
-	At       time.Duration
-	Label    string
-	Logger   *log.Logger
-	Stdout   *bytes.Buffer
-	Stderr   *bytes.Buffer
-	Cruncher cruncher.Cruncher
+	Role    Role
+	Command *exec.Cmd
+	At      time.Duration
+	Label   string
+	Logger  *log.Logger
+	Stdout  *bytes.Buffer
+	Stderr  *bytes.Buffer
 }
 
-func NewRunner(role Role, log *log.Logger, at time.Duration, label string, cfg config.Configurer, crunch cruncher.Cruncher) (*Runner, error) {
+func NewRunner(role Role, log *log.Logger, at time.Duration, label string, cfg config.Configurer) (*Runner, error) {
 	args, err := cfg.ToArgs()
 	if err != nil {
 		return nil, err
 	}
 
 	return &Runner{
-		Role:     role,
-		Command:  exec.Command("iperf3", args...),
-		At:       at,
-		Label:    label,
-		Logger:   log,
-		Stdout:   &bytes.Buffer{},
-		Stderr:   &bytes.Buffer{},
-		Cruncher: crunch,
+		Role:    role,
+		Command: exec.Command("iperf3", args...),
+		At:      at,
+		Label:   label,
+		Logger:  log,
+		Stdout:  &bytes.Buffer{},
+		Stderr:  &bytes.Buffer{},
 	}, nil
 }
 
@@ -58,11 +55,6 @@ func (r *Runner) Wait() ([]byte, error) {
 	err := r.Command.Wait()
 	if err != nil {
 		return nil, err
-	}
-
-	// Run test data through a filter if we have been configured to do so
-	if r.Cruncher != nil {
-		return cruncher.Crunch(r.Cruncher, r.Stdout.Bytes())
 	}
 
 	return r.Stdout.Bytes(), nil

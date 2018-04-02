@@ -22,6 +22,6 @@ server:
     - 5s
   config:
     json: true
-    logfile: /dev/null
+    #    logfile: /dev/null
     server-port: 5000
     one-off: false

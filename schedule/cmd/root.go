@@ -41,8 +41,20 @@ func init() {
 	pflags.String("scheduler-tick", "250ms", "scheduler granularity")
 	viper.BindPFlag("scheduler.tick", pflags.Lookup("scheduler-tick"))
 
-	pflags.String("http-stats", ":10000", "HTTP endpoint from where to pull runners' stats")
-	viper.BindPFlag("http.stats", pflags.Lookup("http-stats"))
+	pflags.String("stats-dir", "/var/trafic/stats", "Folder where to stash the collected samples")
+	viper.BindPFlag("stats.dir", pflags.Lookup("stats-dir"))
+
+	pflags.Bool("influxdb-enabled", false, "(also) forward the collected samples to an InfluxDB instance")
+	viper.BindPFlag("influxdb.enabled", pflags.Lookup("influxdb-enabled"))
+
+	pflags.String("influxdb-endpoint", "http://localhost:8086", "InfluxDB endpoint")
+	viper.BindPFlag("influxdb.endpoint", pflags.Lookup("influxdb-endpoint"))
+
+	pflags.String("influxdb-db", "trafic", "name of the InfluxDB database where to stash our samples")
+	viper.BindPFlag("influxdb.db", pflags.Lookup("influxdb-db"))
+
+	pflags.String("influxdb-measurements", "samples", "name of the InfluxDB measurements")
+	viper.BindPFlag("influxdb.measurements", pflags.Lookup("influxdb-measurements"))
 }
 
 func initConfig() {

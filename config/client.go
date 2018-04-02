@@ -61,7 +61,7 @@ func (cfg *ClientConfig) ToArgs() ([]string, error) {
 	args = AppendKeyVal(args, "--bytes", cfg.FlowBytes)
 	args = AppendKeyVal(args, "--time", cfg.FlowDuration)
 	args = AppendKeyVal(args, "--blockcount", cfg.FlowPackets)
-	// args = AppendKey(args, "--get-server-output", cfg.GetServerOutput)
+	args = AppendKey(args, "--get-server-output", true)
 	args = AppendKeyVal(args, "--set-mss", cfg.MSS)
 	args = AppendKeyVal(args, "--omit", cfg.OmitLeadingSecs)
 	args = AppendKeyVal(args, "--pacing-timer", cfg.PacingTimer)

@@ -1,10 +1,12 @@
 package cmd
 
 import (
+	"bytes"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 	"path/filepath"
 	"sort"
@@ -28,7 +30,9 @@ type Runners []runner.Runner
 type FlowConfigs []config.FlowConfig
 
 type RunnerStats struct {
-	out string
+	Runner runner.Runner
+	Stats  []byte
+	Error  error
 }
 
 const (
@@ -114,11 +118,8 @@ func run(role runner.Role) {
 		log.Fatalf("cannot load flows: %v", err)
 	}
 
-	// XXX this queue is consumed by Telegraf, but what if there is no
-	// consumer?  The runners will not be .  We should probably do something
-	// different here...
 	stats := make(chan RunnerStats, 1024)
-	go httpStats(viper.GetString("http.stats"), stats)
+	go statsStorer(stats)
 
 	done := make(chan StatusReport)
 	go sched(role, runners, log, done, stats)
@@ -128,23 +129,126 @@ func run(role runner.Role) {
 	}
 }
 
-func httpStats(addrport string, runnerStats chan RunnerStats) {
-	http.HandleFunc("/stats", func(w http.ResponseWriter, r *http.Request) {
-		var m string
+func statsStorer(runnerStats chan RunnerStats) {
+	err := os.MkdirAll(viper.GetString("stats.dir"), 0755)
+	if err != nil {
+		log.Fatalf("cannot create stats directory %v", err)
+	}
+
+	var influxDBConfigured bool = false
+
+	if viper.GetBool("influxdb.enabled") {
+		err := setupInfluxDB()
+		if err != nil {
+			log.Println("cannot setup InfluxDB endpoint:", err)
+		} else {
+			influxDBConfigured = true
+		}
+	}
+
+	for {
 		select {
 		case rs := <-runnerStats:
-			m = rs.out
-		default:
-			m = "{}"
+			if rs.Error != nil {
+				log.Println("cannot collect stats for failed runner", rs.Runner.Label, ":", rs.Error)
+				break
+			}
+
+			err := saveRunnerStats(rs)
+			if err != nil {
+				log.Println("cannot save to CSV:", err)
+			}
+
+			if influxDBConfigured {
+				err := forwardToInfluxDB(rs)
+				if err != nil {
+					log.Println("cannot forward to InfluxDB:", err)
+				}
+			}
 		}
-
-		w.Write([]byte(m))
-	})
-
-	err := http.ListenAndServe(addrport, nil)
-	if err != nil {
-		log.Fatal(err)
 	}
+}
+
+func setupInfluxDB() error {
+	// curl -XPOST http://localhost:8086/query --data "q=CREATE DATABASE mydb"
+	url, err := url.Parse(viper.GetString("influxdb.endpoint"))
+	if err != nil {
+		return err
+	}
+	url.Path = "/query"
+
+	q := fmt.Sprintf("q=CREATE DATABASE \"%s\"", viper.GetString("influxdb.db"))
+
+	resp, err := http.Post(url.String(), "application/x-www-form-urlencoded", bytes.NewBufferString(q))
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != 200 {
+		body, _ := ioutil.ReadAll(resp.Body)
+		return fmt.Errorf("request %s failed: %s", resp.Header.Get("Request-Id"), string(body))
+	}
+
+	return nil
+}
+
+func forwardToInfluxDB(runnerStats RunnerStats) error {
+	c := cruncher.NewInfluxDBCruncher(viper.GetString("influxdb.measurements"))
+
+	lp, err := cruncher.Crunch(c, runnerStats.Stats)
+	if err != nil {
+		return err
+	}
+
+	u, err := url.Parse(viper.GetString("influxdb.endpoint"))
+	if err != nil {
+		return err
+	}
+	q := url.Values{}
+	q.Set("db", viper.GetString("influxdb.db"))
+	u.RawQuery = q.Encode()
+	u.Path = "/write"
+
+	resp, err := http.Post(u.String(), "application/x-www-form-urlencoded", bytes.NewBuffer(lp))
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != 204 {
+		body, _ := ioutil.ReadAll(resp.Body)
+		return fmt.Errorf("request %s failed: %s", resp.Header.Get("Request-Id"), string(body))
+	}
+
+	log.Printf("POST %s [%s ...] -> %s (this is OK)", u.String(), viper.GetString("influxdb.measurements"), resp.Status)
+
+	return nil
+}
+
+// Save raw stats along with the processed CSV
+func saveRunnerStats(runnerStats RunnerStats) error {
+	err := ioutil.WriteFile(makeStatsFile(runnerStats, ".json"), runnerStats.Stats, 0644)
+	if err != nil {
+		return err
+	}
+
+	csv, err := cruncher.Crunch(cruncher.NewCSVCruncher(), runnerStats.Stats)
+	if err != nil {
+		return err
+	}
+
+	return ioutil.WriteFile(makeStatsFile(runnerStats, ".csv"), csv, os.ModePerm)
+}
+
+func makeStatsFile(runnerStats RunnerStats, ext string) string {
+	fn := fmt.Sprintf("%s_%s_%s%s",
+		time.Now().Format("20060102150405"),
+		runnerStats.Runner.Role,
+		runnerStats.Runner.Label,
+		ext)
+
+	return filepath.Join(viper.GetString("stats.dir"), fn)
 }
 
 func setupRunners(flows FlowConfigs, log *log.Logger, role runner.Role) (Runners, error) {
@@ -153,8 +257,7 @@ func setupRunners(flows FlowConfigs, log *log.Logger, role runner.Role) (Runners
 	for _, flow := range flows {
 		for _, at := range atForRole(role, flow) {
 			cfg := configurerForRole(role, flow)
-			cruncher := cruncher.NewTelegrafCruncher()
-			runner, err := runner.NewRunner(role, log, at, flow.Label, cfg, cruncher)
+			runner, err := runner.NewRunner(role, log, at, flow.Label, cfg)
 			if err != nil {
 				log.Printf("cannot create %s %s: %v", role, flow.Label, err)
 				return nil, err
@@ -245,7 +348,7 @@ func watchdog(r runner.Runner, label string, done chan StatusReport, stats chan 
 	M.Unlock()
 
 	// send stats for this run to the HTTP endpoint
-	stats <- RunnerStats{string(out)}
+	stats <- RunnerStats{r, out, err}
 
 	// send a status report for this run to the waiter
 	done <- StatusReport{label, r.Role, err}
