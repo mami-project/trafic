@@ -23,6 +23,7 @@ type ClientConfig struct {
 	ReverseDir       bool   `yaml:"reverse"`
 	ServerAddr       string `yaml:"server-address"`
 	TargetBitrate    string `yaml:"target-bitrate"`
+	Title            string `yaml:"title"`
 	ToS              uint8  `yaml:"tos"`
 	UDP              bool   `yaml:"udp"`
 	UDP64BitCounters bool   `yaml:"udp-counters-64bit"`
@@ -69,6 +70,7 @@ func (cfg *ClientConfig) ToArgs() ([]string, error) {
 	args = AppendKeyVal(args, "--rsa-public-key-path", cfg.RSAPubKeyFile)
 	args = AppendKey(args, "--reverse", cfg.ReverseDir)
 	args = AppendKeyVal(args, "--bitrate", cfg.TargetBitrate)
+	args = AppendKeyVal(args, "--title", cfg.Title)
 	args = AppendKeyVal(args, "--tos", cfg.ToS)
 	args = AppendKey(args, "--udp", cfg.UDP)
 	args = AppendKey(args, "--udp-counters-64bit", cfg.UDP64BitCounters)

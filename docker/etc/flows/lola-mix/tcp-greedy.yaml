@@ -1,4 +1,4 @@
-label: tcp-greedy
+label: &l tcp-greedy
 
 client:
   at:
@@ -7,7 +7,7 @@ client:
     server-address: iperf-server
     server-port: 5000
     time-s: 60
-    window: 20K
+    title: *l
 
 server:
   at:

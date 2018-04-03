@@ -1,4 +1,4 @@
-label: voip
+label: &l voip
 
 client:
   at:
@@ -10,6 +10,7 @@ client:
     udp: true
     length: 126
     target-bitrate: 63901
+    title: *l
 
 server:
   at:
