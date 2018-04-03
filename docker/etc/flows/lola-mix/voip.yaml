@@ -1,0 +1,18 @@
+label: voip
+
+client:
+  at:
+    - 0s
+  config:
+    server-address: iperf-server
+    server-port: 5001
+    time-s: 60
+    udp: true
+    length: 126
+    target-bitrate: 63901
+
+server:
+  at:
+    - 0s
+  config:
+    server-port: 5001

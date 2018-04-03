@@ -129,7 +129,7 @@ func run(role runner.Role) {
 	}
 }
 
-func statsStorer(runnerStats chan RunnerStats) {
+func statsStorer(runnerStats <-chan RunnerStats) {
 	err := os.MkdirAll(viper.GetString("stats.dir"), 0755)
 	if err != nil {
 		log.Fatalf("cannot create stats directory %v", err)
@@ -337,7 +337,7 @@ func sched(role runner.Role, runners Runners, log *log.Logger, done chan StatusR
 	}
 }
 
-func watchdog(r runner.Runner, label string, done chan StatusReport, stats chan RunnerStats) {
+func watchdog(r runner.Runner, label string, done chan<- StatusReport, stats chan<- RunnerStats) {
 	out, err := r.Wait()
 	if err != nil {
 		log.Printf("reaping %s %s: %v", r.Role, label, err)

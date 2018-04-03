@@ -1,18 +1,16 @@
-label: elephant
+label: tcp-greedy
 
 client:
   at:
-    - 2s
+    - 0s
   config:
     server-address: iperf-server
     server-port: 5000
-    time-s: 20
-    title: elephant
+    time-s: 60
+    window: 20K
 
 server:
   at:
     - 0s
   config:
     server-port: 5000
-    one-off: true
-    label: elephant
