@@ -1,4 +1,4 @@
-label: &l tcp-greedy
+label: &l tcp-greedy-1
 
 client:
   at:
@@ -8,6 +8,7 @@ client:
     server-port: 5000
     time-s: 60
     title: *l
+    report-interval-s: 0.2
 
 server:
   at:

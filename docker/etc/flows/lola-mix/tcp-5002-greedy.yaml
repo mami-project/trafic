@@ -1,19 +1,17 @@
-label: &l voip
+label: &l tcp-greedy-2
 
 client:
   at:
     - 0s
   config:
     server-address: iperf-server
-    server-port: 5001
+    server-port: 5002
     time-s: 60
-    udp: true
-    length: 126
-    target-bitrate: 63901
     title: *l
+    report-interval-s: 0.2
 
 server:
   at:
     - 0s
   config:
-    server-port: 5001
+    server-port: 5002
