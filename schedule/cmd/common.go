@@ -119,7 +119,7 @@ func run(role runner.Role) {
 	}
 
 	stats := make(chan RunnerStats, 1024)
-	go statsStorer(stats)
+	go statStorer(stats)
 
 	done := make(chan StatusReport)
 	go sched(role, runners, log, done, stats)
@@ -129,7 +129,7 @@ func run(role runner.Role) {
 	}
 }
 
-func statsStorer(runnerStats <-chan RunnerStats) {
+func statStorer(runnerStats <-chan RunnerStats) {
 	err := os.MkdirAll(viper.GetString("stats.dir"), 0755)
 	if err != nil {
 		log.Fatalf("cannot create stats directory %v", err)

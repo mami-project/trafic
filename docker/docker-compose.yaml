@@ -10,7 +10,7 @@ services:
       traffic:
       measure:
     volumes:
-      - ./etc/flows:/root/share
+      - ./etc:/root/share
     cap_add:
       - NET_ADMIN
       - SYS_ADMIN
@@ -26,7 +26,7 @@ services:
       traffic:
       measure:
     volumes:
-      - ./etc/flows:/root/share
+      - ./etc:/root/share
     cap_add:
       - NET_ADMIN
       - SYS_ADMIN
