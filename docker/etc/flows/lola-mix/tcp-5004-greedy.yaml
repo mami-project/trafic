@@ -1,11 +1,13 @@
 label: &l tcp-greedy-3
 
+port: &p 5004
+
 client:
   at:
     - 0s
   config:
     server-address: iperf-server
-    server-port: 5004
+    server-port: *p
     time-s: 60
     title: *l
     report-interval-s: 0.2
@@ -14,4 +16,4 @@ server:
   at:
     - 0s
   config:
-    server-port: 5004
+    server-port: *p

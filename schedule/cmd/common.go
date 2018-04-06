@@ -62,7 +62,7 @@ func loadFlows(dir string) (FlowConfigs, error) {
 	var flows FlowConfigs
 
 	for _, file := range files {
-		if strings.HasPrefix(file.Name(), ".") {
+		if !strings.HasSuffix(file.Name(), ".yaml") {
 			continue
 		}
 

@@ -1,15 +1,17 @@
-label: &l voip
+label: &l rt_video
+
+port: &p 5003
 
 client:
   at:
     - 0s
   config:
     server-address: iperf-server
-    server-port: 5001
+    server-port: *p
     time-s: 60
     udp: true
-    length: 126
-    target-bitrate: 63901
+    length: 930
+    target-bitrate: 810K
     title: *l
     report-interval-s: 0.2
 
@@ -17,4 +19,4 @@ server:
   at:
     - 0s
   config:
-    server-port: 5001
+    server-port: *p
