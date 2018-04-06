@@ -54,6 +54,8 @@ func (r *Runner) Wait() ([]byte, error) {
 
 	err := r.Command.Wait()
 	if err != nil {
+		r.Logger.Printf("stdout[PID=%v]=%v\n",
+			r.Command.Process.Pid, r.Stdout.String())
 		return nil, err
 	}
 
