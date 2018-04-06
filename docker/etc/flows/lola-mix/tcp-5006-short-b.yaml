@@ -1,0 +1,41 @@
+# starts at 2 for 2s, sleeps 2, goto again
+# 20 instances, 1Mbps each
+
+label: &l tcp-short-b
+
+port: &p 5006
+
+instances: &i 20
+
+client:
+  at:
+    - 2s
+    - 6s
+    - 10s
+    - 14s
+    - 18s
+    - 22s
+    - 26s
+    - 30s
+    - 34s
+    - 38s
+    - 42s
+    - 46s
+    - 50s
+    - 54s
+    - 58s
+
+  config:
+    server-address: iperf-server
+    server-port: *p
+    time-s: 2
+    title: *l
+    report-interval-s: 0.2
+    parallel: *i
+    target-bitrate: 1M
+
+server:
+  at:
+    - 0s
+  config:
+    server-port: *p

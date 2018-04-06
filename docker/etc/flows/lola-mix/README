@@ -1,0 +1,10 @@
+assumptions:
+- downlink is 100Mbps with latency ~75ms
+- (uplink is 50Mbps with latency ~92ms)
+
+conventions:
+- UDP flows on odd ports
+- TCP flows on even ports
+
+total test time:
+- 60 seconds

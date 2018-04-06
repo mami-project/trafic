@@ -1,6 +1,13 @@
+#
+# models one direction of a real-time audio
+# 64Kbps, 126 bytes of RTP & media
+#
 label: &l rt_audio
 
 port: &p 5001
+
+# concurrent flows (must match rt_video)
+instances: &i 7
 
 client:
   at:
@@ -14,6 +21,7 @@ client:
     target-bitrate: 63901
     title: *l
     report-interval-s: 0.2
+    parallel: *i
 
 server:
   at:

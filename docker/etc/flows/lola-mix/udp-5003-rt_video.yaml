@@ -1,6 +1,14 @@
+#
+# models one direction of a real-time video stream (e.g., skype)
+# 810Kbps, 930 bytes of RTP & media
+#
+
 label: &l rt_video
 
 port: &p 5003
+
+# concurrent flows (must match rt_audio)
+instances: &i 7
 
 client:
   at:
@@ -14,6 +22,7 @@ client:
     target-bitrate: 810K
     title: *l
     report-interval-s: 0.2
+    parallel: *i
 
 server:
   at:

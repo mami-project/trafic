@@ -1,6 +1,11 @@
-label: &l tcp-greedy-2
+# background, long-lived TCP streams
+# 10 flows aiming at a target bitrate of 1Mbps each
+
+label: &l tcp-scavenger
 
 port: &p 5002
+
+instances: &i 10
 
 client:
   at:
@@ -11,6 +16,8 @@ client:
     time-s: 60
     title: *l
     report-interval-s: 0.2
+    parallel: *i
+    bitrate: 1M
 
 server:
   at:
