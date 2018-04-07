@@ -2,6 +2,7 @@ version: '3'
 
 services:
   iperf-client:
+    privileged: true
     build:
       context: image
     entrypoint: /root/entrypoint.bash "client"
@@ -18,13 +19,14 @@ services:
     tty: true
 
   iperf-server:
+    privileged: true
     build:
       context: image
     entrypoint: /root/entrypoint.bash "server"
     container_name: iperf-server
     networks:
       traffic:
-      measure:
+      # iperf servers won't send stats
     volumes:
       - ./etc:/root/share
     cap_add:

@@ -1,14 +1,15 @@
 #!/bin/bash
 #
 # LTE (UE<->SGi LAN)
-# - UL [iperf-server]: MAXRATE=50Mbit  LATENCY=92ms
-# - DL [iperf-client]: MAXRATE=100Mbit LATENCY=76ms
+# - UL [iperf-server]: MAXRATE=50Mbit  LATENCY=92ms MTU=1500
+# - DL [iperf-client]: MAXRATE=100Mbit LATENCY=76ms MTU=1500
 
 set -eu
 
 IFACE=${IFACE?set IFACE to the network interface you want to shape, e.g.: eth0}
 LATENCY=${LATENCY?set LATENCY to the upstream network latency, e.g.: 50ms}
 MAXRATE=${MAXRATE?set MAXRATE to the maximum upstream throughput rate, e.g.: 40Mbit}
+MTU=${MTU?set MTU to the maximum transfer unit, e.g.: 1500}
 
 # drop any previous setting on the interface
 echo ">> Dropping previous settings (if any) on ${IFACE}"
@@ -24,3 +25,8 @@ tc qdisc add dev ${IFACE} parent 1:11 handle 10: netem delay ${LATENCY}
 # show current configuration
 echo ">> Shaping settings on ${IFACE}:"
 tc qdisc show dev ${IFACE}
+
+# on docker, only loopback MTU matters
+echo ">> Setting MTU to ${MTU} on loopback"
+ip link set dev lo mtu ${MTU}
+ip link show lo

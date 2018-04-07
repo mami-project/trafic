@@ -11,10 +11,11 @@ client:
   at:
     - 0s
   config:
-    server-address: iperf-server
+    server-address: iperf-server.docker_traffic
     server-port: *p
     time-s: 60
     title: *l
+    mss: 1400
     report-interval-s: 0.2
     parallel: *i
     bitrate: 1M
