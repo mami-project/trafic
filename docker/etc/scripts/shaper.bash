@@ -6,10 +6,10 @@
 
 set -eu
 
-IFACE=${IFACE?set IFACE to the network interface you want to shape, e.g.: eth0}
-LATENCY=${LATENCY?set LATENCY to the upstream network latency, e.g.: 50ms}
-MAXRATE=${MAXRATE?set MAXRATE to the maximum upstream throughput rate, e.g.: 40Mbit}
-MTU=${MTU?set MTU to the maximum transfer unit, e.g.: 1500}
+IFACE=${IFACE:?"set IFACE to the network interface you want to shape, e.g.: eth0"}
+LATENCY=${LATENCY:?"set LATENCY to the upstream network latency, e.g.: 50ms"}
+MAXRATE=${MAXRATE:?"set MAXRATE to the maximum upstream throughput rate, e.g.: 40Mbit"}
+MTU=${MTU:?"set MTU to the maximum transfer unit, e.g.: 1500"}
 
 # drop any previous setting on the interface
 echo ">> Dropping previous settings (if any) on ${IFACE}"
