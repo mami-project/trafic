@@ -14,6 +14,7 @@ type ClientConfig struct {
 	FlowBytes        string `yaml:"bytes"`
 	FlowDuration     uint64 `yaml:"time-s"`
 	FlowPackets      string `yaml:"blockcount"`
+	FQRate           string `yaml:"fq-rate"`
 	GetServerOutput  bool   `yaml:"get-server-output"`
 	MSS              uint   `yaml:"set-mss"`
 	OmitLeadingSecs  uint   `yaml:"omit-s"`
@@ -62,6 +63,7 @@ func (cfg *ClientConfig) ToArgs() ([]string, error) {
 	args = AppendKeyVal(args, "--bytes", cfg.FlowBytes)
 	args = AppendKeyVal(args, "--time", cfg.FlowDuration)
 	args = AppendKeyVal(args, "--blockcount", cfg.FlowPackets)
+	args = AppendKeyVal(args, "--fq-rate", cfg.FQRate)
 	args = AppendKey(args, "--get-server-output", true)
 	args = AppendKeyVal(args, "--set-mss", cfg.MSS)
 	args = AppendKeyVal(args, "--omit", cfg.OmitLeadingSecs)

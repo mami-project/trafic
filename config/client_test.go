@@ -15,7 +15,7 @@ func TestClientConfig_ToArgs(t *testing.T) {
 		FlowBytes        string
 		FlowDuration     uint64
 		FlowPackets      string
-		GetServerOutput  bool
+		FQRate           string
 		MSS              uint
 		OmitLeadingSecs  uint
 		PacingTimer      string
@@ -59,7 +59,7 @@ func TestClientConfig_ToArgs(t *testing.T) {
 				DSCP:             "AF12",
 				DisableNagle:     true,
 				FlowBytes:        "1M",
-				GetServerOutput:  true,
+				FQRate:           "10M",
 				MSS:              1400,
 				OmitLeadingSecs:  12345,
 				PacingTimer:      "1000",
@@ -92,6 +92,9 @@ func TestClientConfig_ToArgs(t *testing.T) {
 				"--no-delay",
 				"--bytes",
 				"1M",
+				"--fq-rate",
+				"10M",
+				"--get-server-output",
 				"--set-mss",
 				"1400",
 				"--omit",
@@ -128,7 +131,7 @@ func TestClientConfig_ToArgs(t *testing.T) {
 				FlowBytes:        tt.fields.FlowBytes,
 				FlowDuration:     tt.fields.FlowDuration,
 				FlowPackets:      tt.fields.FlowPackets,
-				GetServerOutput:  tt.fields.GetServerOutput,
+				FQRate:           tt.fields.FQRate,
 				MSS:              tt.fields.MSS,
 				OmitLeadingSecs:  tt.fields.OmitLeadingSecs,
 				PacingTimer:      tt.fields.PacingTimer,
