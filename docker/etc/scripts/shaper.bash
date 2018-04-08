@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # LTE (UE<->SGi LAN)
-# - UL [iperf-server]: MAXRATE=50Mbit  LATENCY=92ms MTU=1500
+# - UL [iperf-server]: MAXRATE=50Mbit  LATENCY=92ms MTU=1500 IFACE=eth0
 # - DL [iperf-client]: MAXRATE=100Mbit LATENCY=76ms MTU=1500
 
 set -eu

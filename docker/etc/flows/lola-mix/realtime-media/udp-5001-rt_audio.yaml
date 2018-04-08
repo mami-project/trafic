@@ -20,7 +20,7 @@ client:
     length: 126
     target-bitrate: 63901
     title: *l
-    report-interval-s: 0.2
+    # report-interval-s: 0.2
     parallel: *i
 
 server:

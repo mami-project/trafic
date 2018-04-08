@@ -1,29 +1,29 @@
-# starts at 3 for 1s, sleeps 3s and go again
+# starts at 2 for 1s, sleeps 3s and go again
 # 3 instances, doing a ~1.2M transfer (the average Alexa top-1000 page size)
 
-label: &l tcp-short-h
+label: &l tcp-short-f
 
-port: &p 5018
+port: &p 5014
 
 instances: &i 3
 
 client:
   at:
-    - 3s
-    - 7s
-    - 11s
-    - 15s
-    - 19s
-    - 23s
-    - 27s
-    - 31s
-    - 35s
-    - 39s
-    - 43s
-    - 47s
-    - 51s
-    - 55s
-    - 59s
+    - 2.5s
+    - 6.5s
+    - 10.5s
+    - 14.5s
+    - 18.5s
+    - 22.5s
+    - 26.5s
+    - 30.5s
+    - 34.5s
+    - 38.5s
+    - 42.5s
+    - 46.5s
+    - 50.5s
+    - 54.5s
+    - 58.5s
 
   config:
     server-address: iperf-server.docker_traffic
@@ -31,7 +31,7 @@ client:
     title: *l
     bytes: 1246K
     mss: 1400
-    report-interval-s: 0.2
+    # report-interval-s: 0.2
     parallel: *i
 
 server:
