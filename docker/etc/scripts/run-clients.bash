@@ -2,7 +2,9 @@
 
 set -exu
 
-FLOWS=/root/share/flows/lola-mix/realtime-media
+FLOWS=/root/share/flows/lola-mix/web-short
+
+#FLOWS=/root/share/flows/lola-mix/realtime-media
 #FLOWS=${FLOWS},/root/share/flows/lola-mix/web-short
 #FLOWS=${FLOWS},/root/share/flows/lola-mix/scavenger
 #FLOWS=${FLOWS},/root/share/flows/lola-mix/tcp-high-throughput
