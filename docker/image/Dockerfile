@@ -8,6 +8,7 @@ RUN apk add --no-cache \
       coreutils \
       drill \
       git \
+      iftop \
       iperf3 \
       iproute2 \
       iproute2-doc \
