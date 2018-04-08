@@ -35,8 +35,8 @@ func init() {
 	pflags.String("log-tag", "", "a tag that is prepended to all log lines")
 	viper.BindPFlag("log.tag", pflags.Lookup("log-tag"))
 
-	pflags.String("flows-dir", "", "folder with flow configuration files")
-	viper.BindPFlag("flows.dir", pflags.Lookup("flows-dir"))
+	pflags.String("flows-dirs", "", "comma separated folder(s) with flow configuration files")
+	viper.BindPFlag("flows.dirs", pflags.Lookup("flows-dirs"))
 
 	pflags.String("scheduler-tick", "250ms", "scheduler granularity")
 	viper.BindPFlag("scheduler.tick", pflags.Lookup("scheduler-tick"))

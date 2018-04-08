@@ -52,29 +52,31 @@ func NewLogger(tag string) (*log.Logger, error) {
 	return log.New(os.Stderr, tag, log.LstdFlags|log.LUTC|log.Lshortfile), nil
 }
 
-func loadFlows(dir string) (FlowConfigs, error) {
-	files, err := ioutil.ReadDir(dir)
-	if err != nil {
-		log.Printf("cannot read dir: %s: %v", dir, err)
-		return nil, err
-	}
-
+func loadFlows(dirs string) (FlowConfigs, error) {
 	var flows FlowConfigs
 
-	for _, file := range files {
-		if !strings.HasSuffix(file.Name(), ".yaml") {
-			continue
-		}
-
-		fqn := filepath.Join(dir, file.Name())
-
-		flow, err := config.NewFlowConfigFromFile(fqn)
+	for _, dir := range strings.Split(dirs, ",") {
+		files, err := ioutil.ReadDir(dir)
 		if err != nil {
-			log.Printf("cannot parse %s: %v", fqn, err)
+			log.Printf("cannot read dir: %s: %v", dir, err)
 			return nil, err
 		}
 
-		flows = append(flows, *flow)
+		for _, file := range files {
+			if !strings.HasSuffix(file.Name(), ".yaml") {
+				continue
+			}
+
+			fqn := filepath.Join(dir, file.Name())
+
+			flow, err := config.NewFlowConfigFromFile(fqn)
+			if err != nil {
+				log.Printf("cannot parse %s: %v", fqn, err)
+				return nil, err
+			}
+
+			flows = append(flows, *flow)
+		}
 	}
 
 	return flows, nil
@@ -108,7 +110,7 @@ func run(role runner.Role) {
 		log.Fatalf("cannot create logger: %v", err)
 	}
 
-	flows, err := loadFlows(viper.GetString("flows.dir"))
+	flows, err := loadFlows(viper.GetString("flows.dirs"))
 	if err != nil {
 		log.Fatalf("cannot load flows: %v", err)
 	}
