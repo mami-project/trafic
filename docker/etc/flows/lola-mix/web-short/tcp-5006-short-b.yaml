@@ -5,7 +5,7 @@ label: &l tcp-short-b
 
 port: &p 5006
 
-instances: &i 3
+instances: &i 1
 
 client:
   at:

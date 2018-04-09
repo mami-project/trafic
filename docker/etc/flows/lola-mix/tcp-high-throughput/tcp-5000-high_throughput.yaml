@@ -12,12 +12,14 @@ client:
   config:
     server-address: iperf-server.docker_traffic
     server-port: *p
-    time-s: 60
+    # time-s: 60
     title: *l
     mss: 1400
-    report-interval-s: 0.2
+    # report-interval-s: 0.2
     parallel: *i
-    target-bitrate: 10M
+    # target-bitrate: 10M
+    # fq-rate: 10M
+    bytes: 75M
 
 server:
   at:

@@ -5,7 +5,7 @@ label: &l tcp-short-e
 
 port: &p 5012
 
-instances: &i 3
+instances: &i 1
 
 client:
   at:

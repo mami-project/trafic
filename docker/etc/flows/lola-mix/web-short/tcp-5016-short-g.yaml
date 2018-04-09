@@ -5,7 +5,7 @@ label: &l tcp-short-g
 
 port: &p 5016
 
-instances: &i 3
+instances: &i 1
 
 client:
   at:

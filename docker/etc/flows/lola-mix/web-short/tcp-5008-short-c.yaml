@@ -5,7 +5,7 @@ label: &l tcp-short-c
 
 port: &p 5008
 
-instances: &i 3
+instances: &i 1
 
 client:
   at:

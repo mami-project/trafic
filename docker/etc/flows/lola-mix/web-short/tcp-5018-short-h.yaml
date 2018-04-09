@@ -5,7 +5,7 @@ label: &l tcp-short-h
 
 port: &p 5018
 
-instances: &i 3
+instances: &i 1
 
 client:
   at:

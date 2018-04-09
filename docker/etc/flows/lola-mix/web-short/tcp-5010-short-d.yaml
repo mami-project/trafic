@@ -5,7 +5,7 @@ label: &l tcp-short-d
 
 port: &p 5010
 
-instances: &i 3
+instances: &i 1
 
 client:
   at:

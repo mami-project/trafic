@@ -5,7 +5,7 @@ label: &l tcp-short-f
 
 port: &p 5014
 
-instances: &i 3
+instances: &i 1
 
 client:
   at:
