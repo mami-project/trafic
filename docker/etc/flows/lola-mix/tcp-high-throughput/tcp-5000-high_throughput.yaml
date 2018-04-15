@@ -1,25 +1,28 @@
-# average 10Mbps in 3 TCP flows
+# try to transfer 75MB with 3 TCP flows
+# enters after 15s, i.e. in an already busy network
 
 label: &l tcp-high-throughput
 
 port: &p 5000
 
-instances: &i 3
+# instances: &i 3
 
 client:
   at:
-    - 0s
+    - 15s
+    - 30s
+    - 45s
   config:
     server-address: iperf-server
     server-port: *p
     # time-s: 60
     title: *l
-    mss: 1400
+    # mss: 1400
     # report-interval-s: 0.2
-    parallel: *i
+    # parallel: *i
     # target-bitrate: 10M
     # fq-rate: 10M
-    bytes: 75M
+    bytes: 25M
 
 server:
   at:

@@ -46,7 +46,7 @@ def make_ats(nats, delta):
     return [t0 + offset for offset in range(0, nats * delta, delta)]
 
 if __name__ == "__main__":
-    HOW_MANY = 7
+    HOW_MANY = 6
     BASE_PORT = 5004
 
     for i in range(0, HOW_MANY * 2, 2):

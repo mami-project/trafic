@@ -42,7 +42,7 @@ def make_ats(nats, segment_length):
     return [t0 + offset for offset in range(0, nats * segment_length, segment_length)]
 
 if __name__ == "__main__":
-    HOW_MANY = 16
+    HOW_MANY = 18
     BASE_PORT = 6000
 
     for i in range(0, HOW_MANY * 2, 2):

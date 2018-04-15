@@ -1,5 +1,5 @@
 # background, long-lived TCP streams
-# 10 flows aiming at a target bitrate of 1Mbps each
+# 10 flows aiming at an aggregate bitrate of 10Mbps
 # TODO set LEDBAT as CC
 
 label: &l tcp-scavenger
@@ -16,10 +16,10 @@ client:
     server-port: *p
     time-s: 60
     title: *l
-    mss: 1400
-    report-interval-s: 0.2
+    # mss: 1400
+    # report-interval-s: 0.2
     parallel: *i
-    bitrate: 1M
+    target-bitrate: 1M
 
 server:
   at:
