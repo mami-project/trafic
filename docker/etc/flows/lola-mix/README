@@ -24,4 +24,9 @@ traffic mix composition:
 (*) According to the HTTP Archive, the average top 1,000 web page is 1246 KB,
     [...]
 
+-----
 
+To create the ABR and web configuration files, run:
+```
+make -C templates
+```

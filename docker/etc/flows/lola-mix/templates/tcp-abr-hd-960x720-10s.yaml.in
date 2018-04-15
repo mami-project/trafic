@@ -1,0 +1,22 @@
+label: &l {{ label }}
+
+port: &p {{ port }}
+
+client:
+  at:
+{% for at in at_points -%} 
+{{ indent }}- {{ at }}s
+{% endfor %}
+
+  config:
+    server-address: iperf-server
+    server-port: *p
+    title: *l
+    bytes: 1.8M
+    # report-interval-s: 0.2
+
+server:
+  at:
+    - 0s
+  config:
+    server-port: *p
