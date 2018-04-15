@@ -377,7 +377,6 @@ func wait(done chan StatusReport) error {
 
 			if left == 0 {
 				log.Printf("all currently active %v(s) finished ok", s.Role)
-				//return nil
 				break
 			}
 
