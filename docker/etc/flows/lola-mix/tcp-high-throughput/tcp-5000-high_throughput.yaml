@@ -1,6 +1,6 @@
 # average 10Mbps in 3 TCP flows
 
-label: &l tcp-high-througput
+label: &l tcp-high-throughput
 
 port: &p 5000
 
