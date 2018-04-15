@@ -1,0 +1,29 @@
+# list of datasources that should be deleted from the database
+delete_datasources:
+  - name: Graphite
+    org_id: 1
+
+datasources:
+- name: lola
+  type: influxdb
+  access: proxy
+  org_id: 1
+  url: http://influxdb:8086
+  password:
+  user:
+  database: lola
+  basic_auth: false
+  basic_auth_user:
+  basic_auth_password:
+  with_credentials: false
+  is_default: true
+  json_data: 
+     graphiteVersion: "1.1"
+     tlsAuth: true
+     tlsAuthWithCACert: true
+  secure_json_data:
+    tlsCACert: "..."
+    tlsClientCert: "..."
+    tlsClientKey: "..."
+  version: 1
+  editable: true
