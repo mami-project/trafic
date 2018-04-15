@@ -9,9 +9,19 @@ conventions:
 total test time:
 - 60 seconds
 
-[...] Rampant page bloat may not be news to many of us, but that doesn’t make
-new findings any less alarming. According to the HTTP Archive, the average top
-1,000 web page is 1246 KB, compared to 828 KB in May 2012. This represents a
-50% rate of growth in just one year. [...]
+traffic mix composition:
+- 7% realtime media (7Mbps)
+  - 8 audio streams (~64Kbps)
+  - 8 video streams (~800Kbps)
+- 10% scavenger / background (9Mbps)
+  - application limited TCP flows - ideally, we should use LEDBAT flows
+- 25% high throughput TCP flow (25Mbps)
+- 25% low-latency TCP flows (25Mbps)
+  - average 1246KB page download (*)
+- 33% ABR video (33Mbps)
+  - 17 HD (960x720, H.264 + audio and subtitles) streams with 10s segments 1.8MB each)
+
+(*) According to the HTTP Archive, the average top 1,000 web page is 1246 KB,
+    [...]
 
 

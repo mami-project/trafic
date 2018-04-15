@@ -47,7 +47,7 @@ if __name__ == "__main__":
 
     for i in range(0, HOW_MANY * 2, 2):
         port = BASE_PORT + i
-        label = "tcp-abr-hd-%d" % port
+        label = "tcp-abr-hd-960x720-10s-%d" % port
         ats = make_ats(6, 10)
 
         do_conf(label, port, ats)
