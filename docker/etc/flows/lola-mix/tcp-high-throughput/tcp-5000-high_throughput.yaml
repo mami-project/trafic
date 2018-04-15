@@ -1,4 +1,4 @@
-# 10Mbps TCP x 3
+# average 10Mbps in 3 TCP flows
 
 label: &l tcp-high-througput
 
@@ -10,7 +10,7 @@ client:
   at:
     - 0s
   config:
-    server-address: iperf-server.docker_traffic
+    server-address: iperf-server
     server-port: *p
     # time-s: 60
     title: *l
