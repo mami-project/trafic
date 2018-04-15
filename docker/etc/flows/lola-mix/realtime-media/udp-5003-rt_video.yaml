@@ -14,7 +14,7 @@ client:
   at:
     - 0s
   config:
-    server-address: iperf-server.docker_traffic
+    server-address: iperf-server
     server-port: *p
     time-s: 60
     udp: true
