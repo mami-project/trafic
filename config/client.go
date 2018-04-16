@@ -8,6 +8,7 @@ import (
 type ClientConfig struct {
 	BufSize          string `yaml:"length"`
 	ClientPort       uint16 `yaml:"cport"`
+	CongestionCtrl   string `yaml:"congestion-ctrl"`
 	ConnectTimeout   uint64 `yaml:"connect-timeout-ms"`
 	DSCP             string `yaml:"dscp"`
 	DisableNagle     bool   `yaml:"no-delay"`
@@ -51,12 +52,9 @@ func (cfg *ClientConfig) ToArgs() ([]string, error) {
 	}
 	args = append(args, cfg.ServerAddr)
 
-	if cfg.FlowDuration != 0 && cfg.FlowBytes != "" && cfg.FlowPackets != "" {
-		return nil, errors.New("time-s, bytes and blockcount are mutually exclusive")
-	}
-
 	args = AppendKeyVal(args, "--length", cfg.BufSize)
 	args = AppendKeyVal(args, "--cport", cfg.ClientPort)
+	args = AppendKeyVal(args, "--congestion", cfg.CongestionCtrl)
 	args = AppendKeyVal(args, "--connect-timeout", cfg.ConnectTimeout)
 	args = AppendKeyVal(args, "--dscp", cfg.DSCP)
 	args = AppendKey(args, "--no-delay", cfg.DisableNagle)

@@ -9,6 +9,7 @@ func TestClientConfig_ToArgs(t *testing.T) {
 	type fields struct {
 		BufSize          string
 		ClientPort       uint16
+		CongestionCtrl   string
 		ConnectTimeout   uint64
 		DSCP             string
 		DisableNagle     bool
@@ -41,20 +42,11 @@ func TestClientConfig_ToArgs(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			"mutual exclusive settings",
-			fields{
-				FlowBytes:    "1M",
-				FlowDuration: 1234567890,
-				FlowPackets:  "10K",
-			},
-			nil,
-			true,
-		},
-		{
 			"good stuff",
 			fields{
 				BufSize:          "1024k",
 				ClientPort:       12345,
+				CongestionCtrl:   "ledbat",
 				ConnectTimeout:   1234567890,
 				DSCP:             "AF12",
 				DisableNagle:     true,
@@ -85,6 +77,8 @@ func TestClientConfig_ToArgs(t *testing.T) {
 				"1024k",
 				"--cport",
 				"12345",
+				"--congestion",
+				"ledbat",
 				"--connect-timeout",
 				"1234567890",
 				"--dscp",
@@ -125,6 +119,7 @@ func TestClientConfig_ToArgs(t *testing.T) {
 			cfg := &ClientConfig{
 				BufSize:          tt.fields.BufSize,
 				ClientPort:       tt.fields.ClientPort,
+				CongestionCtrl:   tt.fields.CongestionCtrl,
 				ConnectTimeout:   tt.fields.ConnectTimeout,
 				DSCP:             tt.fields.DSCP,
 				DisableNagle:     tt.fields.DisableNagle,
