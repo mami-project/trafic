@@ -2,7 +2,8 @@
 
 set -exu
 
-. /root/share/scripts/flows.env
+base=$(dirname $0)
+. $base/flows.env
 
 schedule clients \
 	--stats-dir=/root/share/stats \
