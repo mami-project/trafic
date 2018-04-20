@@ -1,0 +1,26 @@
+# models one direction of a real-time audio (64Kbps, 126 bytes of RTP & media)
+# ToS field explicitly bleached
+label: &l REF-rt_audio
+
+port: &p 10001
+mark: &m 0x00
+
+client:
+  at:
+    - 0s
+  config:
+    server-address: iperf-server
+    server-port: *p
+    time-s: 60
+    udp: true
+    length: 126
+    target-bitrate: 63901
+    tos: *m
+    title: *l
+    # report-interval-s: 0.2
+
+server:
+  at:
+    - 0s
+  config:
+    server-port: *p

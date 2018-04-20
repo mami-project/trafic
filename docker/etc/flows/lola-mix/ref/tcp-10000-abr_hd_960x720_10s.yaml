@@ -1,0 +1,29 @@
+# HD ABR video (10s segment, 720p)
+# ToS field explicitly bleached
+label: &l REF-abr_hd
+
+port: &p 10000
+mark: &m 0x00
+
+client:
+  at:
+    - 0s
+    - 10s
+    - 20s
+    - 30s
+    - 40s
+    - 50s
+
+  config:
+    server-address: iperf-server
+    server-port: *p
+    title: *l
+    bytes: 1.8M
+    tos: *m
+    # report-interval-s: 0.2
+
+server:
+  at:
+    - 0s
+  config:
+    server-port: *p
