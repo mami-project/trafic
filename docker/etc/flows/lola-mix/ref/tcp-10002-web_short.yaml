@@ -2,7 +2,7 @@
 # ToS field explicitly bleached
 label: &l REF-web_short
 
-port: &p 5004
+port: &p 10002
 mark: &m 0x00
 
 client:
