@@ -163,7 +163,7 @@ type UDPFlowStats struct {
 					End           float64 `json:"end"`
 					Seconds       float64 `json:"seconds"`
 					Bytes         int     `json:"bytes"`
-					BitsPerSecond int     `json:"bits_per_second"`
+					BitsPerSecond float64 `json:"bits_per_second"`
 					JitterMs      float64 `json:"jitter_ms"`
 					LostPackets   int     `json:"lost_packets"`
 					Packets       int     `json:"packets"`
@@ -176,7 +176,7 @@ type UDPFlowStats struct {
 				End           float64 `json:"end"`
 				Seconds       float64 `json:"seconds"`
 				Bytes         int     `json:"bytes"`
-				BitsPerSecond int     `json:"bits_per_second"`
+				BitsPerSecond float64 `json:"bits_per_second"`
 				JitterMs      float64 `json:"jitter_ms"`
 				LostPackets   int     `json:"lost_packets"`
 				Packets       int     `json:"packets"`

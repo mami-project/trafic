@@ -175,7 +175,7 @@ type TCPFlowStats struct {
 					End           float64 `json:"end"`
 					Seconds       float64 `json:"seconds"`
 					Bytes         int     `json:"bytes"`
-					BitsPerSecond int     `json:"bits_per_second"`
+					BitsPerSecond float64 `json:"bits_per_second"`
 				} `json:"sender"`
 				Receiver struct {
 					Socket        int     `json:"socket"`
@@ -191,7 +191,7 @@ type TCPFlowStats struct {
 				End           float64 `json:"end"`
 				Seconds       float64 `json:"seconds"`
 				Bytes         int     `json:"bytes"`
-				BitsPerSecond int     `json:"bits_per_second"`
+				BitsPerSecond float64 `json:"bits_per_second"`
 			} `json:"sum_sent"`
 			SumReceived struct {
 				Start         float64 `json:"start"`
