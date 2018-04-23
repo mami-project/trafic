@@ -20,6 +20,7 @@ client:
     # report-interval-s: 0.2
     parallel: *i
     target-bitrate: 1M
+    reverse: true
 
 server:
   at:

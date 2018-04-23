@@ -22,6 +22,11 @@ A variety of binaries are available [here](https://iperf.fr/iperf-download.php)
 
 [Docker](https://docs.docker.com/install/) and [Docker Compose](https://docs.docker.com/compose/install/).
 
+## Build and install
+
+```
+go install ./...
+```
 
 ***
 

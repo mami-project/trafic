@@ -22,6 +22,7 @@ client:
     title: *l
     bytes: 1246K
     tos: *m
+    reverse: true
     # report-interval-s: 0.2
 
 server:

@@ -17,6 +17,7 @@ client:
     server-port: *p
     title: *l
     bytes: 3738K
+    reverse: true
     # report-interval-s: 0.2
     parallel: *i
 
