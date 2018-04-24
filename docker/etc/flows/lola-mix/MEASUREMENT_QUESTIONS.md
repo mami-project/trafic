@@ -20,7 +20,7 @@ In the following, we go into the details with regards to the configuration of th
 
 # Methodology
 
-1. Characterise the underlying \ac{ran} measuring the raw bandwidth delivered (with iprf3 in greedty mode)
+1. Characterise the underlying \ac{ran} measuring the raw bandwidth delivered (with iperf3 in greedy mode)
   - Raw bandwidth delivered by the uplink to make sure it is not going to introduce any hidden limitation
   - Raw bandwidth delivered by the downlink to obtain the amount of background traffic
 2. First measurement campain with background + ramping foreground on the \ac{ran} without any \ac{qos} treatment
