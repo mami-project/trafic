@@ -17,3 +17,13 @@ The two high-level questions that we want to answer, which map to two slightly d
 - If a proportion of the population cooperates, do we get a better utilisation of resources?
 
 In the following, we go into the details with regards to the configuration of the control and the experimental groups, the traffic mix composition and the set of reference flows – either belonging to the Lo or La classes – that will be measured.
+
+# Methodology
+
+1. Characterise the underlying \ac{ran} measuring the raw bandwidth delivered (with iperf3 in greedy mode)
+  - Raw bandwidth delivered by the uplink to make sure it is not going to introduce any hidden limitation
+  - Raw bandwidth delivered by the downlink to obtain the amount of background traffic
+2. First measurement campain with background + ramping foreground on the \ac{ran} without any \ac{qos} treatment
+  - Network aggregate goodput
+  - \ac{qoe} experienced by the endpoints (on the foreground traffic flows)
+
