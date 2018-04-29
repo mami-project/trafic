@@ -1,0 +1,32 @@
+# target aggregate bandwidth in bytes/sec (B/KB/MB/GB/TB)
+total-bandwidth: 12.5MB
+
+# how long the mix should run - expressed as duration (s, m, h, etc.)
+total-time: 60s
+
+# measure sampling tick
+report-interval: 0.2s
+
+flows:
+  - kind: realtime-audio
+    percent-bandwidth: 1%
+    ports-range: 5000-5100
+    #    template: templates/realtime-audio.yaml.in
+    props:
+      label: rt-audio
+      server: iperf-server
+
+  - kind: realtime-video
+    percent-bandwidth: 6%
+    ports-range: 5200-5300
+    #    template: templates/realtime-video.yaml.in
+    props:
+      label: rt-video
+      server: iperf-server
+
+      #  - kind: abr-video
+      #    percent-bandwidth: 33%
+      #    ports-range: 6000-6100
+      #    props:
+      #      label: abr
+      #      server: iperf-server
