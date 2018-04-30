@@ -7,7 +7,8 @@ total-time: 60s
 # measure sampling tick
 report-interval: 0.2s
 
-server: &server
+# alias(es)
+server: &srv iperf-server
 
 flows:
   - kind: realtime-audio
@@ -16,7 +17,7 @@ flows:
     #    template: templates/realtime-audio.yaml.in
     props:
       label: rt-audio
-      server: *server
+      server: *srv
 
   - kind: realtime-video
     percent-bandwidth: 6%
@@ -24,7 +25,7 @@ flows:
     #    template: templates/realtime-video.yaml.in
     props:
       label: rt-video
-      server: iperf-server
+      server: *srv
 
   - kind: scavenger
     percent-bandwidth: 10%
@@ -32,7 +33,7 @@ flows:
     #    template: templates/scavenger.yaml.in
     props:
       label: scavenger
-      server: iperf-server
+      server: *srv
 
   - kind: greedy
     percent-bandwidth: 25%
@@ -40,7 +41,7 @@ flows:
     #    template: templates/greedy.yaml.in
     props:
       label: tcp-high-throughput
-      server: iperf-server
+      server: *srv
 
       #  - kind: abr-video
       #    percent-bandwidth: 33%

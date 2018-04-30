@@ -51,10 +51,12 @@ func NewRealtimeAudio() Mixer {
 }
 
 func (RealtimeAudio) WriteConf(baseDir string, g GlobalDesc, c FlowDesc) error {
-	outFile := path.Join(baseDir, "realtime-audio.yaml")
-
 	// target-bitrate: 64K
-	return writeOneConf(outFile, defaultRealtimeAudioTmpl, g, c, 64000)
+	return writeFixedBitrate(
+		path.Join(baseDir, "realtime-audio.yaml"),
+		defaultRealtimeAudioTmpl,
+		g, c, 64000,
+	)
 }
 
 func (RealtimeAudio) Name() string {

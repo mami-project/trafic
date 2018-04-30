@@ -5,7 +5,7 @@ import (
 	"os"
 )
 
-func writeOneConf(outFile string, defaultTmpl string, g GlobalDesc, c FlowDesc, flowBitrate float64) error {
+func writeFixedBitrate(outFile string, defaultTmpl string, g GlobalDesc, c FlowDesc, flowBitrate float64) error {
 	tmpl, err := setupTemplate(c, defaultTmpl)
 	if err != nil {
 		return err
