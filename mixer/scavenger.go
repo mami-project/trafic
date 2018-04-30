@@ -60,7 +60,3 @@ func (Scavenger) WriteConf(baseDir string, g GlobalDesc, c FlowDesc) error {
 func (Scavenger) Name() string {
 	return "scavenger"
 }
-
-func init() {
-	MixerRegister(NewScavenger())
-}

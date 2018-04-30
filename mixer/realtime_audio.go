@@ -60,7 +60,3 @@ func (RealtimeAudio) WriteConf(baseDir string, g GlobalDesc, c FlowDesc) error {
 func (RealtimeAudio) Name() string {
 	return "realtime-audio"
 }
-
-func init() {
-	MixerRegister(NewRealtimeAudio())
-}

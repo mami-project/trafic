@@ -28,23 +28,25 @@ func init() {
 }
 
 func mix(cmd *cobra.Command, args []string) {
+	mm := mixer.MixerInit()
+
 	c, err := mixer.NewDescriptionFromFile(DescFile)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	err = Generate(c, OutDir)
+	err = Generate(mm, c, OutDir)
 	if err != nil {
 		log.Fatal(err)
 	}
 }
 
-func Generate(desc *mixer.Description, baseDir string) error {
+func Generate(mm *mixer.MixerMap, desc *mixer.Description, baseDir string) error {
 	log.Printf("saving generated configuration to: %s", baseDir)
 
 	for i := range desc.Flows {
 		kind := desc.Flows[i].Kind
-		m, err := mixer.LookupMixer(kind)
+		m, err := mm.LookupMixer(kind)
 		if err != nil {
 			log.Fatal(err)
 		}

@@ -13,28 +13,33 @@ type Mixer interface {
 	Name() string
 }
 
-type MixerMap = map[string]Mixer
-
-var mgm MixerMap
-
-func init() {
-	log.Printf("initialise mixer map")
-
-	mgm = make(MixerMap)
+type MixerMap struct {
+	m map[string]Mixer
 }
 
-func MixerRegister(mixer Mixer) {
+func NewMixerMap() *MixerMap {
+	m := MixerMap{make(map[string]Mixer)}
+
+	m.MixerRegister(NewRealtimeAudio())
+	m.MixerRegister(NewRealtimeVideo())
+	m.MixerRegister(NewScavenger())
+	m.MixerRegister(NewGreedy())
+
+	return &m
+}
+
+func (m *MixerMap) MixerRegister(mixer Mixer) {
 	id := mixer.Name()
 
 	log.Printf("adding %s to the mixer map", id)
 
-	mgm[id] = mixer
+	m.m[id] = mixer
 }
 
-func LookupMixer(id string) (*Mixer, error) {
+func (m *MixerMap) LookupMixer(id string) (*Mixer, error) {
 	log.Printf("looking up flow mixer for %s", id)
 
-	mixer, ok := mgm[id]
+	mixer, ok := m.m[id]
 	if !ok {
 		return nil, fmt.Errorf("no mixer registered for %s", id)
 	}
