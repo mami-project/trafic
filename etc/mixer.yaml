@@ -10,7 +10,7 @@ report-interval: 0.2s
 flows:
   - kind: realtime-audio
     percent-bandwidth: 1%
-    ports-range: 5000-5100
+    ports-range: 5000-5099
     #    template: templates/realtime-audio.yaml.in
     props:
       label: rt-audio
@@ -18,8 +18,16 @@ flows:
 
   - kind: realtime-video
     percent-bandwidth: 6%
-    ports-range: 5200-5300
+    ports-range: 5100-5199
     #    template: templates/realtime-video.yaml.in
+    props:
+      label: rt-video
+      server: iperf-server
+
+  - kind: scavenger
+    percent-bandwidth: 10%
+    ports-range: 5200-5299
+    #    template: templates/scavenger.yaml.in
     props:
       label: rt-video
       server: iperf-server
