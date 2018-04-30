@@ -40,6 +40,8 @@ func mix(cmd *cobra.Command, args []string) {
 }
 
 func Generate(desc *mixer.Description, baseDir string) error {
+	log.Printf("saving generated configuration to: %s", baseDir)
+
 	for i := range desc.Flows {
 		kind := desc.Flows[i].Kind
 		m, err := mixer.LookupMixer(kind)

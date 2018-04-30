@@ -6,13 +6,13 @@ import (
 )
 
 // TODO put basedir+filename together into a outfile
-func doWriteConf(outFile string, defaultTmpl string, g GlobalDesc, c FlowDesc) error {
+func doWriteConf(outFile string, defaultTmpl string, g GlobalDesc, c FlowDesc, flowBitrate float64) error {
 	tmpl, err := setupTemplate(c, defaultTmpl)
 	if err != nil {
 		return err
 	}
 
-	props, err := evalProps(g, c)
+	props, err := evalProps(g, c, flowBitrate)
 	if err != nil {
 		return err
 	}
@@ -31,11 +31,11 @@ func doWriteConf(outFile string, defaultTmpl string, g GlobalDesc, c FlowDesc) e
 	return nil
 }
 
-func evalInstances(total Bytes, percent Ratio) uint {
-	return uint((float64(total.Val) * 8 * percent.Val) / 64000)
+func evalInstances(total Bytes, percent Ratio, flowBitrate float64) uint {
+	return uint((float64(total.Val) * 8 * percent.Val) / flowBitrate)
 }
 
-func evalProps(g GlobalDesc, c FlowDesc) (map[string]string, error) {
+func evalProps(g GlobalDesc, c FlowDesc, flowBitrate float64) (map[string]string, error) {
 	p := make(map[string]string)
 
 	for k, v := range c.Props {
@@ -43,7 +43,7 @@ func evalProps(g GlobalDesc, c FlowDesc) (map[string]string, error) {
 	}
 
 	p["port"] = fmt.Sprintf("%d", c.PortsRange.First)
-	p["instances"] = fmt.Sprintf("%d", evalInstances(g.TotalBandwidth, c.PercentBandwidth))
+	p["instances"] = fmt.Sprintf("%d", evalInstances(g.TotalBandwidth, c.PercentBandwidth, flowBitrate))
 	p["time"] = fmt.Sprintf("%fs", g.TotalTime.Seconds())
 	p["report_interval"] = fmt.Sprintf("%fs", g.ReportInterval.Seconds())
 
