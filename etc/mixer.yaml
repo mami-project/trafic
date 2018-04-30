@@ -29,7 +29,7 @@ flows:
     ports-range: 5200-5299
     #    template: templates/scavenger.yaml.in
     props:
-      label: rt-video
+      label: scavenger
       server: iperf-server
 
       #  - kind: abr-video

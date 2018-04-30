@@ -54,7 +54,7 @@ func (RealtimeVideo) WriteConf(baseDir string, g GlobalDesc, c FlowDesc) error {
 	outFile := path.Join(baseDir, "realtime-video.yaml")
 
 	// target-bitrate: 810K
-	return doWriteConf(outFile, defaultRealtimeVideoTmpl, g, c, 810000)
+	return writeOneConf(outFile, defaultRealtimeVideoTmpl, g, c, 810000)
 }
 
 func (RealtimeVideo) Name() string {

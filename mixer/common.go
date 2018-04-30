@@ -5,8 +5,7 @@ import (
 	"os"
 )
 
-// TODO scavenger too uses this.  we might want to re-evaluate factorisation
-func doWriteConf(outFile string, defaultTmpl string, g GlobalDesc, c FlowDesc, flowBitrate float64) error {
+func writeOneConf(outFile string, defaultTmpl string, g GlobalDesc, c FlowDesc, flowBitrate float64) error {
 	tmpl, err := setupTemplate(c, defaultTmpl)
 	if err != nil {
 		return err

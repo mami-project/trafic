@@ -54,7 +54,7 @@ func (Scavenger) WriteConf(baseDir string, g GlobalDesc, c FlowDesc) error {
 	outFile := path.Join(baseDir, "scavenger.yaml")
 
 	// target-bitrate: 1M
-	return doWriteConf(outFile, defaultScavengerTmpl, g, c, 1000000)
+	return writeOneConf(outFile, defaultScavengerTmpl, g, c, 1000000)
 }
 
 func (Scavenger) Name() string {
