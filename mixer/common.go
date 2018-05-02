@@ -10,18 +10,29 @@ import (
 type BurstProps struct {
 	Label          string
 	Port           uint16
-	At             []int
 	Server         string
 	ReportInterval string
+	At             []int
 }
 
-func writeFixedBitrate(outFile string, defaultTmpl string, g GlobalDesc, c FlowDesc, flowBitrate float64) error {
+type FixedBitrateProps struct {
+	Label          string
+	Port           uint16
+	Server         string
+	ReportInterval string
+	Time           string
+	Instances      uint
+}
+
+func writeFixedBitrate(outFile string, defaultTmpl string, g GlobalDesc,
+	c FlowDesc, flowBitrate float64) error {
+
 	tmpl, err := setupTemplate(c, defaultTmpl)
 	if err != nil {
 		return err
 	}
 
-	props, err := evalPropsFixedBitrate(g, c, flowBitrate)
+	props, err := makeFixedBitrateProps(g, c, flowBitrate)
 	if err != nil {
 		return err
 	}
@@ -48,19 +59,17 @@ func evalInstancesFixedBitrate(total Bytes, percent Ratio, flowBitrate float64) 
 	return uint(flowQuotaBps(total, percent) / flowBitrate)
 }
 
-func evalPropsFixedBitrate(g GlobalDesc, c FlowDesc, flowBitrate float64) (map[string]string, error) {
-	p := make(map[string]string)
+func makeFixedBitrateProps(g GlobalDesc, c FlowDesc, flowBitrate float64) (*FixedBitrateProps, error) {
+	instances := uint(flowQuotaBps(g.TotalBandwidth, c.PercentBandwidth) / flowBitrate)
 
-	for k, v := range c.Props {
-		p[k] = v
-	}
-
-	p["port"] = fmt.Sprintf("%d", c.PortsRange.First)
-	p["instances"] = fmt.Sprintf("%d", evalInstancesFixedBitrate(g.TotalBandwidth, c.PercentBandwidth, flowBitrate))
-	p["time"] = fmt.Sprintf("%fs", g.TotalTime.Seconds())
-	p["report_interval"] = fmt.Sprintf("%fs", g.ReportInterval.Seconds())
-
-	return p, nil
+	return &FixedBitrateProps{
+		Port:           c.PortsRange.First,
+		Instances:      instances,
+		Time:           fmt.Sprintf("%fs", g.TotalTime.Seconds()),
+		Server:         c.Props["server"],
+		ReportInterval: fmt.Sprintf("%fs", g.ReportInterval.Seconds()),
+		Label:          c.Props["label"],
+	}, nil
 }
 
 func writeBursting(outFile string, defaultTmpl string, g GlobalDesc,

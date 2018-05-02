@@ -18,22 +18,22 @@ var defaultScavengerTmpl string = `
   - report_interval: flow measures sampling timer
 */}}
 
-label: &l {{ .label }}
+label: &l {{ .Label }}
 
-port: &p {{ .port }}
+port: &p {{ .Port }}
 
-instances: &i {{ .instances }}
+instances: &i {{ .Instances }}
 
 client:
   at:
     - 0s
   config:
-    server-address: {{ .server }}
+    server-address: {{ .Server }}
     server-port: *p
-    time-s: {{ .time }}
+    time-s: {{ .Time }}
     target-bitrate: 1M
     title: *l
-    report-interval-s: {{ .report_interval }}
+    report-interval-s: {{ .ReportInterval }}
     parallel: *i
     reverse: true
 
