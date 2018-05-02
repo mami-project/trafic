@@ -65,9 +65,9 @@ func makeFixedBitrateProps(g GlobalDesc, c FlowDesc, flowBitrate float64) (*Fixe
 	return &FixedBitrateProps{
 		Port:           c.PortsRange.First,
 		Instances:      instances,
-		Time:           fmt.Sprintf("%fs", g.TotalTime.Seconds()),
+		Time:           fmt.Sprintf("%f", g.TotalTime.Seconds()),
 		Server:         c.Props["server"],
-		ReportInterval: fmt.Sprintf("%fs", g.ReportInterval.Seconds()),
+		ReportInterval: fmt.Sprintf("%f", g.ReportInterval.Seconds()),
 		Label:          c.Props["label"],
 	}, nil
 }
@@ -134,7 +134,7 @@ func makeBurstProps(g GlobalDesc, c FlowDesc, clientSchedule []int, clientId int
 		Label:          c.Props["label"],
 		Port:           flowPort,
 		Server:         c.Props["server"],
-		ReportInterval: fmt.Sprintf("%fs", g.ReportInterval.Seconds()),
+		ReportInterval: fmt.Sprintf("%f", g.ReportInterval.Seconds()),
 	}, nil
 }
 
