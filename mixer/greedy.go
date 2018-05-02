@@ -1,14 +1,14 @@
 package mixer
 
 import (
-	"fmt"
 	"path"
+	"time"
 )
 
 var defaultGreedyTmpl string = `
 {{/*
   Models a greedy (not application limited) TCP flow that wants to download a
-  25MB file at regular intervals
+  25MB file every 30s
 
   Configuration keys:
   - label: a label added to the final report
@@ -17,20 +17,20 @@ var defaultGreedyTmpl string = `
   - report_interval: flow measures sampling timer
 */}}
 
-label: &l {{ .label }}
+label: &l {{ .Label }}
 
-port: &p {{ .port }}
+port: &p {{ .Port }}
 
 client:
   at:
-{{range .}}
-    - {{.at -}}
+{{- range .At}}
+    - {{ . -}}
 {{end}}
   config:
-    server-address: {{ .port }}
+    server-address: {{ .Server }}
     server-port: *p
     title: *l
-    report-interval-s: {{ .report_interval }}
+    report-interval-s: {{ .ReportInterval }}
     bytes: 25M
     reverse: true
 
@@ -48,9 +48,16 @@ func NewGreedy() Mixer {
 }
 
 func (Greedy) WriteConf(baseDir string, g GlobalDesc, c FlowDesc) error {
-	outFile := path.Join(baseDir, "greedy-tcp.yaml")
+	burstSize := float64(25000000 * 8) // bytes: 25M
+	burstPeriod, _ := time.ParseDuration("30s")
 
-	return fmt.Errorf("TODO dump greedy to %s", outFile)
+	return writeBursting(
+		path.Join(baseDir, "greedy-tcp"),
+		defaultGreedyTmpl,
+		g, c,
+		burstSize,
+		burstPeriod,
+	)
 }
 
 func (Greedy) Name() string {
