@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-var defaultABRVideoTmpl string = `
+var defaultWebPageTmpl string = `
 {{/*
   Models ...
 
@@ -29,7 +29,7 @@ client:
     server-address: {{ .Server }}
     server-port: *p
     title: *l
-    bytes: 1.8M
+    bytes: 1246K
     reverse: true
     report-interval-s: {{ .ReportInterval }}
 
@@ -40,25 +40,25 @@ server:
     server-port: *p
 `
 
-type ABRVideo struct{}
+type WebPage struct{}
 
-func NewABRVideo() Mixer {
-	return &ABRVideo{}
+func NewWebPage() Mixer {
+	return &WebPage{}
 }
 
-func (ABRVideo) WriteConf(baseDir string, g GlobalDesc, c FlowDesc) error {
-	burstSize := float64(1800000 * 8)           // bytes: 1.8M
-	burstPeriod, _ := time.ParseDuration("10s") // 10s segments
+func (WebPage) WriteConf(baseDir string, g GlobalDesc, c FlowDesc) error {
+	burstSize := float64(1246000 * 8)          // bytes: 1246K
+	burstPeriod, _ := time.ParseDuration("5s") // burst every 5s
 
 	return writeBursting(
-		path.Join(baseDir, "abr-video"),
-		defaultABRVideoTmpl,
+		path.Join(baseDir, "web-page"),
+		defaultWebPageTmpl,
 		g, c,
 		burstSize,
 		burstPeriod,
 	)
 }
 
-func (ABRVideo) Name() string {
-	return "abr-video"
+func (WebPage) Name() string {
+	return "web-page"
 }

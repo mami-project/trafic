@@ -50,3 +50,11 @@ flows:
     props:
       label: abr-video
       server: *srv
+
+  - kind: web-page
+    percent-bandwidth: 25%
+    ports-range: 5500-5599
+    #    template: templates/web-page.yaml.in
+    props:
+      label: web-page
+      server: *srv

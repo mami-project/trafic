@@ -25,6 +25,7 @@ func NewMixerMap() *MixerMap {
 	m.MixerRegister(NewScavenger())
 	m.MixerRegister(NewGreedy())
 	m.MixerRegister(NewABRVideo())
+	m.MixerRegister(NewWebPage())
 
 	return &m
 }
