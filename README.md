@@ -11,7 +11,7 @@ Follow instructions at https://golang.org/doc/install
 
 Also, a few 3rd party packages trafic depends on:
 ```
-go get -u gopkg.in/yaml.v2 github.com/spf13/cobra github.com/spf13/viper
+go get -u gopkg.in/yaml.v2 github.com/spf13/cobra github.com/spf13/viper github.com/alecthomas/units
 ```
 
 ### Iperf3
