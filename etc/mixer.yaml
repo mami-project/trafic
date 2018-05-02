@@ -43,9 +43,10 @@ flows:
       label: tcp-high-throughput
       server: *srv
 
-      #  - kind: abr-video
-      #    percent-bandwidth: 33%
-      #    ports-range: 6000-6100
-      #    props:
-      #      label: abr
-      #      server: iperf-server
+  - kind: abr-video
+    percent-bandwidth: 33%
+    ports-range: 5400-5499
+    #    template: templates/abr-video.yaml.in
+    props:
+      label: abr-video
+      server: *srv

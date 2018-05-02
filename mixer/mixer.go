@@ -24,6 +24,7 @@ func NewMixerMap() *MixerMap {
 	m.MixerRegister(NewRealtimeVideo())
 	m.MixerRegister(NewScavenger())
 	m.MixerRegister(NewGreedy())
+	m.MixerRegister(NewABRVideo())
 
 	return &m
 }
