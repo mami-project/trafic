@@ -16,7 +16,7 @@ go get -u gopkg.in/yaml.v2 github.com/spf13/cobra github.com/spf13/viper github.
 
 ### Iperf3
 
-A variety of binaries are available [here](https://iperf.fr/iperf-download.php)
+Fetch the latest release from [here](https://github.com/esnet/iperf/releases)
 
 ### Docker
 
