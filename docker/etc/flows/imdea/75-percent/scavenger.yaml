@@ -1,0 +1,27 @@
+
+
+
+label: &l scavenger
+
+port: &p 5200
+
+instances: &i 5
+
+client:
+  at:
+    - 0s
+  config:
+    server-address: iperf-server
+    server-port: *p
+    time-s: 60.000000
+    target-bitrate: 1M
+    title: *l
+    report-interval-s: 0.200000
+    parallel: *i
+    reverse: true
+
+server:
+  at:
+    - 0s
+  config:
+    server-port: *p
