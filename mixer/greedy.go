@@ -24,7 +24,7 @@ port: &p {{ .Port }}
 client:
   at:
 {{- range .At}}
-    - {{ . -}}
+    - {{ . -}}s
 {{end}}
   config:
     server-address: {{ .Server }}

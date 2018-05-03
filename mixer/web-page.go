@@ -23,7 +23,7 @@ port: &p {{ .Port }}
 client:
   at:
 {{- range .At}}
-    - {{ . -}}
+    - {{ . -}}s
 {{end}}
   config:
     server-address: {{ .Server }}
@@ -47,8 +47,8 @@ func NewWebPage() Mixer {
 }
 
 func (WebPage) WriteConf(baseDir string, g GlobalDesc, c FlowDesc) error {
-	burstSize := float64(1246000 * 8)          // bytes: 1246K
-	burstPeriod, _ := time.ParseDuration("5s") // burst every 5s
+	burstSize := float64(1246000 * 8)           // bytes: 1246K
+	burstPeriod, _ := time.ParseDuration("10s") // burst every 10s
 
 	return writeBursting(
 		path.Join(baseDir, "web-page"),

@@ -55,12 +55,17 @@ func flowQuotaBps(total Bytes, percent Ratio) float64 {
 	return float64(total.Val) * 8 * percent.Val
 }
 
-func evalInstancesFixedBitrate(total Bytes, percent Ratio, flowBitrate float64) uint {
+func evalInstancesFixedBitrate(total Bytes, percent Ratio,
+	flowBitrate float64) uint {
 	return uint(flowQuotaBps(total, percent) / flowBitrate)
 }
 
-func makeFixedBitrateProps(g GlobalDesc, c FlowDesc, flowBitrate float64) (*FixedBitrateProps, error) {
-	instances := uint(flowQuotaBps(g.TotalBandwidth, c.PercentBandwidth) / flowBitrate)
+func makeFixedBitrateProps(g GlobalDesc, c FlowDesc,
+	flowBitrate float64) (*FixedBitrateProps, error) {
+	instances := uint(
+		flowQuotaBps(g.TotalBandwidth, c.PercentBandwidth) /
+			flowBitrate,
+	)
 
 	return &FixedBitrateProps{
 		Port:           c.PortsRange.First,
@@ -123,7 +128,9 @@ func writeBurstingClients(outFile string, defaultTmpl string, g GlobalDesc,
 	return nil
 }
 
-func makeBurstProps(g GlobalDesc, c FlowDesc, clientSchedule []int, clientId int) (*BurstProps, error) {
+func makeBurstProps(g GlobalDesc, c FlowDesc, clientSchedule []int,
+	clientId int) (*BurstProps, error) {
+
 	flowPort := c.PortsRange.First + uint16(clientId)
 	if flowPort > c.PortsRange.Last {
 		return nil, fmt.Errorf("ports exhausted: can't go past %u", c.PortsRange.Last)
