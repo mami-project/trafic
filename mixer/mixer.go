@@ -18,16 +18,7 @@ type MixerMap struct {
 }
 
 func NewMixerMap() *MixerMap {
-	m := MixerMap{make(map[string]Mixer)}
-
-	m.MixerRegister(NewRealtimeAudio())
-	m.MixerRegister(NewRealtimeVideo())
-	m.MixerRegister(NewScavenger())
-	m.MixerRegister(NewGreedy())
-	m.MixerRegister(NewABRVideo())
-	m.MixerRegister(NewWebPage())
-
-	return &m
+	return &MixerMap{make(map[string]Mixer)}
 }
 
 func (m *MixerMap) MixerRegister(mixer Mixer) {

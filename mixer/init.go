@@ -3,7 +3,7 @@ package mixer
 import "log"
 
 func MixerInit() *MixerMap {
-	log.Printf("initialise mixer map")
+	log.Printf("initialising mixer map")
 
 	mm := NewMixerMap()
 
@@ -11,6 +11,8 @@ func MixerInit() *MixerMap {
 	mm.MixerRegister(NewRealtimeVideo())
 	mm.MixerRegister(NewScavenger())
 	mm.MixerRegister(NewGreedy())
+	mm.MixerRegister(NewABRVideo())
+	mm.MixerRegister(NewWebPage())
 
 	return mm
 }
