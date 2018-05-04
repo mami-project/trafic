@@ -1,24 +1,18 @@
 #!/bin/bash
 
-set -exu
+set -eu
 
-function mklabel() {
-	local exid=$1
-	local unixtime=$(date +%s)
-
-	printf "lola-%s-%s" "${exid}" "${unixtime}"
-}
-
-EXID=${EXID:-vanilla}
-CONF=${CONF:-flows.env}
+EXID=${EXID:-flows}
+CONF=${CONF:-${EXID}.env}
 
 base=$(dirname $0)
 . ${base}/${CONF}
+. ${base}/fun.bash
 
 label=$(mklabel "$EXID")
 STATS=${STATS:-/root/share/stats/$label}
 
-schedule clients \
+echo schedule clients \
 	--stats-dir="${STATS}" \
 	--log-tag=C \
 	--flows-dirs=${FLOWS} \
