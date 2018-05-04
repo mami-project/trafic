@@ -14,6 +14,11 @@ Also, a few 3rd party packages trafic depends on:
 go get -u gopkg.in/yaml.v2 github.com/spf13/cobra github.com/spf13/viper github.com/alecthomas/units
 ```
 
+If you plan to use trafic to run the lola tests, webhook can also come in handy to automate at least part of the execution:
+```
+go get github.com/adnanh/webhook
+```
+
 ### Iperf3
 
 Fetch the latest release from [here](https://github.com/esnet/iperf/releases)
