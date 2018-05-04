@@ -1,0 +1,18 @@
+[
+  {
+    "id": "run-servers",
+    "execute-command": "/root/share/scripts/run-servers.bash",
+    "command-working-directory": "/",
+    "pass-environment-to-command": [
+      {
+        "source": "header",
+        "envname": "CONF",
+        "name": "X-CONF"
+      }
+    ]
+  },
+  {
+    "id": "kill-servers",
+    "execute-command": "killall schedule"
+  }
+]

@@ -1,0 +1,23 @@
+[
+  {
+    "id": "run-clients",
+    "execute-command": "/root/share/scripts/run-clients.bash",
+    "command-working-directory": "/",
+    "pass-environment-to-command": [
+      {
+        "source": "header",
+        "envname": "CONF",
+        "name": "X-CONF"
+      },
+      {
+        "source": "header",
+        "envname": "LABEL",
+        "name": "X-LABEL"
+      }
+    ]
+  },
+  {
+    "id": "kill-clients",
+    "execute-command": "killall schedule"
+  }
+]
