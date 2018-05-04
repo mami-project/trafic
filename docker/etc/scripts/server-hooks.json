@@ -1,6 +1,6 @@
 [
   {
-    "id": "run-servers",
+    "id": "start-servers",
     "execute-command": "/root/share/scripts/run-servers.bash",
     "command-working-directory": "/",
     "pass-environment-to-command": [
