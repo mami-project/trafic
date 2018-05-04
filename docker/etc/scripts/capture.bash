@@ -9,14 +9,34 @@ function mklabel() {
 	printf "lola-%s-%s" "${exid}" "${unixtime}"
 }
 
-EXID=${EXID:-flows}
 IFACE=${IFACE:-eth0}
+EXID=${EXID:-flows}
 
-label=$(mklabel "$EXID")
-outfn="${label}.pcap"
+for load in 75 80 85 90 95
+do
+	local exid="${EXID}-${load}"
+	local label=$(mklabel "${exid}")
+	local capfn="${label}.pcap"
 
-echo ">> on the RAN side run:"
-echo "  CONF=${EXID}.env LABEL=${label} ./run-clients.bash"
-echo ">> press <ENTER> when ready to capture"
-read
-tshark -i ${IFACE} -s 128 -w ${outfn} -a duration:60 -f 'tcp or udp'
+	# start servers
+	wget --header "X-CONF: ${exid}.env" \
+		-O /dev/null \
+		http://iperf-server:9000/hooks/start-servers
+
+	sleep 1
+
+	# start clients
+	wget --header "X-CONF: ${exid}.env" \
+		--header "X-LABEL: ${label}" \
+		-O /dev/null \
+		http://iperf-client:9000/hooks/run-clients
+
+	# start capture for 60s
+	tshark -i ${IFACE} -s 128 -w ${capfn} -f 'tcp or udp' -a duration:60
+
+	sleep 5	# allow some time for flows to drain
+
+	# cleanup (and, possibly, go again)
+	wget http://iperf-server:9000/hooks/stop-servers -O /dev/null
+	wget http://iperf-client:9000/hooks/stop-clients -O /dev/null
+done
