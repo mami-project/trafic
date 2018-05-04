@@ -2,15 +2,13 @@
 
 set -eu
 
-EXID=${EXID:-flows}
-CONF=${CONF:-${EXID}.env}
+LABEL=${LABEL:-"lola-flows"}
+CONF=${CONF:-flows.env}
 
 base=$(dirname $0)
 . ${base}/${CONF}
-. ${base}/fun.bash
 
-label=$(mklabel "$EXID")
-STATS=${STATS:-/root/share/stats/$label}
+STATS=${STATS:-/root/share/stats/$LABEL}
 
 schedule clients \
 	--stats-dir="${STATS}" \
@@ -18,4 +16,4 @@ schedule clients \
 	--flows-dirs=${FLOWS} \
 	--influxdb-enabled \
 	--influxdb-endpoint=http://influxdb:8086 \
-	--influxdb-db=${label}
+	--influxdb-db=${LABEL}
