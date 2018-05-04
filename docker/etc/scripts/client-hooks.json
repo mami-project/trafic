@@ -1,6 +1,6 @@
 [
   {
-    "id": "run-clients",
+    "id": "start-clients",
     "execute-command": "/root/share/scripts/run-clients.bash",
     "command-working-directory": "/",
     "pass-environment-to-command": [
@@ -17,7 +17,13 @@
     ]
   },
   {
-    "id": "kill-clients",
-    "execute-command": "killall schedule"
+    "id": "stop-clients",
+    "execute-command": "killall",
+    "pass-arguments-to-command": [
+      {
+        "source": "string",
+        "name": "schedule"
+      }
+    ]
   }
 ]

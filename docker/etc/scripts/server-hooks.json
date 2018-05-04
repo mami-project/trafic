@@ -12,7 +12,13 @@
     ]
   },
   {
-    "id": "kill-servers",
-    "execute-command": "killall schedule"
+    "id": "stop-servers",
+    "execute-command": "killall",
+    "pass-arguments-to-command": [
+      {
+        "source": "string",
+        "name": "schedule"
+      }
+    ]
   }
 ]

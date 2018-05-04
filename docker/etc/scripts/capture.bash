@@ -15,5 +15,8 @@ IFACE=${IFACE:-eth0}
 label=$(mklabel "$EXID")
 outfn="${label}.pcap"
 
-echo ">> now run: CONF=${EXID}.env LABEL=${label} ./run-clients.bash"
-tshark -i ${IFACE} -s 128 -w ${outfn} -a duration:60
+echo ">> on the RAN side run:"
+echo "  CONF=${EXID}.env LABEL=${label} ./run-clients.bash"
+echo ">> press <ENTER> when ready to capture"
+read
+tshark -i ${IFACE} -s 128 -w ${outfn} -a duration:60 -f 'tcp or udp'
