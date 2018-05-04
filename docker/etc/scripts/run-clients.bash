@@ -12,7 +12,7 @@ base=$(dirname $0)
 label=$(mklabel "$EXID")
 STATS=${STATS:-/root/share/stats/$label}
 
-echo schedule clients \
+schedule clients \
 	--stats-dir="${STATS}" \
 	--log-tag=C \
 	--flows-dirs=${FLOWS} \
