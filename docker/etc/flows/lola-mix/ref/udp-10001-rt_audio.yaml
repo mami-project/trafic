@@ -14,11 +14,11 @@ client:
     time-s: 60
     udp: true
     length: 126
-    target-bitrate: 63901
+    target-bitrate: 64K 
     tos: *m
     title: *l
     reverse: true
-    # report-interval-s: 0.2
+    report-interval-s: 0.2
 
 server:
   at:

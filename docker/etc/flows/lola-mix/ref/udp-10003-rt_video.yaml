@@ -18,7 +18,7 @@ client:
     tos: *m
     title: *l
     reverse: true
-    # report-interval-s: 0.2
+    report-interval-s: 0.2
 
 server:
   at:
