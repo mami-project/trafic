@@ -13,6 +13,11 @@
         "source": "header",
         "envname": "LABEL",
         "name": "X-LABEL"
+      },
+      {
+        "source": "header",
+        "envname": "DB",
+        "name": "X-DB"
       }
     ]
   },

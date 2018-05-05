@@ -28,6 +28,7 @@ do
 	# start clients
 	wget --header "X-CONF: ${exid}.env" \
 		--header "X-LABEL: ${label}" \
+		--header "X-DB: ${EXID}" \
 		-O /dev/null \
 		http://iperf-client:9000/hooks/start-clients
 

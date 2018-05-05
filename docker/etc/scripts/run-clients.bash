@@ -4,6 +4,7 @@ set -eu
 
 LABEL=${LABEL:-"lola-flows"}
 CONF=${CONF:-flows.env}
+DB=${CONF:-lola}
 
 base=$(dirname $0)
 . ${base}/${CONF}
@@ -16,5 +17,5 @@ schedule clients \
 	--flows-dirs=${FLOWS} \
 	--influxdb-enabled \
 	--influxdb-endpoint=http://influxdb:8086 \
-	--influxdb-db=lola \
+	--influxdb-db=lola-${DB} \
 	--influxdb-measurements=${LABEL}
