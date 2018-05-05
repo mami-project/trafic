@@ -14,9 +14,9 @@ EXID=${EXID:-flows}
 
 for load in 75 80 85 90 95
 do
-	local exid="${EXID}-${load}"
-	local label=$(mklabel "${exid}")
-	local capfn="${label}.pcap"
+	exid="${EXID}-${load}"
+	label=$(mklabel "${exid}")
+	capfn="${label}.pcap"
 
 	# start servers
 	wget --header "X-CONF: ${exid}.env" \
@@ -29,7 +29,7 @@ do
 	wget --header "X-CONF: ${exid}.env" \
 		--header "X-LABEL: ${label}" \
 		-O /dev/null \
-		http://iperf-client:9000/hooks/run-clients
+		http://iperf-client:9000/hooks/start-clients
 
 	# start capture for 60s
 	tshark -i ${IFACE} -s 128 -w ${capfn} -f 'tcp or udp' -a duration:60
