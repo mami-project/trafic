@@ -10,7 +10,7 @@ function mklabel() {
 }
 
 IFACE=${IFACE:-eth0}
-EXID=${EXID:-flows}
+EXID=${EXID:-baseline}
 
 for load in 75 80 85 90 95
 do
@@ -33,6 +33,9 @@ do
 
 	# start capture for 60s
 	tshark -i ${IFACE} -s 128 -w ${capfn} -f 'tcp or udp' -a duration:60
+
+	# try to save as much space as possible
+	bzip2 -9 ${capfn}
 
 	sleep 5	# allow some time for flows to drain
 
