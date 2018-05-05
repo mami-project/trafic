@@ -4,7 +4,7 @@ set -eu
 
 LABEL=${LABEL:-"lola-flows"}
 CONF=${CONF:-flows.env}
-DB=${CONF:-lola}
+DB=${DB:-lola}
 
 base=$(dirname $0)
 . ${base}/${CONF}
@@ -12,7 +12,7 @@ base=$(dirname $0)
 STATS=${STATS:-/root/share/stats/$LABEL}
 
 schedule clients \
-	--stats-dir="${STATS}" \
+	--stats-dir=${STATS} \
 	--log-tag=C \
 	--flows-dirs=${FLOWS} \
 	--influxdb-enabled \
