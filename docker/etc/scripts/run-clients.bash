@@ -16,4 +16,5 @@ schedule clients \
 	--flows-dirs=${FLOWS} \
 	--influxdb-enabled \
 	--influxdb-endpoint=http://influxdb:8086 \
-	--influxdb-db=${LABEL}
+	--influxdb-db=lola \
+	--influxdb-measurements=${LABEL}
