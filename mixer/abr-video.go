@@ -30,7 +30,6 @@ client:
     server-port: *p
     title: *l
     bytes: 1.8M
-    reverse: true
     report-interval-s: {{ .ReportInterval }}
 
 server:

@@ -35,7 +35,6 @@ client:
     title: *l
     report-interval-s: {{ .ReportInterval }}
     parallel: *i
-    reverse: true
 
 server:
   at:

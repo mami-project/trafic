@@ -32,7 +32,6 @@ client:
     title: *l
     report-interval-s: {{ .ReportInterval }}
     bytes: 25M
-    reverse: true
 
 server:
   at:
