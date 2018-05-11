@@ -30,7 +30,7 @@ type TCPFlowStats struct {
 			Blksize    int    `json:"blksize"`
 			Omit       int    `json:"omit"`
 			Duration   int    `json:"duration"`
-			Bytes      int    `json:"bytes"`
+			Bytes      int64  `json:"bytes"`
 			Blocks     int    `json:"blocks"`
 			Reverse    int    `json:"reverse"`
 			Tos        int    `json:"tos"`
@@ -42,7 +42,7 @@ type TCPFlowStats struct {
 			Start         float64 `json:"start"`
 			End           float64 `json:"end"`
 			Seconds       float64 `json:"seconds"`
-			Bytes         int     `json:"bytes"`
+			Bytes         int64   `json:"bytes"`
 			BitsPerSecond float64 `json:"bits_per_second"`
 			Omitted       bool    `json:"omitted"`
 		} `json:"streams"`
@@ -50,7 +50,7 @@ type TCPFlowStats struct {
 			Start         float64 `json:"start"`
 			End           float64 `json:"end"`
 			Seconds       float64 `json:"seconds"`
-			Bytes         int     `json:"bytes"`
+			Bytes         int64   `json:"bytes"`
 			BitsPerSecond float64 `json:"bits_per_second"`
 			Omitted       bool    `json:"omitted"`
 		} `json:"sum"`
@@ -62,7 +62,7 @@ type TCPFlowStats struct {
 				Start         float64 `json:"start"`
 				End           float64 `json:"end"`
 				Seconds       float64 `json:"seconds"`
-				Bytes         int     `json:"bytes"`
+				Bytes         int64   `json:"bytes"`
 				BitsPerSecond float64 `json:"bits_per_second"`
 				Retransmits   int     `json:"retransmits"`
 				MaxSndCwnd    int     `json:"max_snd_cwnd"`
@@ -75,7 +75,7 @@ type TCPFlowStats struct {
 				Start         float64 `json:"start"`
 				End           float64 `json:"end"`
 				Seconds       float64 `json:"seconds"`
-				Bytes         int     `json:"bytes"`
+				Bytes         int64   `json:"bytes"`
 				BitsPerSecond float64 `json:"bits_per_second"`
 			} `json:"receiver"`
 		} `json:"streams"`
@@ -83,7 +83,7 @@ type TCPFlowStats struct {
 			Start         float64 `json:"start"`
 			End           float64 `json:"end"`
 			Seconds       float64 `json:"seconds"`
-			Bytes         int     `json:"bytes"`
+			Bytes         int64   `json:"bytes"`
 			BitsPerSecond float64 `json:"bits_per_second"`
 			Retransmits   int     `json:"retransmits"`
 		} `json:"sum_sent"`
@@ -91,7 +91,7 @@ type TCPFlowStats struct {
 			Start         float64 `json:"start"`
 			End           float64 `json:"end"`
 			Seconds       float64 `json:"seconds"`
-			Bytes         int     `json:"bytes"`
+			Bytes         int64   `json:"bytes"`
 			BitsPerSecond float64 `json:"bits_per_second"`
 		} `json:"sum_received"`
 		CPUUtilizationPercent struct {
@@ -136,7 +136,7 @@ type TCPFlowStats struct {
 				Blksize    int    `json:"blksize"`
 				Omit       int    `json:"omit"`
 				Duration   int    `json:"duration"`
-				Bytes      int    `json:"bytes"`
+				Bytes      int64  `json:"bytes"`
 				Blocks     int    `json:"blocks"`
 				Reverse    int    `json:"reverse"`
 				Tos        int    `json:"tos"`
@@ -148,7 +148,7 @@ type TCPFlowStats struct {
 				Start         float64 `json:"start"`
 				End           float64 `json:"end"`
 				Seconds       float64 `json:"seconds"`
-				Bytes         int     `json:"bytes"`
+				Bytes         int64   `json:"bytes"`
 				BitsPerSecond float64 `json:"bits_per_second"`
 				Retransmits   int     `json:"retransmits"`
 				SndCwnd       int     `json:"snd_cwnd"`
@@ -161,7 +161,7 @@ type TCPFlowStats struct {
 				Start         float64 `json:"start"`
 				End           float64 `json:"end"`
 				Seconds       float64 `json:"seconds"`
-				Bytes         int     `json:"bytes"`
+				Bytes         int64   `json:"bytes"`
 				BitsPerSecond float64 `json:"bits_per_second"`
 				Retransmits   int     `json:"retransmits"`
 				Omitted       bool    `json:"omitted"`
@@ -174,7 +174,7 @@ type TCPFlowStats struct {
 					Start         float64 `json:"start"`
 					End           float64 `json:"end"`
 					Seconds       float64 `json:"seconds"`
-					Bytes         int     `json:"bytes"`
+					Bytes         int64   `json:"bytes"`
 					BitsPerSecond float64 `json:"bits_per_second"`
 					Retransmits   int     `json:"retransmits"`
 					MaxSndCwnd    int     `json:"max_snd_cwnd"`
@@ -187,7 +187,7 @@ type TCPFlowStats struct {
 					Start         float64 `json:"start"`
 					End           float64 `json:"end"`
 					Seconds       float64 `json:"seconds"`
-					Bytes         int     `json:"bytes"`
+					Bytes         int64   `json:"bytes"`
 					BitsPerSecond float64 `json:"bits_per_second"`
 				} `json:"receiver"`
 			} `json:"streams"`
@@ -195,7 +195,7 @@ type TCPFlowStats struct {
 				Start         float64 `json:"start"`
 				End           float64 `json:"end"`
 				Seconds       float64 `json:"seconds"`
-				Bytes         int     `json:"bytes"`
+				Bytes         int64   `json:"bytes"`
 				BitsPerSecond float64 `json:"bits_per_second"`
 				Retransmits   int     `json:"retransmits"`
 			} `json:"sum_sent"`
@@ -203,7 +203,7 @@ type TCPFlowStats struct {
 				Start         float64 `json:"start"`
 				End           float64 `json:"end"`
 				Seconds       float64 `json:"seconds"`
-				Bytes         int     `json:"bytes"`
+				Bytes         int64   `json:"bytes"`
 				BitsPerSecond float64 `json:"bits_per_second"`
 			} `json:"sum_received"`
 			CPUUtilizationPercent struct {

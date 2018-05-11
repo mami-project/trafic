@@ -39,8 +39,8 @@ type ClientConfig struct {
 }
 
 // The following CLI arguments are not exposed:
-// - get-server-output	force (true)
-// - reverse			force (true)
+// - get-server-output  force (true)
+// - reverse            force (true)
 
 func (cfg *ClientConfig) ToArgs() ([]string, error) {
 	args := []string{"--client"}
