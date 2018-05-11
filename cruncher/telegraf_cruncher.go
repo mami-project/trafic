@@ -14,9 +14,9 @@ func (c *TelegrafCruncher) CrunchTCP(tcpFlowStats TCPFlowStats) ([]byte, error) 
 	var tcpFlowSamples []TCPFlowSample
 	var tcpFlowSample TCPFlowSample
 
-	start := tcpFlowStats.Start.Timestamp.Timesecs
+	start := tcpFlowStats.ServerOutputJSON.Start.Timestamp.Timesecs
 
-	for _, interval := range tcpFlowStats.Intervals {
+	for _, interval := range tcpFlowStats.ServerOutputJSON.Intervals {
 		for _, stream := range interval.Streams {
 			flowID := formatFlowID(tcpFlowStats.Title, tcpFlowStats.Start.Cookie, start, stream.Socket)
 
@@ -46,9 +46,9 @@ func (c *TelegrafCruncher) CrunchUDP(udpFlowStats UDPFlowStats) ([]byte, error) 
 	var udpFlowSamples []UDPFlowSample
 	var udpFlowSample UDPFlowSample
 
-	start := udpFlowStats.ServerOutputJSON.Start.Timestamp.Timesecs
+	start := udpFlowStats.Start.Timestamp.Timesecs
 
-	for _, interval := range udpFlowStats.ServerOutputJSON.Intervals {
+	for _, interval := range udpFlowStats.Intervals {
 		for _, stream := range interval.Streams {
 			flowID := formatFlowID(udpFlowStats.Title, udpFlowStats.Start.Cookie, start, stream.Socket)
 

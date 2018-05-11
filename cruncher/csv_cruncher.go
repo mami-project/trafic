@@ -18,9 +18,9 @@ func (c *CSVCruncher) CrunchTCP(tcpFlowStats TCPFlowStats) ([]byte, error) {
 	// CSV header
 	lines.WriteString("Timestamp,FlowID,FlowType,ToS,PMTU,Bytes,BitsPerSecond,Retransmissions,SenderCWND,RTTms,RTTvar\n")
 
-	start := tcpFlowStats.Start.Timestamp.Timesecs
+	start := tcpFlowStats.ServerOutputJSON.Start.Timestamp.Timesecs
 
-	for _, interval := range tcpFlowStats.Intervals {
+	for _, interval := range tcpFlowStats.ServerOutputJSON.Intervals {
 		for _, stream := range interval.Streams {
 			flowID := formatFlowID(tcpFlowStats.Title, tcpFlowStats.Start.Cookie, start, stream.Socket)
 
@@ -55,7 +55,7 @@ func (c *CSVCruncher) CrunchUDP(udpFlowStats UDPFlowStats) ([]byte, error) {
 
 	start := udpFlowStats.Start.Timestamp.Timesecs
 
-	for _, interval := range udpFlowStats.ServerOutputJSON.Intervals {
+	for _, interval := range udpFlowStats.Intervals {
 		for _, stream := range interval.Streams {
 			flowID := formatFlowID(udpFlowStats.Title, udpFlowStats.Start.Cookie, start, stream.Socket)
 

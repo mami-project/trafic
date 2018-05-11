@@ -43,7 +43,10 @@ type UDPFlowStats struct {
 			Seconds       float64 `json:"seconds"`
 			Bytes         int     `json:"bytes"`
 			BitsPerSecond float64 `json:"bits_per_second"`
+			JitterMs      float64 `json:"jitter_ms"`
+			LostPackets   int     `json:"lost_packets"`
 			Packets       int     `json:"packets"`
+			LostPercent   float64 `json:"lost_percent"`
 			Omitted       bool    `json:"omitted"`
 		} `json:"streams"`
 		Sum struct {
@@ -52,7 +55,10 @@ type UDPFlowStats struct {
 			Seconds       float64 `json:"seconds"`
 			Bytes         int     `json:"bytes"`
 			BitsPerSecond float64 `json:"bits_per_second"`
+			JitterMs      float64 `json:"jitter_ms"`
+			LostPackets   int     `json:"lost_packets"`
 			Packets       int     `json:"packets"`
+			LostPercent   float64 `json:"lost_percent"`
 			Omitted       bool    `json:"omitted"`
 		} `json:"sum"`
 	} `json:"intervals"`
@@ -136,10 +142,7 @@ type UDPFlowStats struct {
 				Seconds       float64 `json:"seconds"`
 				Bytes         int     `json:"bytes"`
 				BitsPerSecond float64 `json:"bits_per_second"`
-				JitterMs      float64 `json:"jitter_ms"`
-				LostPackets   int     `json:"lost_packets"`
 				Packets       int     `json:"packets"`
-				LostPercent   float64 `json:"lost_percent"`
 				Omitted       bool    `json:"omitted"`
 			} `json:"streams"`
 			Sum struct {
@@ -148,10 +151,7 @@ type UDPFlowStats struct {
 				Seconds       float64 `json:"seconds"`
 				Bytes         int     `json:"bytes"`
 				BitsPerSecond float64 `json:"bits_per_second"`
-				JitterMs      float64 `json:"jitter_ms"`
-				LostPackets   int     `json:"lost_packets"`
 				Packets       int     `json:"packets"`
-				LostPercent   float64 `json:"lost_percent"`
 				Omitted       bool    `json:"omitted"`
 			} `json:"sum"`
 		} `json:"intervals"`

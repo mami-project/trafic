@@ -26,9 +26,9 @@ func NewInfluxDBCruncher(measurement string) Cruncher {
 func (c *InfluxDBCruncher) CrunchTCP(tcpFlowStats TCPFlowStats) ([]byte, error) {
 	var lines bytes.Buffer
 
-	start := tcpFlowStats.Start.Timestamp.Timesecs
+	start := tcpFlowStats.ServerOutputJSON.Start.Timestamp.Timesecs
 
-	for _, interval := range tcpFlowStats.Intervals {
+	for _, interval := range tcpFlowStats.ServerOutputJSON.Intervals {
 		for _, stream := range interval.Streams {
 			flowID := formatFlowID(tcpFlowStats.Title, tcpFlowStats.Start.Cookie, start, stream.Socket)
 
@@ -61,7 +61,7 @@ func (c *InfluxDBCruncher) CrunchUDP(udpFlowStats UDPFlowStats) ([]byte, error) 
 
 	start := udpFlowStats.Start.Timestamp.Timesecs
 
-	for _, interval := range udpFlowStats.ServerOutputJSON.Intervals {
+	for _, interval := range udpFlowStats.Intervals {
 		for _, stream := range interval.Streams {
 			flowID := formatFlowID(udpFlowStats.Title, udpFlowStats.Start.Cookie, start, stream.Socket)
 

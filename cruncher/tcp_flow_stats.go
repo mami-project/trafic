@@ -44,11 +44,6 @@ type TCPFlowStats struct {
 			Seconds       float64 `json:"seconds"`
 			Bytes         int     `json:"bytes"`
 			BitsPerSecond float64 `json:"bits_per_second"`
-			Retransmits   int     `json:"retransmits"`
-			SndCwnd       int     `json:"snd_cwnd"`
-			Rtt           int     `json:"rtt"`
-			Rttvar        int     `json:"rttvar"`
-			Pmtu          int     `json:"pmtu"`
 			Omitted       bool    `json:"omitted"`
 		} `json:"streams"`
 		Sum struct {
@@ -57,7 +52,6 @@ type TCPFlowStats struct {
 			Seconds       float64 `json:"seconds"`
 			Bytes         int     `json:"bytes"`
 			BitsPerSecond float64 `json:"bits_per_second"`
-			Retransmits   int     `json:"retransmits"`
 			Omitted       bool    `json:"omitted"`
 		} `json:"sum"`
 	} `json:"intervals"`
@@ -68,7 +62,7 @@ type TCPFlowStats struct {
 				Start         float64 `json:"start"`
 				End           float64 `json:"end"`
 				Seconds       float64 `json:"seconds"`
-				Bytes         int64   `json:"bytes"`
+				Bytes         int     `json:"bytes"`
 				BitsPerSecond float64 `json:"bits_per_second"`
 				Retransmits   int     `json:"retransmits"`
 				MaxSndCwnd    int     `json:"max_snd_cwnd"`
@@ -81,7 +75,7 @@ type TCPFlowStats struct {
 				Start         float64 `json:"start"`
 				End           float64 `json:"end"`
 				Seconds       float64 `json:"seconds"`
-				Bytes         int64   `json:"bytes"`
+				Bytes         int     `json:"bytes"`
 				BitsPerSecond float64 `json:"bits_per_second"`
 			} `json:"receiver"`
 		} `json:"streams"`
@@ -89,7 +83,7 @@ type TCPFlowStats struct {
 			Start         float64 `json:"start"`
 			End           float64 `json:"end"`
 			Seconds       float64 `json:"seconds"`
-			Bytes         int64   `json:"bytes"`
+			Bytes         int     `json:"bytes"`
 			BitsPerSecond float64 `json:"bits_per_second"`
 			Retransmits   int     `json:"retransmits"`
 		} `json:"sum_sent"`
@@ -97,7 +91,7 @@ type TCPFlowStats struct {
 			Start         float64 `json:"start"`
 			End           float64 `json:"end"`
 			Seconds       float64 `json:"seconds"`
-			Bytes         int64   `json:"bytes"`
+			Bytes         int     `json:"bytes"`
 			BitsPerSecond float64 `json:"bits_per_second"`
 		} `json:"sum_received"`
 		CPUUtilizationPercent struct {
@@ -156,6 +150,11 @@ type TCPFlowStats struct {
 				Seconds       float64 `json:"seconds"`
 				Bytes         int     `json:"bytes"`
 				BitsPerSecond float64 `json:"bits_per_second"`
+				Retransmits   int     `json:"retransmits"`
+				SndCwnd       int     `json:"snd_cwnd"`
+				Rtt           int     `json:"rtt"`
+				Rttvar        int     `json:"rttvar"`
+				Pmtu          int     `json:"pmtu"`
 				Omitted       bool    `json:"omitted"`
 			} `json:"streams"`
 			Sum struct {
@@ -164,6 +163,7 @@ type TCPFlowStats struct {
 				Seconds       float64 `json:"seconds"`
 				Bytes         int     `json:"bytes"`
 				BitsPerSecond float64 `json:"bits_per_second"`
+				Retransmits   int     `json:"retransmits"`
 				Omitted       bool    `json:"omitted"`
 			} `json:"sum"`
 		} `json:"intervals"`
@@ -176,13 +176,18 @@ type TCPFlowStats struct {
 					Seconds       float64 `json:"seconds"`
 					Bytes         int     `json:"bytes"`
 					BitsPerSecond float64 `json:"bits_per_second"`
+					Retransmits   int     `json:"retransmits"`
+					MaxSndCwnd    int     `json:"max_snd_cwnd"`
+					MaxRtt        int     `json:"max_rtt"`
+					MinRtt        int     `json:"min_rtt"`
+					MeanRtt       int     `json:"mean_rtt"`
 				} `json:"sender"`
 				Receiver struct {
 					Socket        int     `json:"socket"`
 					Start         float64 `json:"start"`
 					End           float64 `json:"end"`
 					Seconds       float64 `json:"seconds"`
-					Bytes         int64   `json:"bytes"`
+					Bytes         int     `json:"bytes"`
 					BitsPerSecond float64 `json:"bits_per_second"`
 				} `json:"receiver"`
 			} `json:"streams"`
@@ -192,12 +197,13 @@ type TCPFlowStats struct {
 				Seconds       float64 `json:"seconds"`
 				Bytes         int     `json:"bytes"`
 				BitsPerSecond float64 `json:"bits_per_second"`
+				Retransmits   int     `json:"retransmits"`
 			} `json:"sum_sent"`
 			SumReceived struct {
 				Start         float64 `json:"start"`
 				End           float64 `json:"end"`
 				Seconds       float64 `json:"seconds"`
-				Bytes         int64   `json:"bytes"`
+				Bytes         int     `json:"bytes"`
 				BitsPerSecond float64 `json:"bits_per_second"`
 			} `json:"sum_received"`
 			CPUUtilizationPercent struct {

@@ -40,6 +40,7 @@ type ClientConfig struct {
 
 // The following CLI arguments are not exposed:
 // - get-server-output	force (true)
+// - reverse			force (true)
 
 func (cfg *ClientConfig) ToArgs() ([]string, error) {
 	args := []string{"--client"}
@@ -68,7 +69,7 @@ func (cfg *ClientConfig) ToArgs() ([]string, error) {
 	args = AppendKeyVal(args, "--pacing-timer", cfg.PacingTimer)
 	args = AppendKeyVal(args, "--parallel", cfg.ParallelFlows) // to be determined
 	args = AppendKeyVal(args, "--rsa-public-key-path", cfg.RSAPubKeyFile)
-	args = AppendKey(args, "--reverse", cfg.ReverseDir)
+	args = AppendKey(args, "--reverse", true)
 	args = AppendKeyVal(args, "--bitrate", cfg.TargetBitrate)
 	args = AppendKeyVal(args, "--title", cfg.Title)
 	args = AppendKeyVal(args, "--tos", cfg.ToS)
