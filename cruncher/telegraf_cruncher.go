@@ -31,7 +31,7 @@ func (c *TelegrafCruncher) CrunchTCP(tcpFlowStats TCPFlowStats) ([]byte, error) 
 				Retransmits:    stream.Retransmits,
 				SndCwnd:        stream.SndCwnd,
 				RttMs:          float64(stream.Rtt) / 1000,
-				RttVar:         stream.Rttvar,
+				RttVar:         float64(stream.Rttvar) / 1000,
 				Pmtu:           stream.Pmtu,
 			}
 		}

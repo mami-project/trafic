@@ -34,7 +34,7 @@ func (c *CSVCruncher) CrunchTCP(tcpFlowStats TCPFlowStats) ([]byte, error) {
 				stream.Retransmits,
 				stream.SndCwnd,
 				float64(stream.Rtt)/1000,
-				stream.Rttvar)
+				float64(stream.Rttvar)/1000)
 
 			// Don't bother about the bytes written, just check the return status
 			_, err := lines.WriteString(line)
