@@ -24,3 +24,4 @@ server:
     - 0s
   config:
     server-port: *p
+    report-interval-s: 0.200000

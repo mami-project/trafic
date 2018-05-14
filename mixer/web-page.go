@@ -37,6 +37,7 @@ server:
     - 0s
   config:
     server-port: *p
+    report-interval-s: {{ .ReportInterval }}
 `
 
 type WebPage struct{}
