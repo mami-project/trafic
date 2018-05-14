@@ -11,7 +11,7 @@ type TCPFlowSample struct {
 	Retransmits    int     `json:"retransmits"`
 	SndCwnd        int     `json:"snd-cwnd"`
 	RttMs          float64 `json:"rtt-ms"`
-	RttVar         int     `json:"rtt-var"`
+	RttVar         float64 `json:"rtt-var"`
 	Pmtu           int     `json:"pmtu"`
 }
 
