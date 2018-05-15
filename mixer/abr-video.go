@@ -7,7 +7,7 @@ import (
 
 var defaultABRVideoTmpl string = `
 {{/*
-  Models ...
+  Models an arbitrary number of 10s HD (960x720) video chunks.
 
   Configuration keys:
   - label: a label added to the final report
