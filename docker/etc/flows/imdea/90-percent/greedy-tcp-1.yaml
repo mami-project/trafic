@@ -1,7 +1,7 @@
 
 
 
-label: &l tcp-high-throughput
+label: &l greedy-tcp-1
 
 port: &p 5301
 
