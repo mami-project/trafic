@@ -32,7 +32,7 @@ func (c *InfluxDBCruncher) CrunchTCP(tcpFlowStats TCPFlowStats) ([]byte, error) 
 		for _, stream := range interval.Streams {
 			flowID := formatFlowID(tcpFlowStats.Title, tcpFlowStats.Start.Cookie, start, stream.Socket)
 
-			line := fmt.Sprintf("%s,flowid=%s,type=tcp,tos=0x%02x,pmtu=%d bytes=%d,bps=%f,rtx=%d,sndcwnd=%d,rtt_ms=%f,rtt_var=%d %d\n",
+			line := fmt.Sprintf("%s,flowid=%s,type=tcp,tos=0x%02x,pmtu=%d bytes=%d,bps=%f,rtx=%d,sndcwnd=%d,rtt_ms=%f,rtt_var=%f %d\n",
 				c.measurement,
 				flowID,
 				tcpFlowStats.Start.TestStart.Tos,

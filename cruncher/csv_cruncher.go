@@ -24,7 +24,7 @@ func (c *CSVCruncher) CrunchTCP(tcpFlowStats TCPFlowStats) ([]byte, error) {
 		for _, stream := range interval.Streams {
 			flowID := formatFlowID(tcpFlowStats.Title, tcpFlowStats.Start.Cookie, start, stream.Socket)
 
-			line := fmt.Sprintf("%f,%s,tcp,0x%02x,%d,%d,%f,%d,%d,%f,%d\n",
+			line := fmt.Sprintf("%f,%s,tcp,0x%02x,%d,%d,%f,%d,%d,%f,%f\n",
 				float64(start)+stream.Start,
 				flowID,
 				tcpFlowStats.Start.TestStart.Tos,

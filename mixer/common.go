@@ -133,7 +133,7 @@ func makeBurstProps(g GlobalDesc, c FlowDesc, clientSchedule []int,
 
 	flowPort := c.PortsRange.First + uint16(clientId)
 	if flowPort > c.PortsRange.Last {
-		return nil, fmt.Errorf("ports exhausted: can't go past %u", c.PortsRange.Last)
+		return nil, fmt.Errorf("ports exhausted: can't go past %d", c.PortsRange.Last)
 	}
 
 	return &BurstProps{
