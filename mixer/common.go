@@ -138,7 +138,7 @@ func makeBurstProps(g GlobalDesc, c FlowDesc, clientSchedule []int,
 
 	return &BurstProps{
 		At:             clientSchedule,
-		Label:          c.Props["label"],
+		Label:          fmt.Sprintf("%s-%d", c.Props["label"], clientId),
 		Port:           flowPort,
 		Server:         c.Props["server"],
 		ReportInterval: fmt.Sprintf("%f", g.ReportInterval.Seconds()),
