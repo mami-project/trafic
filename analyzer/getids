@@ -1,0 +1,53 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""An analyser for the influxdb data"""
+import sys
+import argparse
+import json
+from datetime import datetime
+import time
+import rfc3339
+from requests.exceptions import RequestException
+import requests
+
+class InfluxDB:
+    def __init__(self, host="influxdb", dbase="mydb", csv = False, port=8086):
+        self.host = host
+        self.port = port
+        self.CSV = csv
+        self.db  = dbase
+
+    def query(self, query = None):
+        r = requests.get("http://{}:{}/query".format(self.host,self.port),
+                         headers = { "Accept" : "application/csv" if self.CSV else "application/json" },
+                         params =  { "pretty" : "false" ,
+                                     "db" : self.db,
+                                     "q"  : query })
+        #
+        # raise Exception if problems
+        #
+        r.raise_for_status()
+        if self.CSV:
+            return r.text
+        else:
+            return json.loads(r.text)
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__,formatter_class=argparse.RawDescriptionHelpFormatter,epilog="")
+    parser.add_argument('-d','--database', dest='DATABASE',default="lola-baseline", help='The database we want to query (default is lola-baseline)')
+    parser.add_argument('-H','--host', dest='HOST',default="influxdb", help='The database server (default is influxdb)')
+    # parser.add_argument("flowid", metavar="FLOWID", type=str, help="Analyse this flow")
+    args = parser.parse_args()
+    database = InfluxDB(host=args.HOST, dbase=args.DATABASE)
+    jsoninput = database.query(query="show measurements")
+    # print ("{} results".format(len(jsoninput["results"])))
+    series = jsoninput["results"][0]["series"][0]
+    # print (series)
+    ids = [v[0] for v in series["values"]]
+    print ("\n".join(ids))
+
+if __name__ == "__main__":
+    try:
+        main()
+    except RequestException as err:
+        print ("Error: {}".format(err),file=sys.stderr)

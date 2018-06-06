@@ -1,0 +1,143 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""An analyser for the influxdb data"""
+import sys
+import argparse
+import json
+import requests
+from datetime import datetime
+import time
+import rfc3339
+
+class InfluxDB:
+    def __init__(self, host="influxdb", dbase="mydb", csv = False, port=8086):
+        self.host = host
+        self.port = port
+        self.CSV = csv
+        self.db  = dbase
+
+    def query(self, query = None):
+        r = requests.get("http://{}:{}/query".format(self.host,self.port),
+                         headers = { "Accept" : "application/csv" if self.CSV else "application/json" },
+                         params =  { "pretty" : "false" ,
+                                     "db" : self.db,
+                                     "q"  : query })
+        #
+        # raise Exception if problems
+        #
+        r.raise_for_status()
+        if self.CSV:
+            return r.text
+        else:
+            return json.loads(r.text)
+
+#
+# Assuming video rate for HD (960x720) is 1800kbps
+# MPEG-4 AVC Video at 18000 kbps for 1080p
+# MPEG-4 AVC Video at  8000 kbps for  720p
+#
+def qoe(fid=None, burst=None, video_rate = 1.8e06/8, step=2, base=0.1):
+
+    An = 0
+    Bn = 0
+    vt0 = 0
+    flow_time = max(burst.keys())
+
+    # GNUplot headers
+    print ("slot prebuffer Rx-bytes played-bytes")
+    pre_buffer = True
+    stalled = 0
+    t = 0
+    prebuffer_size = 2 * video_rate
+    while t <= flow_time:
+        if t in burst.keys():
+            An += burst[t]
+        if pre_buffer:
+            if An > prebuffer_size:
+                pre_buffer = False
+                vt0 = t
+        else:
+            Bn += video_rate * step * base
+            # print (Bn)
+            if Bn > An:
+                Bn = An
+                stalled += 1
+        print (t, pre_buffer, An, Bn )
+        t += step
+    while An > Bn:
+        Bn += video_rate * step * base
+        print (t, pre_buffer, An, Bn )
+        t  += step
+
+    # Comment for GNUplot
+    # print ("# {:^18} {:^18} {:^18} {:^18} {:^18}".format("Flow ID","stalled periods","play time","video_time","overtime"))
+    print ("#>{:^18} {:^18d} {:^18.3f} {:^18.3f} {:^18.3f}".format(fid,stalled,(t-vt0) * base,An/video_rate, (t-vt0) * base*video_rate / An))
+
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__,formatter_class=argparse.RawDescriptionHelpFormatter,epilog="")
+    parser.add_argument('-d','--database', dest='DATABASE',default="lola-baseline", help='The database we want to query (default is lola-baseline)')
+    parser.add_argument('-H','--host', dest='HOST',default="influxdb", help='The database server (default is influxdb)')
+    parser.add_argument('-R', '--raw',  dest='raw',action='store_true', help='Spit out the raw data and quit (default is to analyse the data)')
+    parser.add_argument("flowid", metavar="FLOWID", type=str, help="Analyse this flow")
+    args = parser.parse_args()
+    database = InfluxDB(host=args.HOST, dbase=args.DATABASE)
+    # jsoninput = database.query(query="show measurements")
+    # series = jsoninput["results"][0]["series"][0]
+    # print (series)
+
+    query = 'select * from "{}" where flowid =~ /^abr/ group by flowid'.format(args.flowid)
+    # print (query)
+    jsoninput = database.query(query)
+
+    if args.raw:
+        print(json.dumps(jsoninput, indent=4, sort_keys=True))
+        raise SystemExit
+
+    # print (jsoninput)
+    results = jsoninput.get("results")[0]
+    series = results.get("series")
+
+    results = jsoninput.get("results")[0]
+    series = results.get("series")
+
+    # get the ABR flows in the capture
+    flows = []
+    for serie in series:
+        flowid = serie.get("tags")["flowid"].split("_")[0]
+        if flowid not in flows:
+            flows.append(flowid)
+
+    print ("#>{:^18} {:^18} {:^18} {:^18} {:^18}".format("Flow ID","stalled periods","play time","video_time","overtime"))
+    for flowid in flows:
+        t0 = None
+        burst = dict()
+        for serie in series:
+            if flowid != serie.get("tags")["flowid"].split("_")[0]:
+                continue
+            for l in serie.get("values"):
+                t = rfc3339.parse_datetime(l[0])
+                #
+                # timestamps are ordered in influxdb :-)
+                #
+                if t0 is None:
+                    t0 = t        # origin of the series
+                diff = t - t0
+                #
+                # Sample down time to tenths of seconds
+                #
+                dt = diff.seconds*10 + int(diff.microseconds * 1e-05)
+                # "columns": [
+                #         "time",
+                #         "bps",
+                #         "bytes",
+                # ...
+                burst[dt] = l[2]
+        qoe(fid=flowid, burst=burst)
+
+if __name__ == "__main__":
+    try:
+        main()
+    except BrokenPipeError as bpe:
+        pass
