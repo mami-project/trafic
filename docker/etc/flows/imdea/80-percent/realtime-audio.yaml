@@ -1,0 +1,30 @@
+
+
+
+label: &l rt-audio
+
+port: &p 5000
+
+instances: &i 8
+
+client:
+  at:
+    - 0s
+  config:
+    server-address: iperf-server
+    server-port: *p
+    time-s: 60.000000
+    udp: true
+    length: 126
+    target-bitrate: 64K
+    title: *l
+    report-interval-s: 0.200000
+    parallel: *i
+    reverse: true
+
+server:
+  at:
+    - 0s
+  config:
+    server-port: *p
+    report-interval-s: 0.200000

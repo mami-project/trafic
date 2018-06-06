@@ -22,7 +22,8 @@ RUN update-ca-certificates
 
 RUN go get -u github.com/mami-project/trafic/schedule \
               github.com/spf13/viper \
-              github.com/spf13/cobra
+              github.com/spf13/cobra \
+              github.com/alecthomas/units
 
 # Compile and install the trafic scheduler
 RUN cd /go/src/github.com/mami-project/trafic/schedule && go install

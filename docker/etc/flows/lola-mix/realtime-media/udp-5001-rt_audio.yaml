@@ -22,6 +22,7 @@ client:
     title: *l
     # report-interval-s: 0.2
     parallel: *i
+    reverse: true
 
 server:
   at:

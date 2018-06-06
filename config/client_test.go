@@ -22,7 +22,6 @@ func TestClientConfig_ToArgs(t *testing.T) {
 		PacingTimer      string
 		ParallelFlows    uint
 		RSAPubKeyFile    string
-		ReverseDir       bool
 		ServerAddr       string
 		TargetBitrate    string
 		ToS              uint8
@@ -57,7 +56,6 @@ func TestClientConfig_ToArgs(t *testing.T) {
 				PacingTimer:      "1000",
 				ParallelFlows:    999,
 				RSAPubKeyFile:    "/path/to/rsa/pub/key",
-				ReverseDir:       false,
 				ServerAddr:       "iperf-server",
 				TargetBitrate:    "1M",
 				ToS:              0x01,
@@ -99,6 +97,7 @@ func TestClientConfig_ToArgs(t *testing.T) {
 				"999",
 				"--rsa-public-key-path",
 				"/path/to/rsa/pub/key",
+				"--reverse",
 				"--bitrate",
 				"1M",
 				"--tos",
@@ -132,7 +131,6 @@ func TestClientConfig_ToArgs(t *testing.T) {
 				PacingTimer:      tt.fields.PacingTimer,
 				ParallelFlows:    tt.fields.ParallelFlows,
 				RSAPubKeyFile:    tt.fields.RSAPubKeyFile,
-				ReverseDir:       tt.fields.ReverseDir,
 				ServerAddr:       tt.fields.ServerAddr,
 				TargetBitrate:    tt.fields.TargetBitrate,
 				ToS:              tt.fields.ToS,

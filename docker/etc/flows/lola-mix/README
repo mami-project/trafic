@@ -13,13 +13,20 @@ traffic mix composition:
 - 7% realtime media (7Mbps)
   - 8 audio streams (~64Kbps)
   - 8 video streams (~800Kbps)
+    = total: 45.920154 MB [6.42 %]
 - 10% scavenger / background (10Mbps)
   - application limited TCP flows - ideally, we should make them use LEDBAT
+    = total 75.999288 MB [10.63 %]
 - 25% high throughput TCP flow (25Mbps)
+    = total: 96.118752 MB [13.45 %]
 - 25% low-latency TCP flows (25Mbps)
   - average 1246KB page download (*)
+    = total: 284.950824 MB [39.87 %]
 - 33% ABR video (33Mbps)
   - 18 HD (960x720, H.264 + audio and subtitles) streams with 10s segments 1.8MB each)
+    = total: 211.550928 MB [29.60 %]
+
+= 714.539946 MB
 
 (*) According to the HTTP Archive, the average top 1,000 web page is 1246 KB,
     [...]

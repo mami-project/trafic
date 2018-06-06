@@ -1,0 +1,27 @@
+
+
+
+label: &l greedy-tcp-1
+
+port: &p 5301
+
+client:
+  at:
+    - 22s
+
+    - 52s
+
+  config:
+    server-address: iperf-server
+    server-port: *p
+    title: *l
+    report-interval-s: 0.200000
+    bytes: 25M
+    reverse: true
+
+server:
+  at:
+    - 0s
+  config:
+    server-port: *p
+    report-interval-s: 0.200000

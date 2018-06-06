@@ -6,12 +6,12 @@ type TCPFlowSample struct {
 	ID             string  `json:"id"`
 	Timestamp      string  `json:"timestamp"`
 	SampleDuration float64 `json:"sample-duration-s"`
-	Bytes          int     `json:"bytes"`
+	Bytes          int64   `json:"bytes"`
 	Bps            float64 `json:"bps"`
 	Retransmits    int     `json:"retransmits"`
 	SndCwnd        int     `json:"snd-cwnd"`
 	RttMs          float64 `json:"rtt-ms"`
-	RttVar         int     `json:"rtt-var"`
+	RttVar         float64 `json:"rtt-var"`
 	Pmtu           int     `json:"pmtu"`
 }
 
@@ -21,7 +21,7 @@ type UDPFlowSample struct {
 	ID             string  `json:"id"`
 	Timestamp      string  `json:"timestamp"`
 	SampleDuration float64 `json:"sample-duration-s"`
-	Bytes          int     `json:"bytes"`
+	Bytes          int64   `json:"bytes"`
 	Bps            float64 `json:"bps"`
 	JitterMs       float64 `json:"jitter-ms"`
 	LostPackets    int     `json:"lost-packets"`

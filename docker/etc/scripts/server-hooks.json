@@ -1,0 +1,28 @@
+[
+  {
+    "id": "start-servers",
+    "execute-command": "/root/share/scripts/run-servers.bash",
+    "command-working-directory": "/",
+    "pass-environment-to-command": [
+      {
+        "source": "header",
+        "envname": "CONF",
+        "name": "X-CONF"
+      }
+    ]
+  },
+  {
+    "id": "stop-servers",
+    "execute-command": "killall",
+    "pass-arguments-to-command": [
+      {
+        "source": "string",
+        "name": "schedule"
+      },
+      {
+        "source": "string",
+        "name": "iperf3"
+      }
+    ]
+  }
+]

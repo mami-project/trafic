@@ -1,0 +1,38 @@
+[
+  {
+    "id": "start-clients",
+    "execute-command": "/root/share/scripts/run-clients.bash",
+    "command-working-directory": "/",
+    "pass-environment-to-command": [
+      {
+        "source": "header",
+        "envname": "CONF",
+        "name": "X-CONF"
+      },
+      {
+        "source": "header",
+        "envname": "LABEL",
+        "name": "X-LABEL"
+      },
+      {
+        "source": "header",
+        "envname": "DB",
+        "name": "X-DB"
+      }
+    ]
+  },
+  {
+    "id": "stop-clients",
+    "execute-command": "killall",
+    "pass-arguments-to-command": [
+      {
+        "source": "string",
+        "name": "schedule"
+      },
+      {
+        "source": "string",
+        "name": "iperf3"
+      }
+    ]
+  }
+]

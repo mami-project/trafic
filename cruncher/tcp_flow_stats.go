@@ -30,7 +30,7 @@ type TCPFlowStats struct {
 			Blksize    int    `json:"blksize"`
 			Omit       int    `json:"omit"`
 			Duration   int    `json:"duration"`
-			Bytes      int    `json:"bytes"`
+			Bytes      int64  `json:"bytes"`
 			Blocks     int    `json:"blocks"`
 			Reverse    int    `json:"reverse"`
 			Tos        int    `json:"tos"`
@@ -42,22 +42,16 @@ type TCPFlowStats struct {
 			Start         float64 `json:"start"`
 			End           float64 `json:"end"`
 			Seconds       float64 `json:"seconds"`
-			Bytes         int     `json:"bytes"`
+			Bytes         int64   `json:"bytes"`
 			BitsPerSecond float64 `json:"bits_per_second"`
-			Retransmits   int     `json:"retransmits"`
-			SndCwnd       int     `json:"snd_cwnd"`
-			Rtt           int     `json:"rtt"`
-			Rttvar        int     `json:"rttvar"`
-			Pmtu          int     `json:"pmtu"`
 			Omitted       bool    `json:"omitted"`
 		} `json:"streams"`
 		Sum struct {
 			Start         float64 `json:"start"`
 			End           float64 `json:"end"`
 			Seconds       float64 `json:"seconds"`
-			Bytes         int     `json:"bytes"`
+			Bytes         int64   `json:"bytes"`
 			BitsPerSecond float64 `json:"bits_per_second"`
-			Retransmits   int     `json:"retransmits"`
 			Omitted       bool    `json:"omitted"`
 		} `json:"sum"`
 	} `json:"intervals"`
@@ -142,7 +136,7 @@ type TCPFlowStats struct {
 				Blksize    int    `json:"blksize"`
 				Omit       int    `json:"omit"`
 				Duration   int    `json:"duration"`
-				Bytes      int    `json:"bytes"`
+				Bytes      int64  `json:"bytes"`
 				Blocks     int    `json:"blocks"`
 				Reverse    int    `json:"reverse"`
 				Tos        int    `json:"tos"`
@@ -154,16 +148,22 @@ type TCPFlowStats struct {
 				Start         float64 `json:"start"`
 				End           float64 `json:"end"`
 				Seconds       float64 `json:"seconds"`
-				Bytes         int     `json:"bytes"`
+				Bytes         int64   `json:"bytes"`
 				BitsPerSecond float64 `json:"bits_per_second"`
+				Retransmits   int     `json:"retransmits"`
+				SndCwnd       int     `json:"snd_cwnd"`
+				Rtt           int     `json:"rtt"`
+				Rttvar        int     `json:"rttvar"`
+				Pmtu          int     `json:"pmtu"`
 				Omitted       bool    `json:"omitted"`
 			} `json:"streams"`
 			Sum struct {
 				Start         float64 `json:"start"`
 				End           float64 `json:"end"`
 				Seconds       float64 `json:"seconds"`
-				Bytes         int     `json:"bytes"`
+				Bytes         int64   `json:"bytes"`
 				BitsPerSecond float64 `json:"bits_per_second"`
+				Retransmits   int     `json:"retransmits"`
 				Omitted       bool    `json:"omitted"`
 			} `json:"sum"`
 		} `json:"intervals"`
@@ -174,8 +174,13 @@ type TCPFlowStats struct {
 					Start         float64 `json:"start"`
 					End           float64 `json:"end"`
 					Seconds       float64 `json:"seconds"`
-					Bytes         int     `json:"bytes"`
-					BitsPerSecond int     `json:"bits_per_second"`
+					Bytes         int64   `json:"bytes"`
+					BitsPerSecond float64 `json:"bits_per_second"`
+					Retransmits   int     `json:"retransmits"`
+					MaxSndCwnd    int     `json:"max_snd_cwnd"`
+					MaxRtt        int     `json:"max_rtt"`
+					MinRtt        int     `json:"min_rtt"`
+					MeanRtt       int     `json:"mean_rtt"`
 				} `json:"sender"`
 				Receiver struct {
 					Socket        int     `json:"socket"`
@@ -190,8 +195,9 @@ type TCPFlowStats struct {
 				Start         float64 `json:"start"`
 				End           float64 `json:"end"`
 				Seconds       float64 `json:"seconds"`
-				Bytes         int     `json:"bytes"`
-				BitsPerSecond int     `json:"bits_per_second"`
+				Bytes         int64   `json:"bytes"`
+				BitsPerSecond float64 `json:"bits_per_second"`
+				Retransmits   int     `json:"retransmits"`
 			} `json:"sum_sent"`
 			SumReceived struct {
 				Start         float64 `json:"start"`

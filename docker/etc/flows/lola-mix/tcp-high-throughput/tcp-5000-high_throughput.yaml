@@ -23,6 +23,7 @@ client:
     # target-bitrate: 10M
     # fq-rate: 10M
     bytes: 25M
+    reverse: true
 
 server:
   at:

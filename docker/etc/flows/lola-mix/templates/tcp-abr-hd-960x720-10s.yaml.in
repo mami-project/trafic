@@ -13,6 +13,7 @@ client:
     server-port: *p
     title: *l
     bytes: 1.8M
+    reverse: true
     # report-interval-s: 0.2
 
 server:

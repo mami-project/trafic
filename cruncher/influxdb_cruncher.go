@@ -26,13 +26,13 @@ func NewInfluxDBCruncher(measurement string) Cruncher {
 func (c *InfluxDBCruncher) CrunchTCP(tcpFlowStats TCPFlowStats) ([]byte, error) {
 	var lines bytes.Buffer
 
-	start := tcpFlowStats.Start.Timestamp.Timesecs
+	start := tcpFlowStats.ServerOutputJSON.Start.Timestamp.Timesecs
 
-	for _, interval := range tcpFlowStats.Intervals {
+	for _, interval := range tcpFlowStats.ServerOutputJSON.Intervals {
 		for _, stream := range interval.Streams {
 			flowID := formatFlowID(tcpFlowStats.Title, tcpFlowStats.Start.Cookie, start, stream.Socket)
 
-			line := fmt.Sprintf("%s,flowid=%s,type=tcp,tos=0x%02x,pmtu=%d bytes=%d,bps=%f,rtx=%d,sndcwnd=%d,rtt_ms=%f,rtt_var=%d %d\n",
+			line := fmt.Sprintf("%s,flowid=%s,type=tcp,tos=0x%02x,pmtu=%d bytes=%d,bps=%f,rtx=%d,sndcwnd=%d,rtt_ms=%f,rtt_var=%f %d\n",
 				c.measurement,
 				flowID,
 				tcpFlowStats.Start.TestStart.Tos,
@@ -42,7 +42,7 @@ func (c *InfluxDBCruncher) CrunchTCP(tcpFlowStats TCPFlowStats) ([]byte, error) 
 				stream.Retransmits,
 				stream.SndCwnd,
 				float64(stream.Rtt)/1000,
-				stream.Rttvar,
+				float64(stream.Rttvar)/1000,
 				makeInfluxDBTimestamp(start, stream.Start))
 
 			// Don't bother about the bytes written, just check the return status
@@ -61,7 +61,7 @@ func (c *InfluxDBCruncher) CrunchUDP(udpFlowStats UDPFlowStats) ([]byte, error) 
 
 	start := udpFlowStats.Start.Timestamp.Timesecs
 
-	for _, interval := range udpFlowStats.ServerOutputJSON.Intervals {
+	for _, interval := range udpFlowStats.Intervals {
 		for _, stream := range interval.Streams {
 			flowID := formatFlowID(udpFlowStats.Title, udpFlowStats.Start.Cookie, start, stream.Socket)
 

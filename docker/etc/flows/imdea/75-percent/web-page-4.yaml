@@ -1,0 +1,35 @@
+
+
+
+label: &l web-page-4
+
+port: &p 5504
+
+client:
+  at:
+    - 1s
+
+    - 11s
+
+    - 21s
+
+    - 31s
+
+    - 41s
+
+    - 51s
+
+  config:
+    server-address: iperf-server
+    server-port: *p
+    title: *l
+    bytes: 1246K
+    reverse: true
+    report-interval-s: 0.200000
+
+server:
+  at:
+    - 0s
+  config:
+    server-port: *p
+    report-interval-s: 0.200000

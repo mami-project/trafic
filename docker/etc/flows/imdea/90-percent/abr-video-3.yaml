@@ -1,0 +1,35 @@
+
+
+
+label: &l abr-video-3
+
+port: &p 5403
+
+client:
+  at:
+    - 3s
+
+    - 13s
+
+    - 23s
+
+    - 33s
+
+    - 43s
+
+    - 53s
+
+  config:
+    server-address: iperf-server
+    server-port: *p
+    title: *l
+    bytes: 1.8M
+    reverse: true
+    report-interval-s: 0.200000
+
+server:
+  at:
+    - 0s
+  config:
+    server-port: *p
+    report-interval-s: 0.200000

@@ -1,0 +1,30 @@
+
+
+
+label: &l rt-video
+
+port: &p 5100
+
+instances: &i 5
+
+client:
+  at:
+    - 0s
+  config:
+    server-address: iperf-server
+    server-port: *p
+    time-s: 60.000000
+    udp: true
+    length: 930
+    target-bitrate: 810K
+    title: *l
+    report-interval-s: 0.200000
+    parallel: *i
+    reverse: true
+
+server:
+  at:
+    - 0s
+  config:
+    server-port: *p
+    report-interval-s: 0.200000

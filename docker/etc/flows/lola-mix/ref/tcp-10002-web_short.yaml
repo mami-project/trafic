@@ -1,0 +1,32 @@
+# ~1.2M transfer (the average Alexa top-1000 page size) every 8s
+# ToS field explicitly bleached
+label: &l REF-web_short
+
+port: &p 10002
+mark: &m 0x00
+
+client:
+  at:
+    - 2s
+    - 10s
+    - 18s
+    - 26s
+    - 34s
+    - 42s
+    - 50s
+    - 58s
+
+  config:
+    server-address: iperf-server
+    server-port: *p
+    title: *l
+    bytes: 1246K
+    tos: *m
+    reverse: true
+    report-interval-s: 0.2
+
+server:
+  at:
+    - 0s
+  config:
+    server-port: *p
