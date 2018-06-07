@@ -70,4 +70,55 @@ Currently, Alpine Linux has a very limited [cloud-init](https://cloud-init.io) s
 at boot time. Therefore the integration has to be done manually on a case by case basis.
 Alternative Linux distributions and OSes with better cloud-init support are being evaluated.
 
+### Configuration requirements of the measurement scenario
 
+The scenario is composed of four VMs:
+- `iperf-client`,`iperf-server` and `tshark` have two Ethernet interfaces, one for control and one for measuring.
+- all four are connected to a common *control* LAN.
+- the measurement interface of `iperf-client` is recommended to be a passthrough interface and is connected to the client side of the test network
+- the measurement interface of `iperf-server` is recommended to be a virtualisation-friendly interface and is connected to the server side of the test network
+-  the measurement interface of `tshark` receives the traffic present in the test interface of `iperf-client` (through a port mirror, for example).
+
+```
+ control
+    |
+    |       +---------------+
+    |       |               |                    |
+    +-------+ iperf-server  +--------------------+
+    |       |               |                    |
+    |       +---------------+                    |
+    |                                       Network under
+    |                                           test
+    |       +---------------+                    |
+    |       |               |        mirror      |
+    +-------+ iperf-client  +-----------+--------+
+    |       |               |           |        |
+    |       +---------------+           |
+    |                                   |
+    |       +---------------+           |
+    |       |               |           |
+    +-------+  tshark       |<----------+
+    |       |               |
+    |       +---------------+
+    |
+    |       +---------------+
+    |       |               |
+    +-------+  influxdb     |
+    |       |               |
+    |       +---------------+
+```
+
+External access is *required* for `tshark` (ssh) and `influxdb` (http/https). `iperf-client` and `iperf-server` can be accessed from ` tshark` .
+
+All VMs need to resolve the names of all VMs in the scenario. Add entries for `iperf-client`, `iperf-server`,` influxdb` and `tshark` in the `/etc/hosts`. Following best current practices use 127.0.1.1 for the local name and 127.0.0.1 for localhost.
+
+Example:
+
+```
+10.7.1.40 iperf-client
+10.7.1.41 iperf-server
+127.0.1.1 influxdb
+10.7.1.42 tshark
+```
+
+Configure `iperf-client` to communicate with `iperf-server` using the *Network under test*.
