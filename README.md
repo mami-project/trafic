@@ -33,11 +33,11 @@ Fetch the latest release from [here](https://github.com/esnet/iperf/releases)
 go install ./...
 ```
 
-**
+---
 
 [Trafic](https://en.wikipedia.org/wiki/Trafic) is not a typo, it's a film by [Jacques Tati](https://en.wikipedia.org/wiki/Jacques_Tati).
 
-**
+---
 
 # Documentation
 
@@ -229,12 +229,12 @@ c> schedule clients --flows-dirs=DIR1,...,DIRn --log-tag=TC --stats-dir=/tmp/tra
 
 When the client has successfully completed - _all currently active client(s) finished ok_ - you can safely kill the two sides of the scheduler.
 
-The `/tmp/trafic/clients-stats` folder contains one JSON stats file for each flow that has been scheduled (i.e., one per `iperf3 -c` instance) and its companion CSV file that gets synthesised from the JSON.  For example, the realtime audio flow described above produces these two files:
+The `/tmp/trafic/clients-stats` folder contains one JSON stats file for each flow that has been scheduled (i.e., one per `iperf3 -c` instance) and its companion CSV file that has been synthesised from the JSON source for simplify plotting, statistical analysis, etc.  For example, the realtime audio flow described above produces these two files:
 ```
 20180608172323_client_rt-audio.csv
 20180608172323_client_rt-audio.json
 ```
-while the ABR video which is made of seven independent flows (one per chunk) produces the following:
+while the ABR video, which is made of seven independent flows (one per chunk), produces the following:
 ```
 20180608172223_client_abr-video.csv
 20180608172223_client_abr-video.json
@@ -252,9 +252,20 @@ while the ABR video which is made of seven independent flows (one per chunk) pro
 20180608172318_client_abr-video.json
 ```
 
+### Using InfluxDB to store the stats
+
+If you have a InfluxDB node at hand, you can use it to store the *trafic* stats as time series.  It suffices to run the client with the right `--influxdb-...` flags set.  For example:
+
+```
+   --influxdb-enabled \
+   --influxdb-endpoint=http://influxdb:8086 \
+   --influxdb-db=mydb \
+   --influxdb-measurements=mymeasure-$(date +%s)
+```
+
 ## Exploring KPIs
 
-- UDP
+###  UDP
 ```
 Timestamp,FlowID,FlowType,ToS,Bytes,BitsPerSecond,Jitterms,Packets,LostPackets,LostPercent
 1528474943.000000,rt-audio_1528474943_6,udp,0x00,1638,65423.509657,0.033487,13,0,0.000000
@@ -262,12 +273,15 @@ Timestamp,FlowID,FlowType,ToS,Bytes,BitsPerSecond,Jitterms,Packets,LostPackets,L
 [...]
 ```
 
-- TCP
+### TCP
 ```
 Timestamp,FlowID,FlowType,ToS,PMTU,Bytes,BitsPerSecond,Retransmissions,SenderCWND,RTTms,RTTvar
 1528476246.000000,abr-video_1528476246_5,tcp,0x00,0,2636004,7486213878.098011,0,0,0.000000,0.000000
 ```
 
+### InfluxDB
+
+TODO example queries
 
 
 
