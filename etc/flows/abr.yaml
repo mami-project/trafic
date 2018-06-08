@@ -1,0 +1,26 @@
+label: &l abr-video
+
+port: &p 5400
+
+client:
+  at:
+    - 0s
+    - 5s
+    - 15s
+    - 25s
+    - 35s
+    - 45s
+    - 55s
+  config:
+    server-address: trafic-server.example.org.
+    server-port: *p
+    title: *l
+    bytes: 1.8M
+    report-interval-s: 0.2
+
+server:
+  at:
+    - 0s
+  config:
+    server-port: *p
+    report-interval-s: 0.2
