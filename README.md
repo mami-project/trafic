@@ -43,11 +43,11 @@ go install ./...
 
 At its core, *trafic* is just a flow scheduler.
 
-You describe one or more flows, for example specifying which transport protocol, transmission patterns, markings, etc. and let *trafic* run the client and server side of that flow at the specified time.
+You describe one or more flows, for example specifying which transport protocol (and possibly its congestion controller), transmission patterns, markings, etc. and let *trafic* run the client and server side of that flow at the specified time.  Each side of the flow is driven by a different *trafic* instance, sharing the same configuration as its peer.
 
 When a flow completes, the *trafic* client stores key performance indicators (KPI) associated with each scheduled flow (e.g., bandwidth, packet loss, RTT, jitter).
 
-These KPIs are sampled at a configurable rate (e.g. every 200ms) and made available as (per-flow) CSV files.  If requested, they can also be sent to an [Influx](https://www.influxdata.com/time-series-platform/influxdb/) instance.
+These KPIs are sampled at a configurable rate (e.g. every 200ms) and made available as (per-flow) CSV files.  If requested, they can also be sent to an [Influx](https://www.influxdata.com/time-series-platform/influxdb/) instance where KPIs are organised as time-series and can be conveniently [queried](https://docs.influxdata.com/influxdb/v1.5/query_language/data_exploration/).
 
 On top of that, *trafic* also provides the ability to define a traffic mix at high level, in terms of:
 * How much bandwidth does the mix take;
@@ -63,11 +63,11 @@ A flow is completely described by a YAML file.  The file has three parts:
 
 The `client` and `server` sections are further subdivided into two parts: an `at` block containing scheduling information, and a role specific configuration.  (See the full list of [client](etc/client-blueprint.yaml) and [server](etc/server-blueprint.yaml) configurables.)
 
-The default direction of a flow is server to client.
+The direction of a flow is always server to client.
 
 ### Example: ABR video
 
-To give an example, the following file describes an adaptive bit rate (ABR) video flow composed of three HD (960x720) video chunks, 10 seconds each:
+To give an example, the following file describes an adaptive bit rate (ABR) video flow composed of seven HD (960x720) chunks, 10 seconds worth of video each:
 ```
 label: &l abr-video
 
@@ -76,8 +76,12 @@ port: &p 5400
 client:
   at:
     - 0s
-    - 10s
-    - 20s
+    - 5s
+    - 15s
+    - 25s
+    - 35s
+    - 45s
+    - 55s
   config:
     server-address: trafic-server.example.org.
     server-port: *p
@@ -93,18 +97,20 @@ server:
     report-interval-s: 0.2
 ```
 
-The flow is given a label "abr-video", which is used internally by the scheduler to reference the flow and _must be unique_ among flows in the same mix.  Note that the flow is TCP unless otherwise specified.
+The flow is given a label, "abr-video", which is used internally by the scheduler to reference the flow.  The label _must be unique_ among flows in the same mix.  Note that the flow is TCP unless otherwise specified.
 
-Server is scheduled once, at the very start of the scheduler execution (`0s`).  It will bind port 5400, and will do its KPI sampling every 200ms.
+The server side of the flow is instantiated once, at the very start of the scheduler execution (`0s`).  It will bind port 5400, and will do its KPI-sampling every 200ms.
 
-A new client instance is scheduled to run every 10 seconds (at `0s`, `10s` and `20s`) and download 1.8MB worth of data, i.e. roughly a 10s HD video chunk.  Each client instance will connect to port `5400` on host `trafic-server.example.org`.  In this case as well, KPI sampling happens every 200ms.  
+A new client instance is scheduled to run every 10 seconds (at `5s`, `15s` and so on), simulating the typical refill pattern of the client's playout buffer.  The client downloads 1.8MB worth of data, that is (roughly) a 10s HD video chunk.  Note that the second chunk is fetched after 5s from the first, i.e., halfway through the playout of the first chunk..
+
+Each client instance will connect to port `5400` on host `trafic-server.example.org`.
 
 ### Example: realtime audio
 
 The following configuration models two instances of a mono-directional realtime audio flow (half of a typical Skype call), with regularly paced UDP packets bearing 126 bytes of RTP and media payload (`length`) aiming at constantly injecting 64Kbps (`target-bitrate`) in the network.  The two flows run, in parallel, for 60 seconds.
 
 Things worth noting:
-* An UDP flow needs to be marked explicitly: `udp: true`;
+* An UDP flow needs to be explicitly declared using `udp: true`;
 * A constant bitrate flow needs to be temporally bounded: `time-s: 60`;
 * Parallelism of flows can be specified with the `parallel` keyword;
 
@@ -157,16 +163,18 @@ report-interval: 0.2s
 The high level description of the application flows is done in the `flows` section.
 
 Each flow defines its `kind`, i.e. the application it simulates.  The available pre-defined applications are:
-* realtime-audio
-* realtime-video
-* scavenger
-* greedy
-* abr-video
-* web-page
+* `realtime-audio` - one direction of a Skype / WebRTC voice call;
+* `realtime-video` - one direction of a Skype / WebRTC video call;
+* `scavenger` - (this is a bad name, I agree) an application-limited flow;
+* `greedy` - a network-limited flow;
+* `abr-video` - an (not so) adaptive bit rate video download
+* `web-page` - average (~1.2MB) web page download
 
 The amount of bandwidth this application consumes out of the total available (`total-bandwidth`) is given as a percentage using the `percent-bandwidth` keyword.
 
 The ports used by the server are specified as a range using the `ports-range` keyword.
+
+Application specific properties (_TODO document which_) are supplied in the `props` section.
 
 ```
 server: &srv trafic-server.example.org.
@@ -182,11 +190,83 @@ flows:
 
 ## Running the mix
 
-TODO
+Let's assume you have either manually or automatically (using `mixer`) synthesized your traffic mix, and successfully saved the relevant configuration files under one or more folders `DIR1..DIRn`.
+
+You will then start server side:
+```
+s> schedule servers --flows-dirs=DIR1,...,DIRn --log-tag=TS --stats-dir=/tmp/trafic/servers-stats
+
+[TS] 2018/06/08 15:01:22 common.go:309: 2018-06-08 16:01:22.328833 +0100 BST m=+0.103762416 -> deadline elapsed for abr-video
+[TS] 2018/06/08 15:01:22 runner.go:41: Starting /usr/local/bin/iperf3 --server --json --interval 0.2 --port 5400
+[TS] 2018/06/08 15:01:22 common.go:309: 2018-06-08 16:01:22.328833 +0100 BST m=+0.103762416 -> deadline elapsed for rt-audio
+[TS] 2018/06/08 15:01:22 runner.go:41: Starting /usr/local/bin/iperf3 --server --json --interval 0.2 --port 5000
+[TS] 2018/06/08 15:01:22 runner.go:52: Waiting for /usr/local/bin/iperf3 (PID=75505) to complete
+[TS] 2018/06/08 15:01:22 runner.go:52: Waiting for /usr/local/bin/iperf3 (PID=75506) to complete
+```
+
+and subsequently start client side:
+```
+c> schedule clients --flows-dirs=DIR1,...,DIRn --log-tag=TC --stats-dir=/tmp/trafic/clients-stats
+
+[TC] 2018/06/08 15:02:21 common.go:309: 2018-06-08 16:02:21.215852 +0100 BST m=+0.109531033 -> deadline elapsed for abr-video
+[TC] 2018/06/08 15:02:21 runner.go:41: Starting /usr/local/bin/iperf3 --client trafic-server.example.org. --bytes 1.8M --get-server-output --reverse --title abr-video --json --interval 0.2 --port 5400
+[TC] 2018/06/08 15:02:21 common.go:309: 2018-06-08 16:02:21.215852 +0100 BST m=+0.109531033 -> deadline elapsed for rt-audio
+[TC] 2018/06/08 15:02:21 runner.go:41: Starting /usr/local/bin/iperf3 --client trafic-server.example.org. --length 126 --time 60 --get-server-output --parallel 2 --reverse --bitrate 64K --title rt-audio --udp --json --interval 0.2 --port 5000
+[TC] 2018/06/08 15:02:21 runner.go:52: Waiting for /usr/local/bin/iperf3 (PID=75583) to complete
+[TC] 2018/06/08 15:02:21 runner.go:52: Waiting for /usr/local/bin/iperf3 (PID=75584) to complete
+2018/06/08 16:02:21 client abr-video finished ok
+2018/06/08 16:02:21 1 client(s) to go
+
+[...]
+
+[TC] 2018/06/08 15:03:16 runner.go:41: Starting /usr/local/bin/iperf3 --client trafic-server.example.org. --bytes 1.8M --get-server-output --reverse --title abr-video --json --interval 0.2 --port 5400
+[TC] 2018/06/08 15:03:16 runner.go:52: Waiting for /usr/local/bin/iperf3 (PID=75656) to complete
+2018/06/08 16:03:16 client abr-video finished ok
+2018/06/08 16:03:16 1 client(s) to go
+2018/06/08 16:03:21 client rt-audio finished ok
+2018/06/08 16:03:21 all currently active client(s) finished ok
+```
+
+When the client has successfully completed - _all currently active client(s) finished ok_ - you can safely kill the two sides of the scheduler.
+
+The `/tmp/trafic/clients-stats` folder contains one JSON stats file for each flow that has been scheduled (i.e., one per `iperf3 -c` instance) and its companion CSV file that gets synthesised from the JSON.  For example, the realtime audio flow described above produces these two files:
+```
+20180608172323_client_rt-audio.csv
+20180608172323_client_rt-audio.json
+```
+while the ABR video which is made of seven independent flows (one per chunk) produces the following:
+```
+20180608172223_client_abr-video.csv
+20180608172223_client_abr-video.json
+20180608172228_client_abr-video.csv
+20180608172228_client_abr-video.json
+20180608172238_client_abr-video.csv
+20180608172238_client_abr-video.json
+20180608172248_client_abr-video.csv
+20180608172248_client_abr-video.json
+20180608172258_client_abr-video.csv
+20180608172258_client_abr-video.json
+20180608172308_client_abr-video.csv
+20180608172308_client_abr-video.json
+20180608172318_client_abr-video.csv
+20180608172318_client_abr-video.json
+```
 
 ## Exploring KPIs
 
-TODO
+- UDP
+```
+Timestamp,FlowID,FlowType,ToS,Bytes,BitsPerSecond,Jitterms,Packets,LostPackets,LostPercent
+1528474943.000000,rt-audio_1528474943_6,udp,0x00,1638,65423.509657,0.033487,13,0,0.000000
+1528474943.000000,rt-audio_1528474943_8,udp,0x00,1638,65418.603834,0.017496,13,0,0.000000
+[...]
+```
+
+- TCP
+```
+Timestamp,FlowID,FlowType,ToS,PMTU,Bytes,BitsPerSecond,Retransmissions,SenderCWND,RTTms,RTTvar
+1528476246.000000,abr-video_1528476246_5,tcp,0x00,0,2636004,7486213878.098011,0,0,0.000000,0.000000
+```
 
 
 
