@@ -25,7 +25,7 @@ Reboot the VM once again.
 Install the following packages with the `apk add` command:
 
  - `bash`
- - `iperf3`
+ - `iperf3` (using the *testing* repositories will install the required version 3.5)
  - `git`
  - `go`,`musl-dev`
  - `make`
@@ -108,7 +108,9 @@ The scenario is composed of four VMs:
     |       +---------------+
 ```
 
-External access is *required* for `tshark` (ssh) and `influxdb` (http/https). `iperf-client` and `iperf-server` can be accessed from ` tshark` .
+### Setting up the communications
+
+External access is *required* for `tshark` (ssh) and `influxdb` (http/https). `iperf-client` and `iperf-server` can be accessed from ` tshark` to start the client and server scripts.
 
 All VMs need to resolve the names of all VMs in the scenario. Add entries for `iperf-client`, `iperf-server`,` influxdb` and `tshark` in the `/etc/hosts`. Following best current practices use 127.0.1.1 for the local name and 127.0.0.1 for localhost.
 

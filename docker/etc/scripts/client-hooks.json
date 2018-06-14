@@ -34,5 +34,10 @@
         "name": "iperf3"
       }
     ]
+  },
+  {
+    "id": "send-stats",
+    "execute-command": "/root/share/scripts/send-measurements.bash",
+    "command-working-directory": "/"
   }
 ]
