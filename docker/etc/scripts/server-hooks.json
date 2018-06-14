@@ -24,5 +24,19 @@
         "name": "iperf3"
       }
     ]
+  },
+  {
+    "id": "calibrate",
+    "execute-command": "iperf3",
+    "pass-arguments-to-command": [
+      {
+        "source": "string",
+        "name": "-s"
+      },
+      {
+        "source": "string",
+        "name": "-1"
+      },
+    ]
   }
 ]

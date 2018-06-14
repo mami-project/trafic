@@ -35,9 +35,15 @@
       }
     ]
   },
-  {
-    "id": "send-stats",
-    "execute-command": "/root/share/scripts/send-measurements.bash",
-    "command-working-directory": "/"
-  }
+	{
+		"id": "send-stats",
+		"execute-command": "/root/share/scripts/send-measurements.bash",
+		"command-working-directory": "/"
+	},
+	{
+		"id": "calibrate",
+		"execute-command": "/root/share/scripts/calibrate-link.bash",
+		"command-working-directory": "/root/share/scripts"
+
+	}
 ]
