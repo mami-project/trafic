@@ -2,7 +2,7 @@
 
 set -eu
 
-function mklabel() {
+function mk-label() {
 	local exid=$1
 	local unixtime=$(date +%s)
 
@@ -15,7 +15,7 @@ EXID=${EXID:-baseline}
 for load in 75 80 85 90 95
 do
 	exid="${EXID}-${load}"
-	label=$(mklabel "${exid}")
+	label=$(mk-label "${exid}")
 	# capfn="${label}.pcap"
 
 	# start servers
@@ -37,4 +37,7 @@ do
 	# cleanup (and, possibly, go again)
 	wget http://iperf-server:9000/hooks/stop-servers -O /dev/null
 	wget http://iperf-client:9000/hooks/stop-clients -O /dev/null
+
+	# send measurements to the postprocessing machine and clean up
+	wget http://iperf-client:9000/hooks/send-stats -O /dev/null
 done
