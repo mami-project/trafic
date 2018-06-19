@@ -117,6 +117,9 @@ All VMs need to resolve the names of all VMs in the scenario. Add entries for `i
 Example:
 
 ```
+
+127.0.0.1 localhost
+
 10.7.1.40 iperf-client
 10.7.1.41 iperf-server
 127.0.1.1 influxdb
