@@ -2,12 +2,12 @@
 
 set -eu
 
-function mklabel() {
+function mk-label() {
 	local exid=$1
 	local ext=$2
 	local unixtime=$(date +%s)
 
 	printf "lola-%s-%s%s" "${exid}" "${unixtime}" "${ext}"
 }
-pwd=$(dirname $0)
-iperf3 -c iperf-server --reverse --time 30 --logfile ${pwd}/`mklabel "calibrate" ".txt"`
+cwd=`dirname $0`
+iperf3 -c iperf-server --reverse --time 30 --logfile ${cwd}/$(mk-label "calibrate").txt
