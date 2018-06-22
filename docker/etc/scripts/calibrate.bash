@@ -8,18 +8,18 @@
 # (shouldn't kill anything)
 #
 set -eu
-
-	# start server
-wget --header -O /dev/null \
-	 http://iperf-server:9000/hooks/calibrate
+HOST=${HOST:-iperf}
+# start server
+wget -O /dev/null \
+	 http://${HOST}-server:9000/hooks/calibrate
 sleep 1
 # start client
-wget --header -O /dev/null \
-	 http://iperf-client:9000/hooks/calibrate
+wget -O /dev/null \
+	 http://${HOST}-client:9000/hooks/calibrate
 
 sleep 60
 
-wget --header -O /dev/null \
-	 http://iperf-client:9000/hooks/stop-clients
-wget --header -O /dev/null \
-	 http://iperf-server:9000/hooks/stop-servers
+wget -O /dev/null \
+	 http://${HOST}-client:9000/hooks/stop-clients
+wget -O /dev/null \
+	 http://${HOST}-server:9000/hooks/stop-servers
