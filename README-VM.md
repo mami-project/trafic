@@ -15,24 +15,46 @@ Follow the instructions and create the initial image with the `setup-alpine` com
 
 ### Customising the image
 
-Edit the `/etc/apk/repositories` file, commenting the lines referring to the `3.7` repositories and uncommenting the lines referring to the `edge` repositories. Update the VM with the following commands:
+Edit the `/etc/apk/repositories` file, uncommenting all lines referring to the repositories of the `3.7`distribution and the line referring to the `main` repository of the `edge` distribution. The file should look like this:
+
+```
+#/media/cdrom/apks
+http://uk.alpinelinux.org/alpine/v3.7/main
+http://uk.alpinelinux.org/alpine/v3.7/community
+http://uk.alpinelinux.org/alpine/edge/main
+http://uk.alpinelinux.org/alpine/edge/community
+#http://uk.alpinelinux.org/alpine/edge/testing
+```
+
+Update the VM with the following commands:
+
 ```
 apk update
 apk upgrade
 ```
+
+Modify the root user to use bash as login shell. Log out and login again as root.
+Modify `/etc/ssh/sshd_config` to allow root login: search `PermitRootLogin` in the file and change the line to read:
+
+```PermitRootLogin yes```
+
 Reboot the VM once again.
 
 Install the following packages with the `apk add` command:
 
  - `bash`
- - `iperf3` (using the *testing* repositories will install the required version 3.5)
  - `git`
- - `go`,`musl-dev`
+ - `musl-dev`
  - `make`
- - `influxdb`
- - `tshark`
 
-Modify the root user to use bash as login shell. Log out and login again as root.
+Finally install  `iperf3` and `go` from the *testing* repository. (This will install the required versions for these packages.)
+
+```
+apk add go=1.10.1-r0
+apk add iperf3=3.5-r1
+```
+
+
 
 ### Installing the trafic sources
 
@@ -40,13 +62,8 @@ Before installing the traffic sources from GitHub, create the following `.profil
 ```
 PATH=$(go env GOPATH)/bin:$PATH
 export PATH
-GOOS=linux
-export GOOS
-GOARCH=amd64
-export GOARCH
-CGO_ENABLED=0
-export CGO_ENABLED
 ```
+
 Then, prepare the infrastructure for Go:
 ```
 mkdir -p $(go env GOPATH)/{bin,src}
@@ -54,15 +71,41 @@ mkdir -p $(go env GOPATH)/{bin,src}
 
 Then install the trafic repository following the guide included in `README.md`.
 
- Finally, create the `$HOME/share` directory and link the scripts and flows directories as follows:
- ```
- mkdir ${HOME}/share
- cd ${HOME}/share
- ln -sf ${HOME}/go/src/github.com/mami-project/trafic/docker/etc/flows
- ln -sf ${HOME}/go/src/github.com/mami-project/trafic/docker/etc/scripts
- ```
+You may safely ignore messages related to cgo:
+```
+# github.com/adnanh/webhook/test
+loadinternal: cannot find runtime/cgo
+trafic:~/go/src/github.com/adnanh/webhook# webhook
+```
+
+Finally, create the `$HOME/share` directory and link the scripts and flows directories as follows:
+
+```
+mkdir ${HOME}/share
+cd ${HOME}/share
+ln -sf ${HOME}/go/src/github.com/mami-project/trafic/docker/etc/scripts
+ln -sf ${HOME}/go/src/github.com/mami-project/trafic/docker/etc/flows
+```
 
 Shutdown the machine. Keep the QCOW2 file you just generated in a safe place. This is the base image used for all Virtual Network Function Components.
+
+### Specific install for the InfluxDB VM
+
+The InfluxDB VM does not need the `trafic` sources and therefore, it will not need the `go` distribution either. The packages will suffice:
+
+ - `bash`
+ - `influxdb`
+
+Make sure that the `influxdb` service is started and added to the default level in the OpenRC infrastructure:
+
+```
+rc-service -I influxdb start
+rc-update add influxdb default
+```
+
+### Specific install for the tshark VM
+
+The `tshark` VM is created as a regular `trafic` VM. One everything is installed, include the `tshark` package.
 
 ## Integration with NFV
 
@@ -82,30 +125,30 @@ The scenario is composed of four VMs:
 ```
  control
     |
-    |       +---------------+
-    |       |               |                    |
-    +-------+ iperf-server  +--------------------+
-    |       |               |                    |
-    |       +---------------+                    |
-    |                                       Network under
-    |                                           test
-    |       +---------------+                    |
-    |       |               |        mirror      |
-    +-------+ iperf-client  +-----------+--------+
-    |       |               |           |        |
-    |       +---------------+           |
-    |                                   |
-    |       +---------------+           |
-    |       |               |           |
-    +-------+  tshark       |<----------+
-    |       |               |
-    |       +---------------+
+    |     +--------------+
+    |     |              |                 |
+    +-----+ iperf-server +-----------------+
+    |     |              |                 |
+    |     +--------------+                 |
+    |                                Network under
+    |                                     test
+    |     +--------------+                 |
+    |     |              |     mirror      |
+    +-----+ iperf-client +--------+--------+
+    |     |              |        |        |
+    |     +--------------+        |
+    |                             |
+    |     +--------------+        |
+    |     |              |        |
+    +-----+    tshark    |<-------+
+    |     |              |
+    |     +--------------+
     |
-    |       +---------------+
-    |       |               |
-    +-------+  influxdb     |
-    |       |               |
-    |       +---------------+
+    |     +--------------+
+    |     |              |
+    +-----+   influxdb   |
+    |     |              |
+    |     +--------------+
 ```
 
 ### Setting up the communications
@@ -127,3 +170,16 @@ Example:
 ```
 
 Configure `iperf-client` to communicate with `iperf-server` using the *Network under test*.
+
+### Note: regarding go compilation warnings
+
+If you experience problems compiling further down, you may need to add the following to your `.profile`:
+
+```
+GOOS=linux
+export GOOS
+GOARCH=amd64
+export GOARCH
+CGO_ENABLED=0
+export CGO_ENABLED
+```

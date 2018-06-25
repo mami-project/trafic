@@ -2,6 +2,6 @@
 
 set -eux
 
-HOOKS="/root/share/scripts/client-hooks.json"
+HOOKS="${HOME}/share/scripts/client-hooks.json"
 
 webhook -verbose -hooks "${HOOKS}"
