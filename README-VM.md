@@ -47,14 +47,20 @@ Install the following packages with the `apk add` command:
  - `musl-dev`
  - `make`
 
-Finally install  `iperf3` and `go` from the *testing* repository. (This will install the required versions for these packages.)
+Then install  `iperf3` and `go` from the *testing* repository. (This will install the required versions for these packages.)
 
 ```
 apk add go=1.10.1-r0
 apk add iperf3=3.5-r1
 ```
 
+Finally install the dependencies to manage traffic profiles:
 
+```
+apk add python
+apk add py2-pip
+pip install jinja2
+```
 
 ### Installing the trafic sources
 
