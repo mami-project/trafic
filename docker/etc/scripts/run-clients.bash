@@ -9,7 +9,7 @@ DB=${DB:-lola}
 base=$(dirname $0)
 . ${base}/${CONF}
 
-STATS=${STATS:-/root/share/stats/$LABEL}
+STATS=${STATS:-${HOME}/share/stats/$LABEL}
 
 schedule clients \
 	--stats-dir=${STATS} \
