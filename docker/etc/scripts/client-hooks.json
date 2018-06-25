@@ -35,6 +35,24 @@
       }
     ]
   },
+  {
+    "id": "check-link",
+    "execute-command": "ping",
+    "pass-arguments-to-command": [
+      {
+        "source": "string",
+        "name": "-c"
+      },
+      {
+        "source": "string",
+        "name": "5"
+      },
+      {
+        "source": "string",
+        "name": "iperf-server"
+      }
+    ]
+  },
 	{
 		"id": "send-stats",
 		"execute-command": "/root/share/scripts/send-measurements.bash",
