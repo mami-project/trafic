@@ -1,62 +1,49 @@
 [
-  {
-    "id": "start-clients",
-    "execute-command": "/root/share/scripts/run-clients.bash",
-    "command-working-directory": "/",
-    "pass-environment-to-command": [
-      {
-        "source": "header",
-        "envname": "CONF",
-        "name": "X-CONF"
-      },
-      {
-        "source": "header",
-        "envname": "LABEL",
-        "name": "X-LABEL"
-      },
-      {
-        "source": "header",
-        "envname": "DB",
-        "name": "X-DB"
-      }
-    ]
-  },
-  {
-    "id": "stop-clients",
-    "execute-command": "killall",
-    "pass-arguments-to-command": [
-      {
-        "source": "string",
-        "name": "schedule"
-      },
-      {
-        "source": "string",
-        "name": "iperf3"
-      }
-    ]
-  },
-  {
-    "id": "check-link",
-    "execute-command": "ping",
-    "pass-arguments-to-command": [
-      {
-        "source": "string",
-        "name": "-c"
-      },
-      {
-        "source": "string",
-        "name": "5"
-      },
-      {
-        "source": "string",
-        "name": "iperf-server"
-      }
-    ]
-  },
+	{
+		"id": "start-clients",
+		"execute-command": "/root/share/scripts/run-clients.bash",
+		"command-working-directory": "/",
+		"pass-environment-to-command": [
+			{
+				"source": "header",
+				"envname": "CONF",
+				"name": "X-CONF"
+			},
+			{
+				"source": "header",
+				"envname": "LABEL",
+				"name": "X-LABEL"
+			},
+			{
+				"source": "header",
+				"envname": "DB",
+				"name": "X-DB"
+			}
+		]
+	},
+	{
+		"id": "stop-clients",
+		"execute-command": "killall",
+		"pass-arguments-to-command": [
+			{
+				"source": "string",
+				"name": "schedule"
+			},
+			{
+				"source": "string",
+				"name": "iperf3"
+			}
+		]
+	},
+	{
+		"id": "check-link",
+		"execute-command": "/root/share/scripts/check-link.bash",
+		"command-working-directory": "/root/share/scripts"
+	},
 	{
 		"id": "send-stats",
 		"execute-command": "/root/share/scripts/send-measurements.bash",
-		"command-working-directory": "/"
+		"command-working-directory": "/root/share/scripts"
 	},
 	{
 		"id": "calibrate",
