@@ -1,4 +1,4 @@
-# Integrating traffic in an NFV environment
+# Integrating trafic in an NFV environment
 
 This file describes how to create the basic VM image used in the experiments and how to integrate it in an NFV environment.
 ## Alpine Linux-based VM
