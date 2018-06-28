@@ -13,6 +13,7 @@ STATS=${STATS:-${HOME}/share/stats/$LABEL}
 
 schedule clients \
 	--log-tag=C \
+	--stats-dir=${STATS} \
 	--flows-dirs=${FLOWS} \
 	--influxdb-enabled \
 	--influxdb-endpoint=http://influxdb:8086 \

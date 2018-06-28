@@ -9,31 +9,35 @@ function mklabel() {
 	printf "lola-%s-%s" "${exid}" "${unixtime}"
 }
 
+function send_cmd () {
+	cmd_url = $1
+	shift
+	wget $* -nv -O /dev/null ${cmd_url}
+}
 # remote measurements don't include capturing traffic
 #IFACE=${IFACE:-eth0}
 IFACE=
 EXID=${EXID:-baseline}
 HOST=${HOST:-iperf}
 
-for load in 75 80 85 90 95
-do
+max=100
+load=75
+while [ $load -lt $max ]; do
 	exid="${EXID}-${load}"
 	label=$(mklabel "${exid}")
 	capfn="${label}.pcap"
 
 	# start servers
-	wget --header "X-CONF: ${exid}.env" \
-		-O /dev/null \
-		http://${HOST}-server:9000/hooks/start-servers
+	send_cmd http://${HOST}-server:9000/hooks/start-servers \
+			 --header "X-CONF: ${exid}.env"
 
 	sleep 1
 
 	# start clients
-	wget --header "X-CONF: ${exid}.env" \
-		--header "X-LABEL: ${label}" \
-		--header "X-DB: ${EXID}" \
-		-O /dev/null \
-		http://${HOST}-client:9000/hooks/start-clients
+	send_cmd http://${HOST}-client:9000/hooks/start-clients \
+			 --header "X-CONF: ${exid}.env" \
+			 --header "X-LABEL: ${label}" \
+			 --header "X-DB: ${EXID}"
 
 	if [ -n "${IFACE}" ]; then
 		# start capture for 60s
@@ -45,7 +49,12 @@ do
 		sleep 65
 	fi
 	# cleanup (and, possibly, go again)
-	wget http://${HOST}-server:9000/hooks/stop-servers -O /dev/null
-	wget http://${HOST}-client:9000/hooks/stop-clients -O /dev/null
+	send_cmd http://${HOST}-server:9000/hooks/stop-servers
+	send_cmd http://${HOST}-client:9000/hooks/stop-clients
 	sleep 5
+
+	send_cmd http://${HOST}-client:9000/hooks/clean-stats \
+			 --header "X-LABEL: ${label}"
+
+	load=$((load + 5))
 done
