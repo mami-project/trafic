@@ -179,7 +179,7 @@ Configure `iperf-client` to communicate with `iperf-server` using the *Network u
 
 ### Note: regarding go compilation warnings
 
-If you experience problems compiling further down, you may need to add the following to your `.profile`:
+If you experience problems compiling trafic or webhooks, you may need to add the following to your `.profile`:
 
 ```
 GOOS=linux
