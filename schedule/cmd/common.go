@@ -132,9 +132,13 @@ func run(role runner.Role) {
 }
 
 func statStorer(runnerStats <-chan RunnerStats) {
-	err := os.MkdirAll(viper.GetString("stats.dir"), 0755)
-	if err != nil {
-		log.Fatalf("cannot create stats directory %v", err)
+
+	var statFilesEnabled bool = viper.GetBool("stats.enabled")
+	if statFilesEnabled {
+		err := os.MkdirAll(viper.GetString("stats.dir"), 0755)
+		if err != nil {
+			log.Fatalf("cannot create stats directory %v", err)
+		}
 	}
 
 	var influxDBConfigured bool = false
@@ -156,9 +160,11 @@ func statStorer(runnerStats <-chan RunnerStats) {
 				break
 			}
 
-			err := saveRunnerStats(rs)
-			if err != nil {
-				log.Println("cannot save to CSV:", err)
+			if statFilesEnabled {
+				err := saveRunnerStats(rs)
+				if err != nil {
+					log.Println("cannot save to CSV:", err)
+				}
 			}
 
 			if influxDBConfigured {

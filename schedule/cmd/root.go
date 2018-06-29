@@ -41,6 +41,9 @@ func init() {
 	pflags.String("scheduler-tick", "250ms", "scheduler granularity")
 	viper.BindPFlag("scheduler.tick", pflags.Lookup("scheduler-tick"))
 
+	pflags.Bool("stats-enabled", false, "Stash the collected samples to local files")
+	viper.BindPFlag("stats.enabled", pflags.Lookup("stats-enabled"))
+
 	pflags.String("stats-dir", "/var/trafic/stats", "Folder where to stash the collected samples")
 	viper.BindPFlag("stats.dir", pflags.Lookup("stats-dir"))
 
