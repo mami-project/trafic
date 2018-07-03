@@ -1,5 +1,5 @@
 #!/bin/bash
-
+# run clients and collect stats locally
 set -eu
 
 LABEL=${LABEL:-"lola-flows"}
@@ -12,10 +12,7 @@ base=$(dirname $0)
 STATS=${STATS:-/root/share/stats/$LABEL}
 
 schedule clients \
+	--stats-enabled \
 	--stats-dir=${STATS} \
 	--log-tag=C \
-	--flows-dirs=${FLOWS} \
-	--influxdb-enabled \
-	--influxdb-endpoint=http://influxdb:8086 \
-	--influxdb-db=lola-${DB} \
-	--influxdb-measurements=${LABEL}
+	--flows-dirs=${FLOWS}
