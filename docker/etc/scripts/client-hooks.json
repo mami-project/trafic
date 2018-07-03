@@ -51,15 +51,22 @@
 		"command-working-directory": "/root/share/scripts",
 		"pass-environment-to-command": [
 			{
-				"source": "header",
-				"envname": "LABEL",
-				"name": "X-LABEL"
+				"source":    "header",
+				"envname":   "LABEL",
+				"name":    "X-LABEL"
 			}
 		]
 	},
 	{
 		"id": "calibrate",
 		"execute-command": "/root/share/scripts/calibrate-link.bash",
-		"command-working-directory": "/root/share/scripts"
+		"command-working-directory": "/root/share/scripts",
+		"pass-environment-to-command": [
+			{
+				"source":   "header",
+				"envname":  "REVERSE",
+				"name":   "X-REVERSE"
+			},
+		]
 	}
 ]
