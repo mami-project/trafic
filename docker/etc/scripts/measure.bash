@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -eu
+set -eum
 
 function mklabel() {
 	local exid=$1
@@ -22,6 +22,8 @@ while [ $load -lt $max ]; do
 	label=$(mklabel "${exid}")
 	capfn="${label}.pcap"
 
+	[ -n "$1" ] && printf "\n ----------------------------------\n Iteration %d " $1
+	printf " Load %d%%\n" ${load}
 	# start servers
 	wget -nv -O /dev/null \
 		 --header "X-CONF: ${exid}.env" \
@@ -30,12 +32,6 @@ while [ $load -lt $max ]; do
 	sleep 1
 
 	# start clients
-	wget -nv -O /dev/null \
-		 --header "X-CONF: ${exid}.env" \
-		 --header "X-LABEL: ${label}" \
-		 --header "X-DB: ${EXID}" \
-		 http://${HOST}-client:9000/hooks/start-clients
-
 	if [ "${IFACE}" != "None" ]; then
 		# start capture for 65s
 		tshark -i ${IFACE} -s 128 -w ${capfn} -f 'tcp or udp' -a duration:65 & WAITPID=$!
@@ -50,6 +46,7 @@ while [ $load -lt $max ]; do
 		# try to save as much space as possible
 		bzip2 -9 ${capfn}
 	else
+		sleep 1
 		wget -nv -O /dev/null \
 			 --header "X-CONF: ${exid}.env" \
 			 --header "X-LABEL: ${label}" \
