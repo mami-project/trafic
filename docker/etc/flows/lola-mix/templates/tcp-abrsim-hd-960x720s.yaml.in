@@ -1,0 +1,25 @@
+label: &l {{ label }}
+
+port: &p {{ port }}
+
+client:
+  at:
+    - 0.1s
+
+  config:
+    server-address: iperf-server
+    server-port: *p
+    bytes: 1.8M
+    interval: 10s
+    bursts: 6
+    # title: *l
+    # reverse: true
+    # report-interval-s: 0.2
+
+server:
+  at:
+    - 0s
+  config:
+    server-port: *p
+    # Just a security issue. Opening up to all interfaces, all addresses is not a good idea
+    server-address: iperf-server

@@ -17,11 +17,12 @@ package cmd
 import (
 	// "fmt"
 	"github.com/spf13/cobra"
-	"abr"
+	"github.com/mami-project/trafic/abrsim/abr"
 )
 
 var serverIp string
 var serverPort int
+var serverSingle bool
 
 // serverCmd represents the server command
 var serverCmd = &cobra.Command{
@@ -34,7 +35,7 @@ over a TCP connection`,
 		// fmt.Println("server called")
 		// fmt.Printf("ip =   %s\n", serverIp)
 		// fmt.Printf("port = %d\n", serverPort)
-		abr.Server(serverIp, serverPort)
+		abr.Server(serverIp, serverPort, serverSingle)
 	},
 }
 
@@ -51,4 +52,5 @@ func init() {
 	// is called directly, e.g.:
 	serverCmd.PersistentFlags().StringVarP(&serverIp, "ip", "I", "127.0.0.1", "IP address of the abrsim server")
 	serverCmd.PersistentFlags().IntVarP(&serverPort, "port", "p", 8081, "TCP port of the abrsim server")
+	serverCmd.PersistentFlags().BoolVarP(&serverSingle,"one-off", "1", false, "Just accept one connection and quit (default is run until killed)")
 }

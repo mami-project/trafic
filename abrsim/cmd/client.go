@@ -15,9 +15,8 @@
 package cmd
 
 import (
-	// "fmt"
-	"abr"
 	"github.com/spf13/cobra"
+	"github.com/mami-project/trafic/abrsim/abr"
 )
 
 var ip string

@@ -66,7 +66,7 @@ func handleConn (conn net.Conn) {
 	fmt.Println("Connection closed...")
 }
 
-func Server(ip string, port int) {
+func Server(ip string, port int, single bool) {
 
 	listenAddr := fmt.Sprintf("%s:%d", ip, port)
 	fmt.Printf("Listening at %s\n",listenAddr)
@@ -79,7 +79,12 @@ func Server(ip string, port int) {
 		if err != nil {
 			continue
 		}
-		go handleConn(conn)
+		if single {
+			handleConn(conn)
+			break
+		} else {
+			go handleConn(conn)
+		}
 	}
 }
 

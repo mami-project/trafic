@@ -14,7 +14,7 @@
 
 package main
 
-import "abrsim/cmd"
+import "github.com/mami-project/trafic/abrsim/cmd"
 
 func main() {
 	cmd.Execute()
