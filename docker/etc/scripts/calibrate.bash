@@ -15,6 +15,7 @@ wget -O /dev/null \
 sleep 1
 # start client
 wget -O /dev/null \
+	 --header "X-REVERSE: FALSE" \
 	 http://${HOST}-client:9000/hooks/calibrate
 
 sleep 40

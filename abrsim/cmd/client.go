@@ -1,0 +1,51 @@
+// Copyright © 2018 NAME HERE <EMAIL ADDRESS>
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+package cmd
+
+import (
+	// "fmt"
+	"abr"
+	"github.com/spf13/cobra"
+)
+
+var ip string
+var port int
+var interval int
+var iter int
+var burst int
+
+// clientCmd represents the client command
+var clientCmd = &cobra.Command{
+	Use:   "client",
+	Short: "Start abrsim in client mode",
+	Long: `Will run abrsim in client mode
+and try to talk to an abrsim in server mode.`,
+	Run: func(cmd *cobra.Command, args []string) {
+		// fmt.Println("client called with params")
+		// fmt.Printf("ip =   %s\n", ip)
+		// fmt.Printf("port = %d\n", port)
+		abr.Client(ip, port, iter, interval, burst)
+	},
+}
+
+func init() {
+	rootCmd.AddCommand(clientCmd)
+
+	clientCmd.PersistentFlags().StringVarP(&ip, "ip", "I", "127.0.0.1", "IP address of the abrsim client")
+	clientCmd.PersistentFlags().IntVarP(&port, "port", "p", 8081, "TCP port of the abrsim client")
+	clientCmd.PersistentFlags().IntVarP(&iter, "iter", "n", 6, "Number of bursts")
+	clientCmd.PersistentFlags().IntVarP(&interval, "interval", "t", 10, "Interval in secs between bursts")
+	clientCmd.PersistentFlags().IntVarP(&burst, "burst", "N", 1000000, "Size in bytes of each burst")
+}
