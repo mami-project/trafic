@@ -23,7 +23,7 @@ var ip string
 var port int
 var interval int
 var iter int
-var burst int
+var burstStr string
 
 // clientCmd represents the client command
 var clientCmd = &cobra.Command{
@@ -35,7 +35,7 @@ and try to talk to an abrsim in server mode.`,
 		// fmt.Println("client called with params")
 		// fmt.Printf("ip =   %s\n", ip)
 		// fmt.Printf("port = %d\n", port)
-		abr.Client(ip, port, iter, interval, burst)
+		abr.Client(ip, port, iter, interval, int(iperf3_atof(burstStr)))
 	},
 }
 
@@ -46,5 +46,5 @@ func init() {
 	clientCmd.PersistentFlags().IntVarP(&port, "port", "p", 8081, "TCP port of the abrsim client")
 	clientCmd.PersistentFlags().IntVarP(&iter, "iter", "n", 6, "Number of bursts")
 	clientCmd.PersistentFlags().IntVarP(&interval, "interval", "t", 10, "Interval in secs between bursts")
-	clientCmd.PersistentFlags().IntVarP(&burst, "burst", "N", 1000000, "Size in bytes of each burst")
+	clientCmd.PersistentFlags().StringVarP(&burstStr, "burst", "N", "1000000", "Size of each burst (as x(.xxx)?[kmgtKMGT]?)")
 }
