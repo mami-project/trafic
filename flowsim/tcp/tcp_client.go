@@ -22,7 +22,7 @@ func mkTransfer (conn net.Conn, iter int, total int, tsize int) {
 	fmt.Printf("Effectively read %d bytes\n", readBytes)
 }
 
-func Client(host string, port int, iter int, interval int, burst int) {
+func Client(host string, port int, iter int, interval int, burst int, tos int) {
 	// connect to this socket
 	serverAddr := fmt.Sprintf("%s:%d",host,port)
 	conn, err := net.Dial("tcp", serverAddr)
@@ -31,6 +31,11 @@ func Client(host string, port int, iter int, interval int, burst int) {
 		return
 	}
 	fmt.Printf("Talking to %s\n",serverAddr)
+	err = setTos (conn, tos)
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
     r := rand.New(rand.NewSource(33))
 	initWait := r.Intn(interval * 50) / 50.0
 	time.Sleep(time.Duration(initWait) * time.Second)

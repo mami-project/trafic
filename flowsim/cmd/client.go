@@ -23,6 +23,7 @@ var ip string
 var port int
 var interval int
 var iter int
+var TOS int
 var burstStr string
 
 // clientCmd represents the client command
@@ -35,7 +36,7 @@ and try to talk to an flowsim in server mode.`,
 		// fmt.Println("client called with params")
 		// fmt.Printf("ip =   %s\n", ip)
 		// fmt.Printf("port = %d\n", port)
-		flow.Client(ip, port, iter, interval, iperf3_atoi(burstStr))
+		flow.Client(ip, port, iter, interval, iperf3_atoi(burstStr), TOS)
 	},
 }
 
@@ -47,4 +48,5 @@ func init() {
 	clientCmd.PersistentFlags().IntVarP(&iter, "iter", "n", 6, "Number of bursts")
 	clientCmd.PersistentFlags().IntVarP(&interval, "interval", "t", 10, "Interval in secs between bursts")
 	clientCmd.PersistentFlags().StringVarP(&burstStr, "burst", "N", "1000000", "Size of each burst (as x(.xxx)?[kmgtKMGT]?)")
+	clientCmd.PersistentFlags().IntVarP(&TOS, "TOS", "T", 128, "Value of the TOS field in the IP packets")
 }

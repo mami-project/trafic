@@ -22,6 +22,16 @@ func matcher(cmd string) (string, string, string, error) {
 	return "", "", "", errors.New(fmt.Sprintf("Unexpected request %s",cmd))
 }
 
+func setTos(conn net.Conn, tos int) (error) {
+	// f, err := conn.File()
+    // if err != nil {
+    //     return err
+    // }
+
+    // return syscall.SetsockoptInt(int(f.Fd()), syscall.SOL_SOCKET, syscall.IP_TOS, tos)
+	return nil
+}
+
 func handleConn (conn net.Conn) {
 	var run, total, bunch string
 
@@ -70,7 +80,7 @@ func handleConn (conn net.Conn) {
 	fmt.Println("Connection closed...")
 }
 
-func Server(ip string, port int, single bool) {
+func Server(ip string, port int, single bool, tos int) {
 
 	listenAddr := fmt.Sprintf("%s:%d", ip, port)
 
@@ -85,6 +95,11 @@ func Server(ip string, port int, single bool) {
 		conn, err := ln.Accept()
 		if err != nil {
 			fmt.Printf("Error accepting connection\n")
+			continue
+		}
+		err = setTos (conn, tos)
+		if err != nil {
+			log.Fatal(err)
 			continue
 		}
 		if single {
