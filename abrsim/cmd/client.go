@@ -35,7 +35,7 @@ and try to talk to an abrsim in server mode.`,
 		// fmt.Println("client called with params")
 		// fmt.Printf("ip =   %s\n", ip)
 		// fmt.Printf("port = %d\n", port)
-		abr.Client(ip, port, iter, interval, int(iperf3_atof(burstStr)))
+		abr.Client(ip, port, iter, interval, iperf3_atoi(burstStr))
 	},
 }
 
