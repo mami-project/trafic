@@ -15,24 +15,24 @@ func TestConversionNoUnit(t *testing.T) {
 
 func TestConversionK(t *testing.T) {
 	s := "1K"
-	n := int(iperf3_atof(s))
-	if n != 1024 {
-		t.Errorf("Expected %s=1024 and not %d", s,n)
+	n := iperf3_atoi(s)
+	if n != int(kilo) {
+		t.Errorf("Expected %s=%d and not %d", s,int(kilo),n)
 	}
 }
 
 func TestConversionM(t *testing.T) {
 	s := "1M"
 	n := int(iperf3_atof(s))
-	if n != 1024 * 1024 {
-		t.Errorf("Expected %s=1024*1024 and not %d", s,n)
+	if n != int(mega) {
+		t.Errorf("Expected %s=%d and not %d", s,int(mega), n)
 	}
 }
 
 func TestConversionG(t *testing.T) {
 	s := "1g"
 	n := int(iperf3_atof(s))
-	if n != 1024 * 1024 * 1024 {
-		t.Errorf("Expected %s=1024*1024*1024 and not %d", s,n)
+	if n != int(giga) {
+		t.Errorf("Expected %s=%d and not %d", s,int(giga), n)
 	}
 }

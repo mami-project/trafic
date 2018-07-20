@@ -16,6 +16,10 @@ const (
 
 var conv map[rune] float64
 
+func iperf3_atoi(s string) int {
+		return int(iperf3_atof(s))
+}
+
 func iperf3_atof (s string) float64 {
 	var val float64
 	var unit rune
