@@ -1,11 +1,10 @@
-package abr
+package flow
 
 import (
 	"net"
 	"fmt"
 	"log"
 	"io"
-	// "flag"
 	"time"
 	"math/rand"
 )
@@ -26,9 +25,12 @@ func mkTransfer (conn net.Conn, iter int, total int, tsize int) {
 func Client(host string, port int, iter int, interval int, burst int) {
 	// connect to this socket
 	serverAddr := fmt.Sprintf("%s:%d",host,port)
+	conn, err := net.Dial("tcp", serverAddr)
+	if err != nil {
+		fmt.Printf("Error connecting to %s\n", serverAddr)
+		return
+	}
 	fmt.Printf("Talking to %s\n",serverAddr)
-	conn, _ := net.Dial("tcp", serverAddr)
-
     r := rand.New(rand.NewSource(33))
 	initWait := r.Intn(interval * 50) / 50.0
 	time.Sleep(time.Duration(initWait) * time.Second)
@@ -50,15 +52,3 @@ func Client(host string, port int, iter int, interval int, burst int) {
 	conn.Close()
 	fmt.Printf("\nFinished...\n\n")
 }
-
-// func main() {
-// 	ipPtr    := flag.String("ip", "127.0.0.1", "The IP address to bind to")
-// 	portPtr  := flag.Int("port", 8081, "The port to use")
-// 	burstPtr := flag.Int("burst", 100000, "The size of the burst")
-// 	iterPtr  := flag.Int("iter", 6, "The number of repetitions")
-// 	timePtr  := flag.Int("interval", 10, "Wait time between bursts in secs")
-
-// 	flag.Parse()
-
-// 	abrclient(*ipPtr, *portPtr, *iterPtr, *timePtr, *burstPtr)
-// }

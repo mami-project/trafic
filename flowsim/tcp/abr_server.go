@@ -1,4 +1,4 @@
-package abr
+package flow
 
 import (
 	"net"
@@ -10,16 +10,16 @@ import (
 	"io"
 	"log"
 	"os"
-	// "flag"
+	"errors"
 )
 
-func matcher(cmd string) (string, string, string) {
+func matcher(cmd string) (string, string, string, error) {
 	expr := regexp.MustCompile(`GET (\d+)/(\d+) (\d+)`)
 	parsed := expr.FindStringSubmatch(cmd)
 	if len(parsed) == 4 {
-        return parsed[1], parsed[2], parsed[3]
+        return parsed[1], parsed[2], parsed[3], nil
 	}
-	return "", "", ""
+	return "", "", "", errors.New(fmt.Sprintf("Unexpected request %s",cmd))
 }
 
 func handleConn (conn net.Conn) {
@@ -40,8 +40,11 @@ func handleConn (conn net.Conn) {
 		fmt.Print("Message Received:", string(message))
 
 		// Checked in the client
-		run, total, bunch = matcher(strings.ToUpper(string(message)))
-
+		run, total, bunch, err = matcher(strings.ToUpper(string(message)))
+		if err != nil {
+			log.Fatal(err)
+			continue
+		}
 		// fmt.Println(run, total, bunch)
 		run_iter,   _ := strconv.Atoi(run)
 		total_iter, _ := strconv.Atoi(total)
@@ -55,6 +58,7 @@ func handleConn (conn net.Conn) {
 		// fmt.Printf("Read %d bytes from /dev/zero\n",len(testBunch))
 		if err != nil {
 			log.Fatal(err)
+			continue
 		}
 		fmt.Printf("Sending %d bytes...\n",numRead)
 		conn.Write(testBunch)
@@ -69,14 +73,18 @@ func handleConn (conn net.Conn) {
 func Server(ip string, port int, single bool) {
 
 	listenAddr := fmt.Sprintf("%s:%d", ip, port)
-	fmt.Printf("Listening at %s\n",listenAddr)
-	// listen on all interfaces
-	ln, _ := net.Listen("tcp", listenAddr)
 
+	ln, err := net.Listen("tcp", listenAddr)
+	if err != nil {
+		fmt.Printf("Error binding server to %s\n", listenAddr)
+		return
+	}
+	fmt.Printf("Listening at %s\n",listenAddr)
 	for {
 		// accept connection on port
 		conn, err := ln.Accept()
 		if err != nil {
+			fmt.Printf("Error accepting connection\n")
 			continue
 		}
 		if single {
@@ -87,11 +95,3 @@ func Server(ip string, port int, single bool) {
 		}
 	}
 }
-
-// func main() {
-// 	ipPtr := flag.String("ip", "127.0.0.1", "The IP address to bind to")
-// 	portPtr := flag.Int("port", 8081, "The port to use")
-// 	flag.Parse()
-
-// 	abrserver(*ipPtr, *portPtr)
-// }

@@ -16,7 +16,7 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
-	"github.com/mami-project/trafic/abrsim/abr"
+	"github.com/mami-project/trafic/flowsim/tcp"
 )
 
 var ip string
@@ -28,22 +28,22 @@ var burstStr string
 // clientCmd represents the client command
 var clientCmd = &cobra.Command{
 	Use:   "client",
-	Short: "Start abrsim in client mode",
-	Long: `Will run abrsim in client mode
-and try to talk to an abrsim in server mode.`,
+	Short: "Start flowsim in client mode",
+	Long: `Will run flowsim in client mode
+and try to talk to an flowsim in server mode.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		// fmt.Println("client called with params")
 		// fmt.Printf("ip =   %s\n", ip)
 		// fmt.Printf("port = %d\n", port)
-		abr.Client(ip, port, iter, interval, iperf3_atoi(burstStr))
+		flow.Client(ip, port, iter, interval, iperf3_atoi(burstStr))
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(clientCmd)
 
-	clientCmd.PersistentFlags().StringVarP(&ip, "ip", "I", "127.0.0.1", "IP address or host name of the abrsim server to talk to")
-	clientCmd.PersistentFlags().IntVarP(&port, "port", "p", 8081, "TCP port of the abrsim server")
+	clientCmd.PersistentFlags().StringVarP(&ip, "ip", "I", "127.0.0.1", "IP address or host name of the flowsim server to talk to")
+	clientCmd.PersistentFlags().IntVarP(&port, "port", "p", 8081, "TCP port of the flowsim server")
 	clientCmd.PersistentFlags().IntVarP(&iter, "iter", "n", 6, "Number of bursts")
 	clientCmd.PersistentFlags().IntVarP(&interval, "interval", "t", 10, "Interval in secs between bursts")
 	clientCmd.PersistentFlags().StringVarP(&burstStr, "burst", "N", "1000000", "Size of each burst (as x(.xxx)?[kmgtKMGT]?)")

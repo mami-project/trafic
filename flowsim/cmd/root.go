@@ -25,7 +25,7 @@ import (
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "abrsim",
+	Use:   "flowsim",
 	Short: "A TCP server/client to simulate ABR traffic",
 	Long: `A TCP server/client to simulate ABR traffic in one app.
 Follows the iperf3 way of life integrating both server and client`,
