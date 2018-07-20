@@ -42,8 +42,8 @@ and try to talk to an abrsim in server mode.`,
 func init() {
 	rootCmd.AddCommand(clientCmd)
 
-	clientCmd.PersistentFlags().StringVarP(&ip, "ip", "I", "127.0.0.1", "IP address of the abrsim client")
-	clientCmd.PersistentFlags().IntVarP(&port, "port", "p", 8081, "TCP port of the abrsim client")
+	clientCmd.PersistentFlags().StringVarP(&ip, "ip", "I", "127.0.0.1", "IP address or host name of the abrsim server to talk to")
+	clientCmd.PersistentFlags().IntVarP(&port, "port", "p", 8081, "TCP port of the abrsim server")
 	clientCmd.PersistentFlags().IntVarP(&iter, "iter", "n", 6, "Number of bursts")
 	clientCmd.PersistentFlags().IntVarP(&interval, "interval", "t", 10, "Interval in secs between bursts")
 	clientCmd.PersistentFlags().StringVarP(&burstStr, "burst", "N", "1000000", "Size of each burst (as x(.xxx)?[kmgtKMGT]?)")

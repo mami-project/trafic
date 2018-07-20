@@ -5,6 +5,13 @@ import (
 	"fmt"
 )
 
+const (
+        kilo float64 = 1024.0
+        mega float64 = kilo * kilo
+        giga float64 = mega * kilo
+        tera float64 = giga * kilo
+)
+
 // Convert a string to a float
 
 var conv map[rune] float64
@@ -18,14 +25,14 @@ func iperf3_atof (s string) float64 {
 	if !ok {
 		// fmt.Println("Initialising conv map")
 		conv = map[rune] float64 {
-			'k': 1024.0,
-			'K': 1024.0,
-			'm': 1024.0 * 1024.0,
-			'M': 1024.0 * 1024.0,
-			'g': 1024.0 * 1024.0 * 1024.0,
-			'G': 1024.0 * 1024.0 * 1024.0,
-			't': 1024.0 * 1024.0 * 1024.0 * 1024,
-			'T': 1024.0 * 1024.0 * 1024.0 * 1024,
+			'k': kilo,
+			'K': kilo,
+			'm': mega,
+			'M': mega,
+			'g': giga,
+			'G': giga,
+			't': tera,
+			'T': tera,
 		}
 	}
 	fmt.Sscanf(s, "%f%c", &val, &unit)

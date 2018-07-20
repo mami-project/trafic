@@ -37,7 +37,7 @@ over a TCP connection`,
 
 func init() {
 	rootCmd.AddCommand(serverCmd)
-	serverCmd.PersistentFlags().StringVarP(&serverIp, "ip", "I", "127.0.0.1", "IP address of the abrsim server")
-	serverCmd.PersistentFlags().IntVarP(&serverPort, "port", "p", 8081, "TCP port of the abrsim server")
+	serverCmd.PersistentFlags().StringVarP(&serverIp, "ip", "I", "127.0.0.1", "IP address or host name bound to the abrsim server")
+	serverCmd.PersistentFlags().IntVarP(&serverPort, "port", "p", 8081, "TCP port bound to the abrsim server")
 	serverCmd.PersistentFlags().BoolVarP(&serverSingle,"one-off", "1", false, "Just accept one connection and quit (default is run until killed)")
 }
