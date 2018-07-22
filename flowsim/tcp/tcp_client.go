@@ -25,9 +25,14 @@ func mkTransfer (conn net.Conn, iter int, total int, tsize int) {
 func Client(host string, port int, iter int, interval int, burst int, tos int) {
 	// connect to this socket
 	serverAddr := fmt.Sprintf("%s:%d",host,port)
-	conn, err := net.Dial("tcp", serverAddr)
+	server, err := net.ResolveTCPAddr("tcp", serverAddr)
 	if err != nil {
-		fmt.Printf("Error connecting to %s\n", serverAddr)
+		fmt.Printf("Error resolving %s: %v\n", serverAddr, err)
+		return
+	}
+	conn, err := net.DialTCP("tcp", nil, server)
+	if err != nil {
+		fmt.Printf("Error connecting to %s: %v\n", serverAddr, err)
 		return
 	}
 	fmt.Printf("Talking to %s\n",serverAddr)

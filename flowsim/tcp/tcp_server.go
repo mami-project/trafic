@@ -11,6 +11,7 @@ import (
 	"log"
 	"os"
 	"errors"
+	"syscall"
 )
 
 func matcher(cmd string) (string, string, string, error) {
@@ -22,14 +23,21 @@ func matcher(cmd string) (string, string, string, error) {
 	return "", "", "", errors.New(fmt.Sprintf("Unexpected request %s",cmd))
 }
 
-func setTos(conn net.Conn, tos int) (error) {
-	// f, err := conn.File()
-    // if err != nil {
-    //     return err
-    // }
+func setTos(tcpConn *net.TCPConn, tos int) (error) {
+	f, err := tcpConn.File()
 
-    // return syscall.SetsockoptInt(int(f.Fd()), syscall.SOL_SOCKET, syscall.IP_TOS, tos)
-	return nil
+    if err != nil {
+		fmt.Printf("While setting TOS to %d: %v\n", tos, err)
+        return err
+    }
+	//
+	// TODO
+	//
+    // err = syscall.SetsockoptInt(int(f.Fd()), syscall.SOL_SOCKET, syscall.IP_TOS, tos)
+    // if err != nil {
+	// 	fmt.Printf("While setting TOS to %d: %v\n", tos, err)
+    // }
+	return err
 }
 
 func handleConn (conn net.Conn) {
@@ -82,9 +90,13 @@ func handleConn (conn net.Conn) {
 
 func Server(ip string, port int, single bool, tos int) {
 
-	listenAddr := fmt.Sprintf("%s:%d", ip, port)
+	listenAddr, err := net.ResolveTCPAddr("tcp", fmt.Sprintf("%s:%d", ip, port))
+	if err != nil {
+		fmt.Printf("Error resolving %s:%d (%v)\n", ip, port, err)
+		return
+	}
 
-	ln, err := net.Listen("tcp", listenAddr)
+	ln, err := net.ListenTCP("tcp", listenAddr)
 	if err != nil {
 		fmt.Printf("Error binding server to %s\n", listenAddr)
 		return
@@ -92,14 +104,13 @@ func Server(ip string, port int, single bool, tos int) {
 	fmt.Printf("Listening at %s\n",listenAddr)
 	for {
 		// accept connection on port
-		conn, err := ln.Accept()
+		conn, err := ln.AcceptTCP()
 		if err != nil {
 			fmt.Printf("Error accepting connection\n")
 			continue
 		}
 		err = setTos (conn, tos)
 		if err != nil {
-			log.Fatal(err)
 			continue
 		}
 		if single {
