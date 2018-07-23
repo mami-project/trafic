@@ -15,7 +15,7 @@
 package cmd
 
 import (
-	// "fmt"
+	"fmt"
 	"github.com/spf13/cobra"
 	"github.com/mami-project/trafic/flowsim/tcp"
 )
@@ -32,7 +32,14 @@ var serverCmd = &cobra.Command{
 It will basically sit there and wait for the client to request bunches of data
 over a TCP connection`,
 	Run: func(cmd *cobra.Command, args []string) {
-		flow.Server(serverIp, serverPort, serverSingle, serverTos)
+		if serverTos < 0 {
+			fmt.Println("TOS value needs to be >= 0")
+			return
+		}
+		if serverTos > 63 {
+			fmt.Println("TOS value needs to be < 64")
+		}
+		flow.Server(serverIp, serverPort, serverSingle, serverTos * 4)
 	},
 }
 
@@ -41,5 +48,5 @@ func init() {
 	serverCmd.PersistentFlags().StringVarP(&serverIp, "ip", "I", "127.0.0.1", "IP address or host name bound to the flowsim server")
 	serverCmd.PersistentFlags().IntVarP(&serverPort, "port", "p", 8081, "TCP port bound to the flowsim server")
 	serverCmd.PersistentFlags().BoolVarP(&serverSingle,"one-off", "1", false, "Just accept one connection and quit (default is run until killed)")
-	serverCmd.PersistentFlags().IntVarP(&serverTos, "TOS", "T", 128, "Value of the TOS field in the IP layer")
+	serverCmd.PersistentFlags().IntVarP(&serverTos, "TOS", "T", 0, "Value of the TOS field in the IP layer (0 <= TOS < 64)")
 }

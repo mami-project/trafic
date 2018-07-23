@@ -27,16 +27,16 @@ func setTos(tcpConn *net.TCPConn, tos int) (error) {
 	f, err := tcpConn.File()
 
     if err != nil {
-		fmt.Printf("While setting TOS to %d: %v\n", tos, err)
+		fmt.Printf("While setting TOS to %d on %v: %v\n", tos, f, err)
         return err
     }
 	//
 	// TODO
 	//
-    // err = syscall.SetsockoptInt(int(f.Fd()), syscall.SOL_SOCKET, syscall.IP_TOS, tos)
-    // if err != nil {
-	// 	fmt.Printf("While setting TOS to %d: %v\n", tos, err)
-    // }
+    err = syscall.SetsockoptInt(int(f.Fd()), syscall.IPPROTO_IP, syscall.IP_TOS, tos)
+    if err != nil {
+		fmt.Printf("While setting TOS to %d: %v\n", tos, err)
+    }
 	return err
 }
 
