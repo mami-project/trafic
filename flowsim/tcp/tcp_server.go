@@ -40,11 +40,21 @@ func setTos(tcpConn *net.TCPConn, tos int) (error) {
 	return err
 }
 
-func handleConn (conn net.Conn) {
+func closeFd(tcpConn *net.TCPConn) (error) {
+	f, err := tcpConn.File()
+	if err != nil {
+		return err
+	}
+	f.Close()
+	return nil
+}
+
+func handleConn (conn *net.TCPConn) {
 	var run, total, bunch string
 
 	defer conn.Close()
 	zero, err := os.Open("/dev/zero")
+	defer zero.Close()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -81,10 +91,12 @@ func handleConn (conn net.Conn) {
 		fmt.Printf("Sending %d bytes...\n",numRead)
 		conn.Write(testBunch)
 		if run_iter == total_iter {
-			fmt.Println("This should kill this TCP server thread")
+			// fmt.Println("This should kill this TCP server thread")
 			break
 		}
 	}
+
+	closeFd(conn)
 	fmt.Println("Connection closed...")
 }
 
