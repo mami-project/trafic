@@ -9,7 +9,7 @@ import (
 	"math/rand"
 )
 
-func mkTransfer (conn net.Conn, iter int, total int, tsize int) {
+func mkTransfer (conn *net.TCPConn, iter int, total int, tsize int) {
 	// send to socket
 	fmt.Fprintf(conn, fmt.Sprintf("GET %d/%d %d\n", iter, total, tsize))
 	// listen for reply
@@ -59,6 +59,7 @@ func Client(host string, port int, iter int, interval int, burst int, tos int) {
 		fmt.Printf("Launching at %v\n", now)
 		go mkTransfer (conn , currIter, iter, burst)
 	}
+	closeFd(conn)
 	conn.Close()
 	fmt.Printf("\nFinished...\n\n")
 }
