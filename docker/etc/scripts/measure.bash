@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -eu
+set -eum
 
 function mklabel() {
 	local exid=$1
@@ -9,43 +9,66 @@ function mklabel() {
 	printf "lola-%s-%s" "${exid}" "${unixtime}"
 }
 
+
 # remote measurements don't include capturing traffic
-#IFACE=${IFACE:-eth0}
-IFACE=
+IFACE=${IFACE:-None}
 EXID=${EXID:-baseline}
 HOST=${HOST:-iperf}
 
-for load in 75 80 85 90 95
-do
+CAPTIME=70
+
+max=100
+load=75
+while [ $load -lt $max ]; do
 	exid="${EXID}-${load}"
 	label=$(mklabel "${exid}")
 	capfn="${label}.pcap"
 
+	[ -n "$1" ] && printf "\n ----------------------------------\n Iteration %d " $1
+	printf " Load %d%%\n" ${load}
 	# start servers
-	wget --header "X-CONF: ${exid}.env" \
-		-O /dev/null \
-		http://${HOST}-server:9000/hooks/start-servers
-
+	wget -nv -O /dev/null \
+		 --header "X-CONF: ${exid}.env" \
+		 http://${HOST}-server:9000/hooks/start-servers
 	sleep 1
 
 	# start clients
-	wget --header "X-CONF: ${exid}.env" \
-		--header "X-LABEL: ${label}" \
-		--header "X-DB: ${EXID}" \
-		-O /dev/null \
-		http://${HOST}-client:9000/hooks/start-clients
-
-	if [ -n "${IFACE}" ]; then
-		# start capture for 60s
-		tshark -i ${IFACE} -s 128 -w ${capfn} -f 'tcp or udp' -a duration:60
+	if [ "${IFACE}" != "None" ]; then
+		# start capture for 70s
+		# should be plenty of time for all clients to start and finish
+		#
+		tshark -i ${IFACE} -s 128 -w ${capfn} -f 'tcp or udp' -a duration:${CAPTIME} & WAITPID=$!
+		# start the clients
+		sleep 1
+		wget -nv -O /dev/null \
+			 --header "X-CONF: ${exid}.env" \
+			 --header "X-LABEL: ${label}" \
+			 --header "X-DB: ${EXID}" \
+			 http://${HOST}-client:9000/hooks/start-clients
+		# wait for the capture to finish
+		wait $WAITPID
 		# try to save as much space as possible
 		bzip2 -9 ${capfn}
-		sleep 5	# allow some time for flows to drain
 	else
-		sleep 65
+		sleep 1
+		wget -nv -O /dev/null \
+			 --header "X-CONF: ${exid}.env" \
+			 --header "X-LABEL: ${label}" \
+			 --header "X-DB: ${EXID}" \
+			 http://${HOST}-client:9000/hooks/start-clients
+		sleep ${CAPTIME}
 	fi
 	# cleanup (and, possibly, go again)
-	wget http://${HOST}-server:9000/hooks/stop-servers -O /dev/null
-	wget http://${HOST}-client:9000/hooks/stop-clients -O /dev/null
+	wget -nv -O /dev/null \
+		 http://${HOST}-server:9000/hooks/stop-servers
+	wget -nv -O /dev/null \
+		 http://${HOST}-client:9000/hooks/stop-clients
 	sleep 5
+
+	wget -nv -O /dev/null \
+		 --header "X-LABEL: ${label}" \
+		 http://${HOST}-client:9000/hooks/clean-stats
+
+	sleep 5
+	load=$((load + 5))
 done

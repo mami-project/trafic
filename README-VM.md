@@ -1,9 +1,9 @@
-# Integrating traffic in an NFV environment
+# Integrating [trafic](https://github.com/mami-project/trafic) in an NFV environment
 
 This file describes how to create the basic VM image used in the experiments and how to integrate it in an NFV environment.
 ## Alpine Linux-based VM
 [Alpine Linux](https://www.alpinelinux.org) is a Linux distribution that adapts very well to small footprint environments and uses a hardened Linux kernel. Alpine is based on packages, that are very up-to-date.
-We will start with an [image of the 3.7 version](http://dl-cdn.alpinelinux.org/alpine/v3.7/releases/x86_64/alpine-virt-3.7.0-x86_64.iso), that we will update to the current experimental branch in order to include the latest influxes and iperf3 packages.
+We will start with an image of the [version 3.7](http://dl-cdn.alpinelinux.org/alpine/v3.7/releases/x86_64/alpine-virt-3.7.0-x86_64.iso), that we will update to the current experimental branch in order to include the latest influxes and iperf3 packages.
 
 ### Creating the initial image
 
@@ -179,7 +179,7 @@ Configure `iperf-client` to communicate with `iperf-server` using the *Network u
 
 ### Note: regarding go compilation warnings
 
-If you experience problems compiling further down, you may need to add the following to your `.profile`:
+If you experience problems compiling trafic or webhooks, you may need to add the following to your `.profile`:
 
 ```
 GOOS=linux
