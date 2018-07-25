@@ -15,7 +15,7 @@ type ServerConfig struct {
 // - daemon		suppress
 
 func (cfg *ServerConfig) ToArgs() ([]string, error) {
-	args := []string{"--server"}
+	args := []string{"iperf3", "--server"}
 
 	args = AppendKeyVal(args, "--authorized-users-path", cfg.AuthUsersFile)
 	//	args = AppendKey(args, "--daemon", cfg.Daemon)

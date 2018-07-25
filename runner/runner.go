@@ -20,6 +20,10 @@ type Runner struct {
 	Stderr  *bytes.Buffer
 }
 
+//
+// New version for config.Configurer;
+// ToArgs() starts with executable name
+//
 func NewRunner(role Role, log *log.Logger, at time.Duration, label string, cfg config.Configurer) (*Runner, error) {
 	args, err := cfg.ToArgs()
 	if err != nil {
@@ -28,7 +32,7 @@ func NewRunner(role Role, log *log.Logger, at time.Duration, label string, cfg c
 
 	return &Runner{
 		Role:    role,
-		Command: exec.Command("iperf3", args...),
+		Command: exec.Command(args[0], args[1:]...),
 		At:      at,
 		Label:   label,
 		Logger:  log,

@@ -265,6 +265,7 @@ func setupRunners(flows FlowConfigs, log *log.Logger, role runner.Role) (Runners
 	for _, flow := range flows {
 		for _, at := range atForRole(role, flow) {
 			cfg := configurerForRole(role, flow)
+
 			runner, err := runner.NewRunner(role, log, at, flow.Label, cfg)
 			if err != nil {
 				log.Printf("cannot create %s %s: %v", role, flow.Label, err)

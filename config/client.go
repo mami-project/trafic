@@ -43,7 +43,7 @@ type ClientConfig struct {
 // - reverse            force (true)
 
 func (cfg *ClientConfig) ToArgs() ([]string, error) {
-	args := []string{"--client"}
+	args := []string{"iperf3", "--client"}
 
 	// Make sure this results in a "sensible" iperf3 invocation
 	// we want to identify errors as early as possible (i.e., before
