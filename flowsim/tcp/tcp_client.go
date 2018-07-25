@@ -22,6 +22,7 @@ func mkTransfer (conn *net.TCPConn, iter int, total int, tsize int) {
 	fmt.Printf("Effectively read %d bytes\n", readBytes)
 }
 
+
 func Client(host string, port int, iter int, interval int, burst int, tos int) {
 	// connect to this socket
 	serverAddr := fmt.Sprintf("%s:%d",host,port)
@@ -35,14 +36,15 @@ func Client(host string, port int, iter int, interval int, burst int, tos int) {
 		fmt.Printf("Error connecting to %s: %v\n", serverAddr, err)
 		return
 	}
+	defer closeFdSocket (conn)
 	fmt.Printf("Talking to %s\n",serverAddr)
 	err = setTos (conn, tos)
 	if err != nil {
 		log.Fatal(err)
 		return
 	}
-    r := rand.New(rand.NewSource(33))
-	initWait := r.Intn(interval * 50) / 50.0
+    r := rand.New(rand.NewSource(time.Now().UnixNano()))
+	initWait := r.Intn(interval * 50) / 100.0
 	time.Sleep(time.Duration(initWait) * time.Second)
 
 	currIter := 1
@@ -59,7 +61,5 @@ func Client(host string, port int, iter int, interval int, burst int, tos int) {
 		fmt.Printf("Launching at %v\n", now)
 		go mkTransfer (conn , currIter, iter, burst)
 	}
-	closeFd(conn)
-	conn.Close()
 	fmt.Printf("\nFinished...\n\n")
 }

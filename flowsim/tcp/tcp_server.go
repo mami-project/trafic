@@ -40,19 +40,25 @@ func setTos(tcpConn *net.TCPConn, tos int) (error) {
 	return err
 }
 
-func closeFd(tcpConn *net.TCPConn) (error) {
-	f, err := tcpConn.File()
+func closeFdSocket (conn *net.TCPConn) (error){
+	f, err := conn.File()
 	if err != nil {
+		fmt.Printf("Error: %v\n", err)
 		return err
 	}
 	f.Close()
+	conn.Close()
+	fmt.Println("Closed fd and socket")
 	return nil
 }
+
+
 
 func handleConn (conn *net.TCPConn) {
 	var run, total, bunch string
 
-	defer conn.Close()
+	//	defer conn.Close()
+	defer closeFdSocket(conn)
 	zero, err := os.Open("/dev/zero")
 	defer zero.Close()
 	if err != nil {
@@ -96,7 +102,6 @@ func handleConn (conn *net.TCPConn) {
 		}
 	}
 
-	closeFd(conn)
 	fmt.Println("Connection closed...")
 }
 
