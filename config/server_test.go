@@ -31,6 +31,7 @@ func TestServerConfig_ToArgs(t *testing.T) {
 				CommonConfig:   CommonConfig{},
 			},
 			[]string{
+				"iperf3",
 				"--server",
 				"--authorized-users-path",
 				"/path/to/auth/users/file",
