@@ -69,6 +69,7 @@ func TestClientConfig_ToArgs(t *testing.T) {
 				CommonConfig:     CommonConfig{},
 			},
 			[]string{
+				"iperf3",
 				"--client",
 				"iperf-server",
 				"--length",
