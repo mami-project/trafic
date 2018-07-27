@@ -24,7 +24,7 @@ var ip string
 var port int
 var interval int
 var iter int
-var TOS int
+var clientTos string
 var burstStr string
 
 // clientCmd represents the client command
@@ -34,14 +34,13 @@ var clientCmd = &cobra.Command{
 	Long: `Will run flowsim in client mode
 and try to talk to an flowsim in server mode.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		if TOS < 0 {
-			fmt.Println("TOS needs to be >= 0")
+		Tos, err := flow.Dscp(clientTos)
+		if err != nil {
+			fmt.Printf("Error decoding DSCP (%s): %v\n", clientTos, err)
 			return
 		}
-		if TOS > 63 {
-			fmt.Println("TOS needs to be < 64")
-		}
-		flow.Client(ip, port, iter, interval, iperf3_atoi(burstStr), TOS * 4)
+
+		flow.Client(ip, port, iter, interval, iperf3_atoi(burstStr), Tos * 4)
 	},
 }
 
@@ -53,5 +52,5 @@ func init() {
 	clientCmd.PersistentFlags().IntVarP(&iter, "iter", "n", 6, "Number of bursts")
 	clientCmd.PersistentFlags().IntVarP(&interval, "interval", "t", 10, "Interval in secs between bursts")
 	clientCmd.PersistentFlags().StringVarP(&burstStr, "burst", "N", "1M", "Size of each burst (as x(.xxx)?[kmgtKMGT]?)")
-	clientCmd.PersistentFlags().IntVarP(&TOS, "TOS", "T", 0, "Value of the TOS field in the IP packets (0 <= TOS < 64)")
+	clientCmd.PersistentFlags().StringVarP(&clientTos, "TOS", "T", "CS0", "Value of the DSCP field in the IP packets (valid int or DSCP-Id)")
 }
