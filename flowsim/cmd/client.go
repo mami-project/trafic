@@ -38,7 +38,11 @@ and try to talk to an flowsim in server mode.`,
 		if err != nil {
 			fmt.Printf("Error decoding DSCP (%s): %v\n", clientTos, err)
 		} else {
-			flow.Client(ip, port, iter, interval, iperf3_atoi(burstStr), tos * 4)
+			val, err := utoi(burstStr)
+			if err != nil {
+				fmt.Printf("Warning: %v, generating %d byte bursts", err, val)
+			}
+			flow.Client(ip, port, iter, interval, val, tos * 4)
 		}
 	},
 }
