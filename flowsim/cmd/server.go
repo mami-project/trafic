@@ -35,10 +35,9 @@ over a TCP connection`,
 		tos, err := flow.Dscp(serverTos)
 		if err != nil {
 			fmt.Printf("Error decoding DSCP (%s): %v\n", serverTos, err)
-			return
+		} else {
+			flow.Server(serverIp, serverPort, serverSingle, tos * 4)
 		}
-
-		flow.Server(serverIp, serverPort, serverSingle, tos * 4)
 	},
 }
 

@@ -34,13 +34,12 @@ var clientCmd = &cobra.Command{
 	Long: `Will run flowsim in client mode
 and try to talk to an flowsim in server mode.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		Tos, err := flow.Dscp(clientTos)
+		tos, err := flow.Dscp(clientTos)
 		if err != nil {
 			fmt.Printf("Error decoding DSCP (%s): %v\n", clientTos, err)
-			return
+		} else {
+			flow.Client(ip, port, iter, interval, iperf3_atoi(burstStr), tos * 4)
 		}
-
-		flow.Client(ip, port, iter, interval, iperf3_atoi(burstStr), Tos * 4)
 	},
 }
 
