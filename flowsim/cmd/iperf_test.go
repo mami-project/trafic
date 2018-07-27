@@ -3,19 +3,20 @@ package cmd
 // A couple of commodity functions to mimic the iperf3 cli
 import (
 	"testing"
+	"fmt"
 )
 
 func TestConversionNoUnit(t *testing.T) {
 	s := "1025"
-	n := int(iperf3_atof(s))
-	if n != 1025 {
-		t.Errorf("Expected %s=1025 and not %d", s, n)
+	n, _ := utof(s)
+	if int(n) != 1025 {
+		t.Errorf("Expected %s=1025 and not %d", s, int(n))
 	}
 }
 
 func TestConversionK(t *testing.T) {
 	s := "1K"
-	n := iperf3_atoi(s)
+	n, _ := utoi(s)
 	if n != int(kilo) {
 		t.Errorf("Expected %s=%d and not %d", s,int(kilo),n)
 	}
@@ -23,16 +24,30 @@ func TestConversionK(t *testing.T) {
 
 func TestConversionM(t *testing.T) {
 	s := "1M"
-	n := int(iperf3_atof(s))
-	if n != int(mega) {
-		t.Errorf("Expected %s=%d and not %d", s,int(mega), n)
+	n, _ := utof(s)
+	if n != mega {
+		t.Errorf("Expected %s=%d and not %d", s,int(mega), int(n))
 	}
 }
 
 func TestConversionG(t *testing.T) {
 	s := "1g"
-	n := int(iperf3_atof(s))
-	if n != int(giga) {
-		t.Errorf("Expected %s=%d and not %d", s,int(giga), n)
+	n, _ := utof(s)
+	if int(n) != int(giga) {
+		t.Errorf("Expected %s=%d and not %f", s,int(giga), n)
+	}
+}
+
+func TestConversionError(t *testing.T) {
+	// '1P' passes, '1p' doesnot ???
+	for _, c := range "abcdfhijlnoPqrsuvwxyz" {
+		s := fmt.Sprintf("1%c", c)
+		n, err := utof(s)
+		if err == nil {
+			t.Errorf("Expected %s would yield an error", s)
+		}
+		if n != 1.0 {
+			t.Errorf("Expected %s would yield a value of 1.0 and not %f", s, n)
+		}
 	}
 }
