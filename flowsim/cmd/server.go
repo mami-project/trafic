@@ -23,7 +23,7 @@ import (
 var serverIp string
 var serverPort int
 var serverSingle bool
-var serverTos int
+var serverTos string
 
 var serverCmd = &cobra.Command{
 	Use:   "server",
@@ -32,14 +32,13 @@ var serverCmd = &cobra.Command{
 It will basically sit there and wait for the client to request bunches of data
 over a TCP connection`,
 	Run: func(cmd *cobra.Command, args []string) {
-		if serverTos < 0 {
-			fmt.Println("TOS value needs to be >= 0")
+		tos, err := flow.Dscp(serverTos)
+		if err != nil {
+			fmt.Printf("Error decoding DSCP (%s): %v\n", serverTos, err)
 			return
 		}
-		if serverTos > 63 {
-			fmt.Println("TOS value needs to be < 64")
-		}
-		flow.Server(serverIp, serverPort, serverSingle, serverTos * 4)
+
+		flow.Server(serverIp, serverPort, serverSingle, tos * 4)
 	},
 }
 
@@ -48,5 +47,5 @@ func init() {
 	serverCmd.PersistentFlags().StringVarP(&serverIp, "ip", "I", "127.0.0.1", "IP address or host name bound to the flowsim server")
 	serverCmd.PersistentFlags().IntVarP(&serverPort, "port", "p", 8081, "TCP port bound to the flowsim server")
 	serverCmd.PersistentFlags().BoolVarP(&serverSingle,"one-off", "1", false, "Just accept one connection and quit (default is run until killed)")
-	serverCmd.PersistentFlags().IntVarP(&serverTos, "TOS", "T", 0, "Value of the TOS field in the IP layer (0 <= TOS < 64)")
+	serverCmd.PersistentFlags().StringVarP(&serverTos, "TOS", "T", "CS0", "Value of the DSCP field in the IP layer (number or DSCP id)")
 }
