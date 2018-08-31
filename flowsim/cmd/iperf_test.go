@@ -15,7 +15,7 @@ func TestConversionNoUnit(t *testing.T) {
 }
 
 func TestConversionK(t *testing.T) {
-	s := "1K"
+	s := "1k"
 	n, _ := utoi(s)
 	if n != int(kilo) {
 		t.Errorf("Expected %s=%d and not %d", s,int(kilo),n)
@@ -31,7 +31,7 @@ func TestConversionM(t *testing.T) {
 }
 
 func TestConversionG(t *testing.T) {
-	s := "1g"
+	s := "1G"
 	n, _ := utof(s)
 	if int(n) != int(giga) {
 		t.Errorf("Expected %s=%d and not %f", s,int(giga), n)
@@ -46,7 +46,7 @@ func TestConversionError(t *testing.T) {
 		if err == nil {
 			t.Errorf("Expected %s would yield an error", s)
 		}
-		if n != 1.0 {
+		if n != -1.0 {
 			t.Errorf("Expected %s would yield a value of 1.0 and not %f", s, n)
 		}
 	}
