@@ -95,7 +95,7 @@ In some scenarios, either client or server or both may need DHCP to configure th
 - Add ```RESOLV_CONF=NO``` if you experience DNS problems or to make sure DNS traffic does not traverse the RAN
 - Add ```NO_GATEWAY=<RAN iface>``` to make sure that the default (configuration and control) traffic does not traverse the RAN
 - Include a specific route to the RAN interface of the trafic server in ```/etc/network/interfaces```
--- ```post-up ip route add <RAN network prefix> via <5G router address> dev eth0 metric 100```
+  - ```post-up ip route add <RAN network prefix> via <5G router address> dev eth0 metric 100```
 
 ### Specific install for the InfluxDB VM
 
