@@ -287,7 +287,9 @@ TODO example queries
 
 # flowsim
 
-iperf3 is a good traffic generator, but it has its limitations. While developing `trafic`, an [issue](https://github.com/esnet/iperf/issues/768) regarding setting the total bytes transferred on a TCP stream was discovered. In order to accurately simulate web-short and ABR video streams, an additional simulator was developed. It follows the philosophy of iperf3 (server and client mode in one application).
+iperf3 is a good traffic generator, but it has its limitations. While developing `trafic`, an [issue](https://github.com/esnet/iperf/issues/768) regarding setting the total bytes transferred on a TCP stream was discovered. In order to accurately simulate web-short and ABR video streams, an additional simulator was developed. It follows the philosophy of iperf3 (server and client mode in one application). 
+
+*CAVEAT:* The integration of `flowsim` into `trafic` is still *work in progress*.
 
 ## flowsim as a TCP server
 
