@@ -14,10 +14,12 @@ Also, a few 3rd party packages *trafic* depends on:
 go get -u gopkg.in/yaml.v2 github.com/spf13/cobra github.com/spf13/viper github.com/alecthomas/units
 ```
 
-If you plan to use *trafic* to run the lola tests, webhook can also come in handy to automate at least part of the execution:
+`webhook` can also come in handy to automate at least part of the execution of trafic tests. Install it with :
 ```
 go get github.com/adnanh/webhook
 ```
+
+And check `docker/etc/scripts` for examples
 
 ### Iperf3
 
@@ -39,7 +41,7 @@ go install ./...
 
 ---
 
-# Documentation
+# trafic
 
 At its core, *trafic* is just a flow scheduler.
 
@@ -283,5 +285,46 @@ Timestamp,FlowID,FlowType,ToS,PMTU,Bytes,BitsPerSecond,Retransmissions,SenderCWN
 
 TODO example queries
 
+# flowsim
 
+iperf3 is a good traffic generator, but it has its limitations. While developing `trafic`, an [issue](https://github.com/esnet/iperf/issues/768) regarding setting the total bytes transferred on a TCP stream was discovered. In order to accurately simulate web-short and ABR video streams, an additional simulator was developed. It follows the philosophy of iperf3 (server and client mode in one application). 
 
+*CAVEAT:* The integration of `flowsim` into `trafic` is still *work in progress*.
+
+## flowsim as a TCP server
+
+Once started as a server, `flowsim` will basically sit there and wait for the client to request bunches of data over a TCP connection.
+
+```
+Usage:
+  flowsim server [flags]
+
+Flags:
+  -T, --TOS int     Value of the TOS field in the IP layer (0 <= TOS < 64)
+  -h, --help        help for server
+  -I, --ip string   IP address or host name bound to the flowsim server (default "127.0.0.1")
+  -1, --one-off     Just accept one connection and quit (default is run until killed)
+  -p, --port int    TCP port bound to the flowsim server (default 8081)
+```
+
+Note in the normal mode, `flowsim` will be executed until killed with a `SIGINT` sinal (i.e. `Control-C` from the keyboard). The `--one-off` option will make `flowsim` quit after a flow has been served.
+
+The size of the TCP PDU served and the moment where a connection is closed are determined by the client.
+
+## flowsim as a TCP client
+
+When `flowsim` is started as a client, a number of TCP segments with a fixed size will be requested from the server. All segments will be served over the same TCP connection, which is closed afterwards.
+
+```
+Usage:
+  flowsim client [flags]
+
+Flags:
+  -T, --TOS int        Value of the TOS field in the IP packets (0 <= TOS < 64)
+  -N, --burst string   Size of each burst (as x(.xxx)?[kmgtKMGT]?) (default "1M")
+  -h, --help           help for client
+  -t, --interval int   Interval in secs between bursts (default 10)
+  -I, --ip string      IP address or host name of the flowsim server to talk to (default "127.0.0.1")
+  -n, --iter int       Number of bursts (default 6)
+  -p, --port int       TCP port of the flowsim server (default 8081)
+```

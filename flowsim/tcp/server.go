@@ -1,7 +1,6 @@
-package flow
+package tcp
 
 import (
-	"net"
 	"fmt"
 	"bufio"
 	"strings"
@@ -11,7 +10,8 @@ import (
 	"log"
 	"os"
 	"errors"
-	"syscall"
+	"net"
+	// "syscall"
 )
 
 func matcher(cmd string) (string, string, string, error) {
@@ -23,36 +23,14 @@ func matcher(cmd string) (string, string, string, error) {
 	return "", "", "", errors.New(fmt.Sprintf("Unexpected request %s",cmd))
 }
 
-func setTos(tcpConn *net.TCPConn, tos int) (error) {
-	f, err := tcpConn.File()
 
-    if err != nil {
-		fmt.Printf("While setting TOS to %d on %v: %v\n", tos, f, err)
-        return err
-    }
-	//
-	// TODO
-	//
-    err = syscall.SetsockoptInt(int(f.Fd()), syscall.IPPROTO_IP, syscall.IP_TOS, tos)
-    if err != nil {
-		fmt.Printf("While setting TOS to %d: %v\n", tos, err)
-    }
-	return err
-}
 
-func closeFd(tcpConn *net.TCPConn) (error) {
-	f, err := tcpConn.File()
-	if err != nil {
-		return err
-	}
-	f.Close()
-	return nil
-}
 
 func handleConn (conn *net.TCPConn) {
 	var run, total, bunch string
 
-	defer conn.Close()
+	//	defer conn.Close()
+	defer closeFdSocket(conn)
 	zero, err := os.Open("/dev/zero")
 	defer zero.Close()
 	if err != nil {
@@ -96,7 +74,6 @@ func handleConn (conn *net.TCPConn) {
 		}
 	}
 
-	closeFd(conn)
 	fmt.Println("Connection closed...")
 }
 
@@ -107,6 +84,7 @@ func Server(ip string, port int, single bool, tos int) {
 		fmt.Printf("Error resolving %s:%d (%v)\n", ip, port, err)
 		return
 	}
+
 
 	ln, err := net.ListenTCP("tcp", listenAddr)
 	if err != nil {

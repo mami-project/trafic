@@ -3,7 +3,7 @@
 This file describes how to create the basic VM image used in the experiments and how to integrate it in an NFV environment.
 ## Alpine Linux-based VM
 [Alpine Linux](https://www.alpinelinux.org) is a Linux distribution that adapts very well to small footprint environments and uses a hardened Linux kernel. Alpine is based on packages, that are very up-to-date.
-We will start with an image of the [version 3.7](http://dl-cdn.alpinelinux.org/alpine/v3.7/releases/x86_64/alpine-virt-3.7.0-x86_64.iso), that we will update to the current experimental branch in order to include the latest influxes and iperf3 packages.
+We will start with an image of the [version 3.8.1](http://dl-cdn.alpinelinux.org/alpine/v3.7/releases/x86_64/alpine-virt-3.8.1-x86_64.iso), that we will update to the current experimental branch in order to include the latest influxes and iperf3 packages.
 
 ### Creating the initial image
 
@@ -15,15 +15,12 @@ Follow the instructions and create the initial image with the `setup-alpine` com
 
 ### Customising the image
 
-Edit the `/etc/apk/repositories` file, uncommenting all lines referring to the repositories of the `3.7`distribution and the line referring to the `main` repository of the `edge` distribution. The file should look like this:
+Edit the `/etc/apk/repositories` file, uncommenting all lines referring to the repositories of the `3.8` distribution. The file should look like this:
 
 ```
 #/media/cdrom/apks
-http://uk.alpinelinux.org/alpine/v3.7/main
-http://uk.alpinelinux.org/alpine/v3.7/community
-http://uk.alpinelinux.org/alpine/edge/main
-http://uk.alpinelinux.org/alpine/edge/community
-#http://uk.alpinelinux.org/alpine/edge/testing
+http://uk.alpinelinux.org/alpine/v3.8/main
+http://uk.alpinelinux.org/alpine/v3.8/community
 ```
 
 Update the VM with the following commands:
@@ -46,13 +43,9 @@ Install the following packages with the `apk add` command:
  - `git`
  - `musl-dev`
  - `make`
+ - `go`
+ - `iperf3`
 
-Then install  `iperf3` and `go` from the *testing* repository. (This will install the required versions for these packages.)
-
-```
-apk add go=1.10.1-r0
-apk add iperf3=3.5-r1
-```
 
 Finally install the dependencies to manage traffic profiles:
 
@@ -94,6 +87,15 @@ ln -sf ${HOME}/go/src/github.com/mami-project/trafic/docker/etc/flows
 ```
 
 Shutdown the machine. Keep the QCOW2 file you just generated in a safe place. This is the base image used for all Virtual Network Function Components.
+
+### Extra configuration if the client or server use DHCP for the RAN link
+
+In some scenarios, either client or server or both may need DHCP to configure the interfaces that cnnect to the RAN. One example would be the client connecting to a 5G router. In this case, make sure to use the DHCP client provided by *BusyBox*, which should be the default. In this case, you may need to create an extra configuration file ```/etc/udhcpc/udhcpc.conf``` to control the behaviour of the RAN interface:
+
+- Add ```RESOLV_CONF=NO``` if you experience DNS problems or to make sure DNS traffic does not traverse the RAN
+- Add ```NO_GATEWAY=<RAN iface>``` to make sure that the default (configuration and control) traffic does not traverse the RAN
+- Include a specific route to the RAN interface of the trafic server in ```/etc/network/interfaces```
+  - ```post-up ip route add <RAN network prefix> via <5G router address> dev eth0 metric 100```
 
 ### Specific install for the InfluxDB VM
 
@@ -166,7 +168,6 @@ All VMs need to resolve the names of all VMs in the scenario. Add entries for `i
 Example:
 
 ```
-
 127.0.0.1 localhost
 
 10.7.1.40 iperf-client
