@@ -15,10 +15,10 @@ var serverQuic bool
 
 var serverCmd = &cobra.Command{
 	Use:   "server",
-	Short: "Start an flow server",
-	Long: `Start an ABR server.
+	Short: "Start a flowsim server",
+	Long: `Start an TCP or QUIC ABR server.
 It will basically sit there and wait for the client to request bunches of data
-over a TCP connection`,
+over a TCP or QUIC connection`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if serverQuic {
 			quic.Server(serverIp, serverPort, serverSingle)

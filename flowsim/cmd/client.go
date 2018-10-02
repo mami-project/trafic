@@ -18,9 +18,10 @@ var clientQuic bool
 // clientCmd represents the client command
 var clientCmd = &cobra.Command{
 	Use:   "client",
-	Short: "Start flowsim in client mode",
+	Short: "Start a flowsim client",
 	Long: `Will run flowsim in client mode
-and try to talk to an flowsim in server mode.`,
+and try to talk to a flowsim server.
+CAVEAT: Select QUIC mode to talk to a flowsim server in QUIC mode`,
 	Run: func(cmd *cobra.Command, args []string) {
 		val, err := utoi(clientBurst)
 		if err != nil {
