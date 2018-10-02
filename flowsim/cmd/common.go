@@ -4,6 +4,9 @@ package cmd
 import (
 	"fmt"
 	"errors"
+	"regexp"
+	"strconv"
+	// "log"
 )
 
 const (
@@ -15,11 +18,12 @@ const (
 
 // Convert a string to a float
 
-var conv = map[rune] float64 {
-			'k': kilo, 'K': kilo,
-			'm': mega, 'M': mega,
-			'g': giga, 'G': giga,
-			't': tera, 'T': tera,
+var conv = map[string] float64 {
+	"" : 1.0,
+	"k": kilo, // "K": kilo,
+	/* "m": mega, */ "M": mega,
+	/* "g": giga, */ "G": giga,
+	/* "t": tera, */ "T": tera,
 }
 
 
@@ -34,16 +38,27 @@ func utoi(s string) (int, error) {
  Try convert the input string to a float (convert kmgtKMGT abbrevs)
  */
 func utof (s string) (float64, error) {
-	var val float64
-	var unit rune
 
-	fmt.Sscanf(s, "%f%c", &val, &unit)
+	expr := regexp.MustCompile(`^([0-9]+([.][0-9]+)?)([kMGT]?)$`)
+	parsed := expr.FindStringSubmatch(s)
+	if len(parsed) == 4 {
+		var val float64
+		var mult float64
+		var unit string
 
-	//	fmt.Printf("In utof(%s), unit='%c', val=%f\n", s, unit, val)
-	// Check and ignore unknown unit multiplier
-	mult, ok := conv[unit]
-	if ok {
-		return mult * val, nil
+		val, err := strconv.ParseFloat(parsed[1], 64)
+		if err != nil {
+			// log.Println("ParseFloat failed!")
+			return -1, err
+		}
+		unit = parsed[3]
+		mult, ok := conv[unit]
+
+		if ok {
+			return mult * val, nil
+		}
+		// fmt.Printf("conv[%s] doesn't exist",unit)
+		return -1, errors.New(fmt.Sprintf ("Unknown multiplier '%s'", unit))
 	}
-	return val, errors.New(fmt.Sprintf ("Unknown multiplier '%c'", unit))
+	return -1, errors.New(fmt.Sprintf("Invalid size '%s'",s))
 }
