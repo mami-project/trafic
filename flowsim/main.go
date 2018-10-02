@@ -14,7 +14,7 @@
 
 package main
 
-import "flowsim/cmd"
+import "github.com/mami-project/trafic/flowsim/cmd"
 
 func main() {
 	cmd.Execute()
