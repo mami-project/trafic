@@ -3,8 +3,8 @@ package cmd
 import (
 	"fmt"
 	"github.com/spf13/cobra"
-	"flowsim/tcp"
-	"flowsim/quic"
+	"github.com/mami-project/trafic/flowsim/tcp"
+	"github.com/mami-project/trafic/flowsim/quic"
 )
 
 var serverIp string
