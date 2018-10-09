@@ -28,7 +28,7 @@ wget -O /dev/null \
 	 http://${HOST}-client:9000/hooks/calibrate
 
 wget -O /dev/null \
-	 --header "X-TIME: $((CAPTIME - 5))" \
+	 --header "X-CONF: udp-fill.env" \
 	 http://${HOST}-client:9000/hooks/upd-fill.bash
 
 # start QUIC server

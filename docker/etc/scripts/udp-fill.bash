@@ -7,4 +7,4 @@ CONF=${CONF:-udp-fill.env}
 base=$(dirname $0)
 . ${base}/${CONF}
 
-iperf3 --client ${SERVER} --udp --parallel ${THREADS} ${XTRAS}
+iperf3 --client ${SERVER} --udp --parallel ${THREADS} --time ${TIME} ${XTRAS}
