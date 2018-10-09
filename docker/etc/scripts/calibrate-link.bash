@@ -10,8 +10,10 @@ function mk-label() {
 	printf "lola-%s-%s%s" "${exid}" "${unixtime}" "${ext}"
 }
 REVERSE=${REVERSE:-FALSE}
+TIME=${TIME:-30}
+
 cwd=`dirname $0`
 [ "$REVERSE" == "TRUE" ] && reverse="--reverse"
 [ "$REVERSE" != "TRUE" ] && reverse=""
 
-iperf3 -c iperf-server ${reverse} --time 30 --logfile ${cwd}/$(mk-label "calibrate" ".txt")
+iperf3 -c iperf-server ${reverse} --time ${TIME} --logfile ${cwd}/$(mk-label "calibrate" ".txt")

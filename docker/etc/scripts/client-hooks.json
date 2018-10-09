@@ -67,6 +67,11 @@
 				"envname":  "REVERSE",
 				"name":   "X-REVERSE"
 			},
+			{
+				"source":   "header",
+				"envname":  "TIME",
+				"name":     "X-TIME"
+			},
 		]
 	},
 	{
