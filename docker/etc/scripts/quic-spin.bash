@@ -20,12 +20,16 @@ capfn="${label}.pcap"
 
 # start background traffic
 wget -O /dev/null \
-	 http://${HOST}-server:9000/hooks/calibrate
+	 http://${HOST}-server:9000/hooks/quic-background
 sleep 1
-# start background client
+# start TCP background client
 wget -O /dev/null \
 	 --header "X-TIME: $((CAPTIME - 5))" \
 	 http://${HOST}-client:9000/hooks/calibrate
+
+wget -O /dev/null \
+	 --header "X-TIME: $((CAPTIME - 5))" \
+	 http://${HOST}-client:9000/hooks/upd-fill.bash
 
 # start QUIC server
 wget -O /dev/null \
