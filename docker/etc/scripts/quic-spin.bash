@@ -29,7 +29,7 @@ wget -O /dev/null \
 
 wget -O /dev/null \
 	 --header "X-CONF: udp-fill.env" \
-	 http://${HOST}-client:9000/hooks/upd-fill.bash
+	 http://${HOST}-client:9000/hooks/udp-fill
 
 # start QUIC server
 wget -O /dev/null \
@@ -57,3 +57,5 @@ if [ "${IFACE}" != "None" ]; then
 else
 	sleep ${CAPTIME}
 fi
+wget -O /dev/null \
+	 http://${HOST}-server:9000/hooks/stop-servers
