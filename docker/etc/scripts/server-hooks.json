@@ -38,5 +38,17 @@
         "name": "-1"
       },
     ]
+  },
+  {
+    "id": "quic-server",
+    "execute-command": "/root/share/scripts/quic-servers.bash",
+    "command-working-directory": "/root/share/scripts",
+    "pass-environment-to-command": [
+      {
+        "source": "header",
+        "envname": "CONF",
+        "name": "X-CONF"
+      }
+    ]
   }
 ]
