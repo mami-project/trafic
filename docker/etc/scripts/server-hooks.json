@@ -40,13 +40,21 @@
     ]
   },
   {
-    "id": "quic-background",
+    "id": "udp-fill",
     "execute-command": "iperf3",
     "pass-arguments-to-command": [
       {
         "source": "string",
         "name": "-s"
-      }
+      },
+      {
+        "source": "string",
+        "name": "--port"
+      },
+      {
+        "source": "string",
+        "name": "5220"
+      },
     ]
   },
   {

@@ -18,18 +18,22 @@ function mklabel() {
 label=$(mklabel "QUIC")
 capfn="${label}.pcap"
 
-# start background traffic
+# start UDP background traffic
 wget -O /dev/null \
-	 http://${HOST}-server:9000/hooks/quic-background
+	 http://${HOST}-server:9000/hooks/udp-fill
 sleep 1
-# start TCP background client
-wget -O /dev/null \
-	 --header "X-TIME: $((CAPTIME - 5))" \
-	 http://${HOST}-client:9000/hooks/calibrate
 
 wget -O /dev/null \
 	 --header "X-CONF: udp-fill.env" \
 	 http://${HOST}-client:9000/hooks/udp-fill
+
+# start TCP background traffic
+wget -O /dev/null \
+	 http://${HOST}-server:9000/hooks/calibrate
+
+wget -O /dev/null \
+	 --header "X-TIME: $((CAPTIME - 5))" \
+	 http://${HOST}-client:9000/hooks/calibrate
 
 # start QUIC server
 wget -O /dev/null \
