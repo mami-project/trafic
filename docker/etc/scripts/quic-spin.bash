@@ -5,6 +5,7 @@ set -eum
 # measurements not implemented yet
 IFACE=${IFACE:-None}
 HOST=${HOST:-iperf}
+EXID=${EXID:-baseline}			# Use the baseline profiles for this
 
 CAPTIME=90
 
@@ -15,25 +16,26 @@ function mklabel() {
 	printf "%s-%s" "${exid}" "${unixtime}"
 }
 
+load=85							#  TODO loop with all loads
 label=$(mklabel "QUIC")
 capfn="${label}.pcap"
+exid="${EXID}-${load}"
 
-# start UDP background traffic
-wget -O /dev/null \
-	 http://${HOST}-server:9000/hooks/udp-fill
+# start background traffic
+
+# start servers
+wget --header "X-CONF: ${exid}.env" \
+	 -O /dev/null \
+	 http://iperf-server:9000/hooks/start-servers
 sleep 1
 
-wget -O /dev/null \
-	 --header "X-CONF: udp-fill.env" \
-	 http://${HOST}-client:9000/hooks/udp-fill
-
-# start TCP background traffic
-wget -O /dev/null \
-	 http://${HOST}-server:9000/hooks/calibrate
-
-wget -O /dev/null \
-	 --header "X-TIME: $((CAPTIME - 5))" \
-	 http://${HOST}-client:9000/hooks/calibrate
+# start clients
+wget --header "X-CONF: ${exid}.env" \
+	 --header "X-LABEL: ${label}" \
+	 --header "X-DB: ${EXID}" \
+	 -O /dev/null \
+	 http://iperf-client:9000/hooks/start-clients
+sleep 2
 
 # start QUIC server
 wget -O /dev/null \
@@ -61,5 +63,5 @@ if [ "${IFACE}" != "None" ]; then
 else
 	sleep ${CAPTIME}
 fi
-wget -O /dev/null \
-	 http://${HOST}-server:9000/hooks/stop-servers
+wget -O /dev/null http://${HOST}-server:9000/hooks/stop-servers
+wget -O /dev/null http://${HOST}-client:9000/hooks/stop-clients
