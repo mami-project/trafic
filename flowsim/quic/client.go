@@ -28,7 +28,7 @@ func Client(ip string, port int, iter int, interval int, bunch int) error {
 	if err != nil {
 		return err
 	}
-	defer session.Close(err)
+	defer session.Close()
 	fmt.Printf("Opened session for %s\n", addr)
 	buf := make([]byte, bunch)
 	stream, err := session.OpenStreamSync()
