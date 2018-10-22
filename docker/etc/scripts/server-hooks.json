@@ -40,6 +40,24 @@
     ]
   },
   {
+    "id": "udp-fill",
+    "execute-command": "iperf3",
+    "pass-arguments-to-command": [
+      {
+        "source": "string",
+        "name": "-s"
+      },
+      {
+        "source": "string",
+        "name": "--port"
+      },
+      {
+        "source": "string",
+        "name": "5220"
+      },
+    ]
+  },
+  {
     "id": "quic-server",
     "execute-command": "/root/share/scripts/quic-servers.bash",
     "command-working-directory": "/root/share/scripts",

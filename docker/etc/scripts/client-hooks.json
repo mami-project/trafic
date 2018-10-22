@@ -67,11 +67,28 @@
 				"envname":  "REVERSE",
 				"name":   "X-REVERSE"
 			},
+			{
+				"source":   "header",
+				"envname":  "TIME",
+				"name":     "X-TIME"
+			},
 		]
 	},
 	{
 		"id": "quic-client",
 		"execute-command": "/root/share/scripts/quic-clients.bash",
+		"command-working-directory": "/root/share/scripts",
+		"pass-environment-to-command": [
+			{
+				"source": "header",
+				"envname": "CONF",
+				"name": "X-CONF"
+			}
+		]
+	},
+	{
+		"id": "udp-fill",
+		"execute-command": "/root/share/scripts/udp-fill.bash",
 		"command-working-directory": "/root/share/scripts",
 		"pass-environment-to-command": [
 			{
