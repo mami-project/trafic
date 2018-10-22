@@ -14,6 +14,12 @@ Also, a few 3rd party packages *trafic* depends on:
 go get -u gopkg.in/yaml.v2 github.com/spf13/cobra github.com/spf13/viper github.com/alecthomas/units
 ```
 
+To install directly using `go get`, you can just
+
+```
+go get -t -u github.com/mami-project/trafic
+```
+
 `webhook` can also come in handy to automate at least part of the execution of trafic tests. Install it with :
 ```
 go get github.com/adnanh/webhook
@@ -23,13 +29,15 @@ And check `docker/etc/scripts` for examples
 
 ### Iperf3
 
-Fetch the latest release from [here](https://github.com/esnet/iperf/releases)
+Fetch the latest release (>= 3.5) from [here](https://github.com/esnet/iperf/releases)
 
 ### Docker
 
 [Docker](https://docs.docker.com/install/) and [Docker Compose](https://docs.docker.com/compose/install/).
 
 ## Build and install
+
+If you clones this repository directly, i.e. not using `go get`
 
 ```
 go install ./...
@@ -287,7 +295,7 @@ TODO example queries
 
 # flowsim
 
-iperf3 is a good traffic generator, but it has its limitations. While developing `trafic`, an [issue](https://github.com/esnet/iperf/issues/768) regarding setting the total bytes transferred on a TCP stream was discovered. In order to accurately simulate web-short and ABR video streams, an additional simulator was developed. It follows the philosophy of iperf3 (server and client mode in one application). 
+iperf3 is a good traffic generator, but it has its limitations. While developing `trafic`, an [issue](https://github.com/esnet/iperf/issues/768) regarding setting the total bytes transferred on a TCP stream was discovered. In order to accurately simulate web-short and ABR video streams, an additional simulator was developed. It follows the philosophy of iperf3 (server and client mode in one application).
 
 *CAVEAT:* The integration of `flowsim` into `trafic` is still *work in progress*.
 
