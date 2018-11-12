@@ -45,6 +45,8 @@ Once the boot process is completely finalised, you will find a *trafic* installa
 
 *Requirements*: Ubuntu bionic amd64 cloud image
 
+*CAVEAT*: This installation will install stock iperf3. Although it should suffice, beware that there is a [reported bug on iperf3 regarding the use of the parameter '-n' for TCP flows](https://github.com/esnet/iperf/issues/768), that is still open.
+
 ## Build and install
 
 If you clones this repository directly, i.e. not using `go get`
