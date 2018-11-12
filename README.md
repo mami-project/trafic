@@ -35,6 +35,16 @@ Fetch the latest release (>= 3.5) from [here](https://github.com/esnet/iperf/rel
 
 [Docker](https://docs.docker.com/install/) and [Docker Compose](https://docs.docker.com/compose/install/).
 
+### cloud-init
+
+You can also install *trafic* automatically on cloud environments that support initialisation through cloud-init scripts. Refer to `cloud-init/trafic.ini`. This file provides you with an automated installation method.
+
+Once the boot process is completely finalised, you will find a *trafic* installation for the default user (`ubuntu`)
+
+*Further customisations*: You may need to customise the networking and user management (i.e. by providing your public keys for installation in the .ssh directory)
+
+*Requirements*: Ubuntu bionic amd64 cloud image
+
 ## Build and install
 
 If you clones this repository directly, i.e. not using `go get`
