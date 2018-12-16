@@ -9,7 +9,8 @@ import (
 	"math/rand"
 )
 
-func mkTransfer (conn *net.TCPConn, iter int, total int, tsize int) {
+func mkTransfer (conn *net.TCPConn, iter int, total int, tsize int, t time.Time) {
+	fmt.Printf("Launching at %v\n", t)
 	// send to socket
 	fmt.Fprintf(conn, fmt.Sprintf("GET %d/%d %d\n", iter, total, tsize))
 	// listen for reply
@@ -43,23 +44,31 @@ func Client(host string, port int, iter int, interval int, burst int, tos int) {
 		log.Fatal(err)
 		return
 	}
+	fmt.Printf("Starting at  %v\n",time.Now())
     r := rand.New(rand.NewSource(time.Now().UnixNano()))
 	initWait := r.Intn(interval * 50) / 100.0
 	time.Sleep(time.Duration(initWait) * time.Second)
 
+	ticker := time.NewTicker(time.Duration(interval) * time.Second)
+	defer ticker.Stop()
+
 	currIter := 1
-	go mkTransfer (conn , currIter, iter, burst)
+	mkTransfer (conn , currIter, iter, burst,time.Now())
 
-	ticker := time.Tick(time.Duration(interval) * time.Second)
-	for now := range ticker {
-		// read in input from stdin
-
-		currIter ++
-		if currIter > iter {
-			break
+	if (iter > 1) {
+		done := make(chan bool,1)
+		for {
+			select {
+			case t := <-ticker.C:
+				currIter ++
+				if (currIter >= iter) {
+					close(done)
+				}
+				mkTransfer (conn , currIter, iter, burst,t)
+			case <-done:
+				return
+			}
 		}
-		fmt.Printf("Launching at %v\n", now)
-		go mkTransfer (conn , currIter, iter, burst)
 	}
 	fmt.Printf("\nFinished...\n\n")
 }
