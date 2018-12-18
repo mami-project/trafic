@@ -52,7 +52,7 @@ func Server(ip string, port int, single bool) error {
 
 func quicHandler(sess quic.Session) error {
 
-	fmt.Println("Entering quicHandler")
+	// fmt.Println("Entering quicHandler")
 	stream, err := sess.AcceptStream()
 	if err != nil {
 		panic(err)

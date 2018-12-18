@@ -10,17 +10,6 @@ import (
 	quic "github.com/lucas-clemente/quic-go"
 )
 
-// const addr = "localhost:4242"
-
-// We start a server echoing data on the first stream the client opens,
-// then connect with a client, send the message, and wait for its receipt.
-// func main() {
-// 	err := Client("localhost", 4242, 6 , 20, 10)
-// 	if err != nil {
-// 		panic(err)
-// 	}
-// }
-
 func Client(ip string, port int, iter int, interval int, bunch int) error {
 
 	addr := fmt.Sprintf("%s:%d", ip, port)
@@ -40,28 +29,33 @@ func Client(ip string, port int, iter int, interval int, bunch int) error {
 	time.Sleep(time.Duration(initWait) * time.Second)
 
 	currIter := 1
-	go mkTransfer (stream, buf, currIter, iter)
+	ticker := time.NewTicker(time.Duration(interval) * time.Second)
+	defer ticker.Stop()
+	mkTransfer (stream, buf, currIter, iter, time.Now())
 
-	ticker := time.Tick(time.Duration(interval) * time.Second)
-	for now := range ticker {
-		// read in input from stdin
-
-		currIter ++
-		if currIter > iter {
-			break
+	if iter > 1 {
+		done := make(chan bool,1)
+		for {
+			select {
+			case t := <-ticker.C:
+				mkTransfer (stream, buf, currIter, iter, t)
+				currIter ++
+				if currIter > iter {
+					close(done)
+				}
+			case <-done:
+				fmt.Printf("\nFinished...\n\n")
+				return nil
+			}
 		}
-		fmt.Printf("Launching at %v\n", now)
-		go mkTransfer (stream, buf, currIter, iter)
-
 	}
-	fmt.Printf("\nFinished...\n\n")
 	return nil
 }
 
-func mkTransfer (stream quic.Stream, buf []byte, current int, iter int) error {
+func mkTransfer (stream quic.Stream, buf []byte, current int, iter int,t time.Time) error {
 
 	message := fmt.Sprintf("GET %d/%d %d\n", current, iter, len(buf))
-	fmt.Printf("Client: Sending > %s", message)
+	fmt.Printf("Client: (%v) Sending > %s", t, message)
 
 	_, err := stream.Write([]byte(message))
 	if err != nil {

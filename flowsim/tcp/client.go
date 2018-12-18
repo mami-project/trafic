@@ -66,9 +66,9 @@ func Client(host string, port int, iter int, interval int, burst int, tos int) {
 				}
 				mkTransfer (conn , currIter, iter, burst,t)
 			case <-done:
+				fmt.Printf("\nFinished...\n\n")
 				return
 			}
 		}
 	}
-	fmt.Printf("\nFinished...\n\n")
 }
