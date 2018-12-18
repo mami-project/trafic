@@ -30,7 +30,7 @@ CAVEAT: Select QUIC mode to talk to a flowsim server in QUIC mode`,
 		if clientQuic {
 			quic.Client(clientIp, clientPort, clientIter, clientInterval, val)
 		} else {
-			tos, err := tcp.Dscp(clientTos)
+			tos, err := Dscp(clientTos)
 			if err != nil {
 				fmt.Printf("Error decoding DSCP (%s): %v\n", clientTos, err)
 			} else {

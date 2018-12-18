@@ -23,7 +23,7 @@ over a TCP or QUIC connection`,
 		if serverQuic {
 			quic.Server(serverIp, serverPort, serverSingle)
 		} else {
-			tos, err := tcp.Dscp(serverTos)
+			tos, err := Dscp(serverTos)
 			if err != nil {
 				fmt.Printf("Error decoding DSCP (%s): %v\n", serverTos, err)
 			} else {

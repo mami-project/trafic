@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net"
 	"syscall"
-	"errors"
+	// "errors"
 )
 
 func setTos(tcpConn *net.TCPConn, tos int) (error) {
@@ -36,6 +36,7 @@ func closeFdSocket (conn *net.TCPConn) (error){
 	return nil
 }
 
+/*
 // A dictionary to map DSCP labels to values
 // CAVEAT: Multiply by 4 to get the full TOS byte value
 
@@ -77,3 +78,4 @@ func Dscp(s string) (int, error) {
 	}
 	return val, nil
 }
+*/
