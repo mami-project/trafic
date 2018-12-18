@@ -12,6 +12,7 @@ var sourcePps int
 var sourceTime int
 var sourceTos string
 var sourcePacket string
+var sourceVerbose bool
 
 // sourceCmd represents the source command
 var sourceCmd = &cobra.Command{
@@ -29,7 +30,7 @@ and try to talk to a flowsim UPD sink.`,
 		if err != nil {
 			fmt.Printf("Error decoding DSCP (%s): %v\n", sourceTos, err)
 		} else {
-				udp.Source(sourceIp, sourcePort, sourceTime, sourcePps, val, tos * 4)
+			udp.Source(sourceIp, sourcePort, sourceTime, sourcePps, val, tos * 4, sourceVerbose)
 		}
 	},
 }
@@ -43,4 +44,5 @@ func init() {
 	sourceCmd.PersistentFlags().IntVarP(&sourcePps, "pps", "P", 10, "Packets per second")
 	sourceCmd.PersistentFlags().StringVarP(&sourcePacket, "packet", "N", "1k", "Size of each packet (as x(.xxx)?[kmgtKMGT]?)")
 	sourceCmd.PersistentFlags().StringVarP(&sourceTos, "TOS", "T", "CS0", "Value of the DSCP field in the IP packets (valid int or DSCP-Id)")
+	sourceCmd.PersistentFlags().BoolVarP(&sourceVerbose, "verbose", "v", false, "Print info re. all generated packets")
 }
