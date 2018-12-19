@@ -16,10 +16,11 @@ const (
 // Convert a string to a float
 
 var conv = map[rune] float64 {
-			'k': kilo, 'K': kilo,
-			'm': mega, 'M': mega,
-			'g': giga, 'G': giga,
-			't': tera, 'T': tera,
+	'\000': 1,
+	'k': kilo, 'K': kilo,
+	'm': mega, 'M': mega,
+	'g': giga, 'G': giga,
+	't': tera, 'T': tera,
 }
 
 
@@ -32,6 +33,7 @@ func utoi(s string) (int, error) {
  utof(string) (float64, error)
 
  Try convert the input string to a float (convert kmgtKMGT abbrevs)
+ Accepts plain number
  */
 func utof (s string) (float64, error) {
 	var val float64
@@ -45,7 +47,8 @@ func utof (s string) (float64, error) {
 	if ok {
 		return mult * val, nil
 	}
-	return val, errors.New(fmt.Sprintf ("Unknown multiplier '%c'", unit))
+
+	return val, errors.New(fmt.Sprintf ("Unknown multiplier '%s'", string(unit)))
 }
 
 // A dictionary to map DSCP labels to values
