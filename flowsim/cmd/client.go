@@ -23,18 +23,18 @@ var clientCmd = &cobra.Command{
 and try to talk to a flowsim server.
 CAVEAT: Select QUIC mode to talk to a flowsim server in QUIC mode`,
 	Run: func(cmd *cobra.Command, args []string) {
-		val, err := utoi(clientBurst)
+		burstSize, err := utoi(clientBurst)
 		if err != nil {
-			fmt.Printf("Warning: %v, generating %d byte bursts", err, val)
+			fmt.Printf("Warning: %v, generating %d byte bursts\n", err, burstSize)
 		}
 		if clientQuic {
-			quic.Client(clientIp, clientPort, clientIter, clientInterval, val)
+			quic.Client(clientIp, clientPort, clientIter, clientInterval, burstSize)
 		} else {
 			tos, err := Dscp(clientTos)
 			if err != nil {
 				fmt.Printf("Error decoding DSCP (%s): %v\n", clientTos, err)
 			} else {
-				tcp.Client(clientIp, clientPort, clientIter, clientInterval, val, tos * 4)
+				tcp.Client(clientIp, clientPort, clientIter, clientInterval, burstSize, tos * 4)
 			}
 		}
 	},

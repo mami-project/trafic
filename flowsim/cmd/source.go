@@ -24,7 +24,7 @@ and try to talk to a flowsim UPD sink.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		pktsize, err := utoi(sourcePacket)
 		if err != nil {
-			fmt.Printf("Warning: %v, generating %d byte packets", err, pktsize)
+			fmt.Printf("Warning: %v, generating %d byte packets\n", err, pktsize)
 		}
 
 		tos, err := Dscp(sourceTos)
