@@ -15,9 +15,7 @@ func Sink(ip string, port int,verbose bool) {
 	defer Conn.Close()
 
 	buf      := make([]byte, 64 * 1024)
-	// mdelay   := int64(0)
-	// mpackets := int64(0)
-	stats    := &Stats { 0,0,0, 0,0,0 }
+	stats    := &Stats { 0,0,0,0,0,0,0 }
 
 	for {
 		n,fromUDP,err := Conn.ReadFromUDP(buf)

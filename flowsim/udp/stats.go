@@ -14,14 +14,24 @@ type Stats struct {
 
 	lastsample int
 	loss       int
+	reorder    int
 }
+
+// delay :   packet.timestamp - now()
+// nsample:  packet.counter
 
 func AddSample(stats *Stats, delay int, nsample int) {
 	diff := nsample - stats.lastsample
-	if diff != 1  {
-		stats.loss += diff - 1
+	if diff >= 0 {
+		if diff > 1  {
+			stats.loss += diff - 1
+		} // else diff == 1 ==> OK
+
+		stats.lastsample = nsample
+	} else {
+		stats.loss --
+		stats.reorder ++
 	}
-	stats.lastsample = nsample
 
 	stats.mdelay += delay
 	if stats.samples > 1 {
@@ -40,6 +50,7 @@ func PrintStats(addr *net.UDPAddr, stats *Stats, unit string) {
 	fmt.Printf("   \"Delay\" :  \"%6.2f %s\",\n", float64(stats.mdelay) / float64(stats.samples), unit)
 	fmt.Printf("   \"Jitter\" : \"%6.2f %s\",\n", float64(stats.mjitter) / float64(stats.samples - 1), unit)
 	fmt.Printf("   \"Loss\" : \"%d\",\n", stats.loss)
+	fmt.Printf("   \"Reorder\" : \"%d\",\n", stats.reorder )
 	fmt.Printf("   \"Samples\" : \"%d\"\n", stats.samples)
 	fmt.Printf("\n   }\n  }\n")
 }
