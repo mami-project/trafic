@@ -16,24 +16,10 @@ type Stats struct {
 	loss       int
 }
 
-// func NewStats() *Stats {
-// 	var newStats Stats
-
-// 	newStats.samples = 0
-// 	newStats.mdelay = 0
-// 	newStats.mjitter = 0
-
-// 	newStats.lastsample = 0
-// 	newStats.loss = 0
-
-// 	return &newStats
-// }
-
 func AddSample(stats *Stats, delay int, nsample int) {
 	diff := nsample - stats.lastsample
 	if diff != 1  {
 		stats.loss += diff - 1
-		// fmt.Printf(" nsample: %d , last %d\n",nsample,stats.lastsample)
 	}
 	stats.lastsample = nsample
 
