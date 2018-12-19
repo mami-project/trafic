@@ -1,9 +1,6 @@
 package udp
 
 import (
-    // "fmt"
-    // "net"
-    // "os"
 	"time"
 	"encoding/binary"
 	"bytes"
