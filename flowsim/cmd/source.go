@@ -18,7 +18,7 @@ var sourceVerbose bool
 var sourceCmd = &cobra.Command{
 	Use:   "source",
 	Short: "Start a flowsim UDP source",
-	Long: `Will run flowsim as a UDP CNR source
+	Long: `Will run flowsim as a UDP CBR source
 and try to talk to a flowsim UPD sink.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		val, err := utoi(sourcePacket)

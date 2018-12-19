@@ -13,7 +13,7 @@ var sinkVerbose bool
 var sinkCmd = &cobra.Command{
 	Use:   "sink",
 	Short: "Start a flowsim UDP sink",
-	Long: `Will run flowsim as a UDP CBR sink
+	Long: `Will run flowsim as a one-of UDP CBR sink
 and print stats like mean delay and mean jitter for the CBR flow at the end`,
 	Run: func(cmd *cobra.Command, args []string) {
 		udp.Sink(sinkIp, sinkPort, sinkVerbose)

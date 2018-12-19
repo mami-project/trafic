@@ -17,8 +17,8 @@ func Sink(ip string, port int,verbose bool) {
 	ServeOneConnection(ServerConn, verbose)
 }
 
-func ServeOneConnection(ServerConn *net.UDPConn, verbose bool) {
-	defer ServerConn.Close()
+func ServeOneConnection(Conn *net.UDPConn, verbose bool) {
+	defer Conn.Close()
 
 	buf := make([]byte, 64 * 1024)
 
@@ -31,11 +31,12 @@ func ServeOneConnection(ServerConn *net.UDPConn, verbose bool) {
 	mdelay   := int64(0)
 	mpackets := int64(0)
 	mjitter  := int64(0)
+	// var fromUDP *net.UDPAddr
 	for {
-		n,addr,err := ServerConn.ReadFromUDP(buf)
+		n,fromUDP,err := Conn.ReadFromUDP(buf)
 		tStamp = MakeTimestamp()
 		if verbose {
-			fmt.Println("Received ",n, "bytes from ",addr)
+			fmt.Println("Received ",n, "bytes from ",fromUDP)
 		}
 		if err != nil {
 			fmt.Println("Error: ",err)
@@ -63,20 +64,31 @@ func ServeOneConnection(ServerConn *net.UDPConn, verbose bool) {
 		}
 		last = info.pktId
 		if (info.pktId == info.total) {
-			n,addr,err = ServerConn.ReadFromUDP(buf) // discard last resort
+			_,_,err := Conn.ReadFromUDP(buf) // discard last resort
+			if err != nil {
+				fmt.Printf("Error: %v\n",err)
+			}
+			Stats(fromUDP, loss, info.total, mdelay, mjitter, mpackets)
 			break
 		}
 		//
 		// Just in case we lost the last packet!
 		//
 		if (info.pktId == -1) {
+			Stats(fromUDP, loss, info.total, mdelay, mjitter, mpackets)
 			break
 		}
 	}
-	fmt.Printf("Packet loss: %d/%d\n",loss,info.total)
-	fmt.Printf("Mean delay:  %5d us\n",mdelay/mpackets)
-	if mpackets > 1 {
-		fmt.Printf("Mean jitter: %5d us\n",mjitter/(mpackets - 1))
-	}
 	last = 0
+}
+
+
+func Stats(fromUDP *net.UDPAddr, loss int, total int64, mdelay int64, mjitter int64, mpackets int64) {
+	// TODO: print out as JSON
+	fmt.Printf("For sesssion from %v\n",fromUDP)
+	fmt.Printf(" Packet loss: %d/%d\n",loss,total)
+	fmt.Printf(" Mean delay:  %5d us\n",mdelay/mpackets)
+	if mpackets > 1 {
+		fmt.Printf(" Mean jitter: %5d us\n",mjitter/(mpackets - 1))
+	}
 }
