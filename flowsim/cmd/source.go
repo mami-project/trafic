@@ -22,16 +22,18 @@ var sourceCmd = &cobra.Command{
 	Long: `Will run flowsim as a UDP CBR source
 and try to talk to a flowsim UPD sink.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		pkts, err := utoi(sourcePacket)
+		pktsize, err := utoi(sourcePacket)
 		if err != nil {
-			fmt.Printf("Warning: %v, generating %d byte packets", err, val)
+			fmt.Printf("Warning: %v, generating %d byte packets", err, pktsize)
 		}
 
 		tos, err := Dscp(sourceTos)
 		if err != nil {
 			fmt.Printf("Error decoding DSCP (%s): %v\n", sourceTos, err)
 		} else {
-			udp.Source(sourceIp, sourcePort, sourceLocal, sourceTime, sourcePps, pkts, tos * 4, sourceVerbose)
+			udp.Source(sourceIp, sourcePort, sourceLocal,
+				sourceTime, sourcePps,
+				pktsize, tos * 4, sourceVerbose)
 		}
 	},
 }
