@@ -5,6 +5,10 @@ import (
 	"net"
 )
 
+//
+// Statistics are encapulated in the Stats structure
+// Handled in stats.go
+//
 func Sink(ip string, port int,verbose bool) {
 	fmt.Printf("Starting UDP sink at %s:%d\n", ip, port)
 
@@ -28,26 +32,27 @@ func Sink(ip string, port int,verbose bool) {
 			continue
 		}
 		info := DecodePacket(buf[0:n])
+		//
+		// Just in case we lose the last packet
+		// We send a packet with pktId = -1
+		//
+		if (info.pktId == -1) {
+			PrintStats(fromUDP, stats, "us")
+			break
+		}
 		udelay := tStamp - info.tStamp
 		AddSample(stats, int(udelay), int(info.pktId))
 		if verbose {
 			fmt.Printf("Delay was: %d us\n", udelay)
 		}
-		// mdelay += udelay
-		// mpackets ++
-
+		//
+		// TODO: define how to handle reordered packets after the last packet
+		//
 		if (info.pktId == info.total) {
-			_,_,err := Conn.ReadFromUDP(buf) // discard last resort
+			_,_,err := Conn.ReadFromUDP(buf) // discard last resort packet
 			if err != nil {
 				fmt.Printf("Error: %v\n",err)
 			}
-			PrintStats(fromUDP, stats, "us")
-			break
-		}
-		//
-		// Just in case we lost the last packet!
-		//
-		if (info.pktId == -1) {
 			PrintStats(fromUDP, stats, "us")
 			break
 		}

@@ -14,15 +14,18 @@ type Stats struct {
 
 	lastsample int
 	loss       int
+
 	reorder    int
 }
 
-// delay :   packet.timestamp - now()
+// stats:    structure holding the statistics
+// delay:    packet.timestamp - now()
 // nsample:  packet.counter
 
 func AddSample(stats *Stats, delay int, nsample int) {
 	diff := nsample - stats.lastsample
 	if diff >= 0 {
+		// if diff == 0 ==> repeated packet??
 		if diff > 1  {
 			stats.loss += diff - 1
 		} // else diff == 1 ==> OK
@@ -34,6 +37,10 @@ func AddSample(stats *Stats, delay int, nsample int) {
 	}
 
 	stats.mdelay += delay
+
+	// The jitter measure in the presence of reordering is not 100% accurate
+	// The accurate way would be to keep a time-ordered vector of delays
+
 	if stats.samples > 1 {
 		if stats.lastdelay > delay {
 			stats.mjitter += stats.lastdelay - delay
@@ -45,6 +52,9 @@ func AddSample(stats *Stats, delay int, nsample int) {
 	stats.lastdelay = delay
 }
 
+//
+// TODO Generate this using the JSON libraries
+//
 func PrintStats(addr *net.UDPAddr, stats *Stats, unit string) {
 	fmt.Printf(" { \"%v\" : {\n", addr)
 	fmt.Printf("   \"Delay\" :  \"%6.2f %s\",\n", float64(stats.mdelay) / float64(stats.samples), unit)
