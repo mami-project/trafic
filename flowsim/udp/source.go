@@ -7,7 +7,7 @@ import (
 	"syscall"
 )
 
-func Source(ip string, port int, duration int, pps int, psize int, tos int, verbose bool) {
+func Source(ip string, port int, localip string,duration int, pps int, psize int, tos int, verbose bool) {
 	fmt.Printf("Starting server at %s:%d for %d secs at %d pps for %d byte packets (TOS: %02x)\n",
 		ip, port, duration, pps, psize, tos)
 
@@ -17,7 +17,8 @@ func Source(ip string, port int, duration int, pps int, psize int, tos int, verb
     ServerAddr,err := net.ResolveUDPAddr("udp",fmt.Sprintf("%s:%d",ip,port))
     CheckError(err)
 
-    LocalAddr, err := net.ResolveUDPAddr("udp", "127.0.0.1:0")
+    // LocalAddr, err := net.ResolveUDPAddr("udp", "192.168.1.36:0")
+    LocalAddr, err := net.ResolveUDPAddr("udp", ":0")
     CheckError(err)
 
     Conn, err := net.DialUDP("udp", LocalAddr, ServerAddr)

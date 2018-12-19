@@ -8,6 +8,7 @@ import (
 
 var sourceIp string
 var sourcePort int
+var sourceLocal string
 var sourcePps int
 var sourceTime int
 var sourceTos string
@@ -21,7 +22,7 @@ var sourceCmd = &cobra.Command{
 	Long: `Will run flowsim as a UDP CBR source
 and try to talk to a flowsim UPD sink.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		val, err := utoi(sourcePacket)
+		pkts, err := utoi(sourcePacket)
 		if err != nil {
 			fmt.Printf("Warning: %v, generating %d byte packets", err, val)
 		}
@@ -30,7 +31,7 @@ and try to talk to a flowsim UPD sink.`,
 		if err != nil {
 			fmt.Printf("Error decoding DSCP (%s): %v\n", sourceTos, err)
 		} else {
-			udp.Source(sourceIp, sourcePort, sourceTime, sourcePps, val, tos * 4, sourceVerbose)
+			udp.Source(sourceIp, sourcePort, sourceLocal, sourceTime, sourcePps, pkts, tos * 4, sourceVerbose)
 		}
 	},
 }
@@ -40,6 +41,7 @@ func init() {
 
 	sourceCmd.PersistentFlags().StringVarP(&sourceIp, "ip", "I", "127.0.0.1", "IP address or host name of the flowsim UDP sink to talk to")
 	sourceCmd.PersistentFlags().IntVarP(&sourcePort, "port", "p", 8081, "UDP port of the flowsim UDP sink")
+	sourceCmd.PersistentFlags().StringVarP(&sourceLocal, "local", "L", "", "Outgoing source IP address to use; determins interface (default: empyt-any interface)")
 	sourceCmd.PersistentFlags().IntVarP(&sourceTime, "time", "t", 6, "Total time sending")
 	sourceCmd.PersistentFlags().IntVarP(&sourcePps, "pps", "P", 10, "Packets per second")
 	sourceCmd.PersistentFlags().StringVarP(&sourcePacket, "packet", "N", "1k", "Size of each packet (as x(.xxx)?[kmgtKMGT]?)")
