@@ -23,7 +23,7 @@ type Stats struct {
 // nsample:  packet.counter
 
 func AddSample(stats *Stats, delay int, nsample int) *Stats {
-	fmt.Printf("before: stats = %v\n", stats)
+	// fmt.Printf("before: stats = %v\n", stats)
 	diff := nsample - stats.lastsample
 	if diff >= 0 {
 		// if diff == 0 ==> repeated packet??
@@ -51,7 +51,7 @@ func AddSample(stats *Stats, delay int, nsample int) *Stats {
 	}
 	stats.samples ++
 	stats.lastdelay = delay
-	fmt.Printf("after: stats = %v\n", stats)
+	// fmt.Printf("after: stats = %v\n", stats)
 	return stats
 }
 

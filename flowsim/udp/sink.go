@@ -9,7 +9,7 @@ import (
 // Statistics are encapulated in the Stats structure
 // Handled in stats.go
 //
-func Sink(ip string, port int,verbose bool) {
+func Sink(ip string, port int, multi bool, verbose bool) {
 	fmt.Printf("Starting UDP sink at %s:%d\n", ip, port)
 
     ServerAddr,err := net.ResolveUDPAddr("udp",fmt.Sprintf("%s:%d", ip, port))
@@ -27,16 +27,16 @@ func Sink(ip string, port int,verbose bool) {
 		tStamp := MakeTimestamp()
 		src := fmt.Sprintf("%v",fromUDP)
 
-		// val, ok := stats[fromUDP]
-		val, ok := stats[src]
+		_, ok := stats[src]
 		if ok == false {
 			fmt.Printf("Creating stats for %s\n",src)
 			stats[src] = &Stats{0,0,0,0,0,0,0}
-		} else {
-			fmt.Printf("found: %s->%v\n", src,val)
 		}
-		fmt.Printf("stats: %v\n",stats)
+		/* else {
+			fmt.Printf("found: %s->%v\n", src,val)
+		}*/
 		if verbose {
+			fmt.Printf("stats: %v\n",stats)
 			fmt.Println("Received ",n, "bytes from ",src)
 		}
 		if err != nil {
@@ -50,6 +50,9 @@ func Sink(ip string, port int,verbose bool) {
 		//
 		if (info.pktId == -1) {
 			PrintStats(src, stats[src], "us")
+			if multi {
+				continue
+			}
 			break
 		}
 		udelay := tStamp - info.tStamp
@@ -66,6 +69,9 @@ func Sink(ip string, port int,verbose bool) {
 				fmt.Printf("Error: %v\n",err)
 			}
 			PrintStats(src, stats[src],  "us")
+			if multi {
+				continue
+			}
 			break
 		}
 	}
