@@ -19,13 +19,25 @@ func Sink(ip string, port int,verbose bool) {
 	defer Conn.Close()
 
 	buf      := make([]byte, 64 * 1024)
-	stats    := &Stats { 0,0,0,0,0,0,0 }
+	// stats := make(map[*net.UDPAddr]*Stats)
+	stats := make(map[string]*Stats)
 
 	for {
 		n,fromUDP,err := Conn.ReadFromUDP(buf)
 		tStamp := MakeTimestamp()
+		src := fmt.Sprintf("%v",fromUDP)
+
+		// val, ok := stats[fromUDP]
+		val, ok := stats[src]
+		if ok == false {
+			fmt.Printf("Creating stats for %s\n",src)
+			stats[src] = &Stats{0,0,0,0,0,0,0}
+		} else {
+			fmt.Printf("found: %s->%v\n", src,val)
+		}
+		fmt.Printf("stats: %v\n",stats)
 		if verbose {
-			fmt.Println("Received ",n, "bytes from ",fromUDP)
+			fmt.Println("Received ",n, "bytes from ",src)
 		}
 		if err != nil {
 			fmt.Println("Error: ",err)
@@ -37,11 +49,11 @@ func Sink(ip string, port int,verbose bool) {
 		// We send a packet with pktId = -1
 		//
 		if (info.pktId == -1) {
-			PrintStats(fromUDP, stats, "us")
+			PrintStats(src, stats[src], "us")
 			break
 		}
 		udelay := tStamp - info.tStamp
-		AddSample(stats, int(udelay), int(info.pktId))
+		stats[src] = AddSample(stats[src], int(udelay), int(info.pktId))
 		if verbose {
 			fmt.Printf("Delay was: %d us\n", udelay)
 		}
@@ -53,7 +65,7 @@ func Sink(ip string, port int,verbose bool) {
 			if err != nil {
 				fmt.Printf("Error: %v\n",err)
 			}
-			PrintStats(fromUDP, stats, "us")
+			PrintStats(src, stats[src],  "us")
 			break
 		}
 	}

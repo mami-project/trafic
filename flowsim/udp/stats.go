@@ -2,7 +2,7 @@ package udp
 
 import (
 	"fmt"
-	"net"
+	// TODO, ftmb all is handled with print
 	// "encoding/json"
 )
 
@@ -22,7 +22,8 @@ type Stats struct {
 // delay:    packet.timestamp - now()
 // nsample:  packet.counter
 
-func AddSample(stats *Stats, delay int, nsample int) {
+func AddSample(stats *Stats, delay int, nsample int) *Stats {
+	fmt.Printf("before: stats = %v\n", stats)
 	diff := nsample - stats.lastsample
 	if diff >= 0 {
 		// if diff == 0 ==> repeated packet??
@@ -50,13 +51,15 @@ func AddSample(stats *Stats, delay int, nsample int) {
 	}
 	stats.samples ++
 	stats.lastdelay = delay
+	fmt.Printf("after: stats = %v\n", stats)
+	return stats
 }
 
 //
 // TODO Generate this using the JSON libraries
 //
-func PrintStats(addr *net.UDPAddr, stats *Stats, unit string) {
-	fmt.Printf(" { \"%v\" : {\n", addr)
+func PrintStats(addr string, stats *Stats, unit string) {
+	fmt.Printf(" { \"%s\" : {\n", addr)
 	fmt.Printf("   \"Delay\" :  \"%6.2f %s\",\n", float64(stats.mdelay) / float64(stats.samples), unit)
 	fmt.Printf("   \"Jitter\" : \"%6.2f %s\",\n", float64(stats.mjitter) / float64(stats.samples - 1), unit)
 	fmt.Printf("   \"Loss\" : \"%d\",\n", stats.loss)
