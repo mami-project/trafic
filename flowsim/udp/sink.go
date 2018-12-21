@@ -26,13 +26,13 @@ func Sink(ip string, port int, multi bool, verbose bool) {
 	for {
 		n,fromUDP,err := Conn.ReadFromUDP(buf)
 		tStamp := MakeTimestamp()
-		// src := fmt.Sprintf("%v",fromUDP)
 
 		src := []byte(net.IP.To16(fromUDP.IP))
 		src = append(src, (byte)(fromUDP.Port & 0xff))
-		src = append(src, (byte)((fromUDP.Port >> 8) & 0xff))
-		// fmt.Printf("src: % x\n",src)
-		srcs := string(src)
+		srcs := string(append(src, (byte)((fromUDP.Port >> 8) & 0xff)))
+		// srcs := fmt.Sprintf("%v", fromUDP)
+
+		// fmt.Printf("Time to make index: %d\n", MakeTimestamp() - tStamp)
 		_, ok := stats[srcs]
 		if ok == false {
 			if verbose {
@@ -45,7 +45,7 @@ func Sink(ip string, port int, multi bool, verbose bool) {
 		}*/
 		if verbose {
 			fmt.Printf("stats: %v\n",stats)
-			fmt.Println("Received ",n, "bytes from ",src)
+			// fmt.Println("Received ",n, "bytes from ",srcs)
 		}
 		if err != nil {
 			fmt.Println("Error: ",err)
