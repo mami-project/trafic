@@ -10,8 +10,9 @@ import (
 // Handled in stats.go
 //
 func Sink(ip string, port int, multi bool, verbose bool) {
-	fmt.Printf("Starting UDP sink at %s:%d\n", ip, port)
-
+	if verbose {
+		fmt.Printf("Starting UDP sink at %s:%d\n", ip, port)
+	}
     ServerAddr,err := net.ResolveUDPAddr("udp",fmt.Sprintf("%s:%d", ip, port))
     CheckError(err)
 	Conn, err := net.ListenUDP("udp", ServerAddr)
@@ -25,12 +26,19 @@ func Sink(ip string, port int, multi bool, verbose bool) {
 	for {
 		n,fromUDP,err := Conn.ReadFromUDP(buf)
 		tStamp := MakeTimestamp()
-		src := fmt.Sprintf("%v",fromUDP)
+		// src := fmt.Sprintf("%v",fromUDP)
 
-		_, ok := stats[src]
+		src := []byte(net.IP.To16(fromUDP.IP))
+		src = append(src, (byte)(fromUDP.Port & 0xff))
+		src = append(src, (byte)((fromUDP.Port >> 8) & 0xff))
+		// fmt.Printf("src: % x\n",src)
+		srcs := string(src)
+		_, ok := stats[srcs]
 		if ok == false {
-			fmt.Printf("Creating stats for %s\n",src)
-			stats[src] = &Stats{0,0,0,0,0,0,0}
+			if verbose {
+				fmt.Printf("Creating stats for %s\n",fmt.Sprintf("%v",fromUDP))
+			}
+			stats[srcs] = &Stats{0,0,0,0,0,0,0}
 		}
 		/* else {
 			fmt.Printf("found: %s->%v\n", src,val)
@@ -49,14 +57,14 @@ func Sink(ip string, port int, multi bool, verbose bool) {
 		// We send a packet with pktId = -1
 		//
 		if (info.pktId == -1) {
-			PrintStats(src, stats[src], "us")
+			PrintStats(fmt.Sprintf("%v",fromUDP), stats[srcs],  "us")
 			if multi {
 				continue
 			}
 			break
 		}
 		udelay := tStamp - info.tStamp
-		stats[src] = AddSample(stats[src], int(udelay), int(info.pktId))
+		stats[srcs] = AddSample(stats[srcs], int(udelay), int(info.pktId))
 		if verbose {
 			fmt.Printf("Delay was: %d us\n", udelay)
 		}
@@ -68,7 +76,7 @@ func Sink(ip string, port int, multi bool, verbose bool) {
 			if err != nil {
 				fmt.Printf("Error: %v\n",err)
 			}
-			PrintStats(src, stats[src],  "us")
+			PrintStats(fmt.Sprintf("%v",fromUDP), stats[srcs],  "us")
 			if multi {
 				continue
 			}
