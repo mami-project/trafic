@@ -5,6 +5,7 @@ import (
 	"net"
 	"time"
 	"syscall"
+	"strconv"
 )
 
 func Source(ip string, port int, localip string,duration int, pps int, psize int, tos int, verbose bool) {
@@ -14,20 +15,24 @@ func Source(ip string, port int, localip string,duration int, pps int, psize int
 	var maxpackets int64
 	maxpackets = int64(duration * pps)
 
-    ServerAddr,err := net.ResolveUDPAddr("udp",fmt.Sprintf("%s:%d",ip,port))
-    CheckError(err)
+	destAddrStr := net.JoinHostPort(ip,strconv.Itoa(port))
+	srcAddrStr  := net.JoinHostPort(localip,"0")
+	fmt.Println("To   ",destAddrStr)
+	fmt.Println("From ",srcAddrStr)
 
-    // LocalAddr, err := net.ResolveUDPAddr("udp", "192.168.1.36:0")
-    LocalAddr, err := net.ResolveUDPAddr("udp", ":0")
+    ServerAddr,err := net.ResolveUDPAddr("udp",destAddrStr)
+    CheckError(err)
+    LocalAddr, err := net.ResolveUDPAddr("udp", srcAddrStr)
     CheckError(err)
 
     Conn, err := net.DialUDP("udp", LocalAddr, ServerAddr)
     CheckError(err)
 
+	// TODO: ToS in IPv6
 	err = setTos (Conn, tos)
 	CheckError(err)
 
-	fmt.Println("Starting to send to ",ServerAddr)
+	fmt.Printf("Starting to send to %v\n",ServerAddr)
     defer Conn.Close()
 	var msg string
 	var packet myStruct
