@@ -79,18 +79,20 @@ func handleConn (conn *net.TCPConn) {
 
 func Server(ip string, port int, single bool, tos int) {
 
-	listenAddr, err := net.ResolveTCPAddr("tcp", fmt.Sprintf("%s:%d", ip, port))
+	listenAddrStr := net.JoinHostPort(ip,strconv.Itoa(port))
+
+	listenAddr, err := net.ResolveTCPAddr("tcp", listenAddrStr)
 	if err != nil {
 		fmt.Printf("Error resolving %s:%d (%v)\n", ip, port, err)
 		return
 	}
-
 
 	ln, err := net.ListenTCP("tcp", listenAddr)
 	if err != nil {
 		fmt.Printf("Error binding server to %s\n", listenAddr)
 		return
 	}
+
 	fmt.Printf("Listening at %s\n",listenAddr)
 	for {
 		// accept connection on port
@@ -99,7 +101,7 @@ func Server(ip string, port int, single bool, tos int) {
 			fmt.Printf("Error accepting connection\n")
 			continue
 		}
-		err = setTos (conn, tos)
+    err = setTos (conn, tos, net.IP.To4(listenAddr.IP) == nil)
 		if err != nil {
 			continue
 		}

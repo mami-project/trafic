@@ -20,16 +20,15 @@ func Source(ip string, port int, localip string,duration int, pps int, psize int
 	fmt.Println("To   ",destAddrStr)
 	fmt.Println("From ",srcAddrStr)
 
-    ServerAddr,err := net.ResolveUDPAddr("udp",destAddrStr)
-    CheckError(err)
-    LocalAddr, err := net.ResolveUDPAddr("udp", srcAddrStr)
-    CheckError(err)
+  ServerAddr,err := net.ResolveUDPAddr("udp",destAddrStr)
+  CheckError(err)
+  LocalAddr, err := net.ResolveUDPAddr("udp", srcAddrStr)
+  CheckError(err)
 
-    Conn, err := net.DialUDP("udp", LocalAddr, ServerAddr)
-    CheckError(err)
+  Conn, err := net.DialUDP("udp", LocalAddr, ServerAddr)
+  CheckError(err)
 
-	// TODO: ToS in IPv6
-	err = setTos (Conn, tos)
+	err = setTos (Conn, tos, net.IP.To4(ServerAddr.IP) == nil)
 	CheckError(err)
 
 	fmt.Printf("Starting to send to %v\n",ServerAddr)
@@ -65,17 +64,23 @@ func Source(ip string, port int, localip string,duration int, pps int, psize int
 	}
 }
 
-func setTos(Conn *net.UDPConn, tos int) (error) {
+func setTos(Conn *net.UDPConn, tos int,ipv6 bool) (error) {
+  if ipv6 {
+    fmt.Println("WARNING: Can't set IPv6 TOS yet!")
+    return nil
+  }
+
 	f, err := Conn.File()
 
-    if err != nil {
-		fmt.Printf("While setting TOS to %d on %v: %v\n", tos, f, err)
-        return err
-    }
+  if err != nil {
+  fmt.Printf("While setting TOS to %d on %v: %v\n", tos, f, err)
+    return err
+  }
 
-    err = syscall.SetsockoptInt(int(f.Fd()), syscall.IPPROTO_IP, syscall.IP_TOS, tos)
-    if err != nil {
-		fmt.Printf("While setting TOS to %d: %v\n", tos, err)
-    }
+  err = syscall.SetsockoptInt(int(f.Fd()), syscall.IPPROTO_IP, syscall.IP_TOS, tos)
+  if err != nil {
+    fmt.Printf("While setting TOS to %d: %v\n", tos, err)
+  }
+
 	return err
 }

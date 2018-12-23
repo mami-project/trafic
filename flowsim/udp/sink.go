@@ -3,6 +3,7 @@ package udp
 import (
 	"fmt"
 	"net"
+  "strconv"
 )
 
 //
@@ -10,17 +11,19 @@ import (
 // Handled in stats.go
 //
 func Sink(ip string, port int, multi bool, verbose bool) {
+  destAddrStr := net.JoinHostPort(ip,strconv.Itoa(port))
 	if verbose {
-		fmt.Printf("Starting UDP sink at %s:%d\n", ip, port)
+		fmt.Printf("Starting UDP sink at %s\n", destAddrStr)
 	}
-    ServerAddr,err := net.ResolveUDPAddr("udp",fmt.Sprintf("%s:%d", ip, port))
-    CheckError(err)
+
+
+  ServerAddr,err := net.ResolveUDPAddr("udp",destAddrStr)
+  CheckError(err)
 	Conn, err := net.ListenUDP("udp", ServerAddr)
 	CheckError(err)
 	defer Conn.Close()
 
 	buf      := make([]byte, 64 * 1024)
-	// stats := make(map[*net.UDPAddr]*Stats)
 	stats := make(map[string]*Stats)
 
 	for {
@@ -32,7 +35,6 @@ func Sink(ip string, port int, multi bool, verbose bool) {
 		srcs := string(append(src, (byte)((fromUDP.Port >> 8) & 0xff)))
 		// srcs := fmt.Sprintf("%v", fromUDP)
 
-		// fmt.Printf("Time to make index: %d\n", MakeTimestamp() - tStamp)
 		_, ok := stats[srcs]
 		if ok == false {
 			if verbose {
@@ -40,12 +42,8 @@ func Sink(ip string, port int, multi bool, verbose bool) {
 			}
 			stats[srcs] = &Stats{0,0,0,0,0,0,0}
 		}
-		/* else {
-			fmt.Printf("found: %s->%v\n", src,val)
-		}*/
 		if verbose {
 			fmt.Printf("stats: %v\n",stats)
-			// fmt.Println("Received ",n, "bytes from ",srcs)
 		}
 		if err != nil {
 			fmt.Println("Error: ",err)

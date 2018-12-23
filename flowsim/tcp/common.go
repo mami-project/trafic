@@ -7,18 +7,23 @@ import (
 	// "errors"
 )
 
-func setTos(tcpConn *net.TCPConn, tos int) (error) {
+func setTos(tcpConn *net.TCPConn, tos int, ipv6 bool) (error) {
+  if ipv6 {
+    fmt.Println("WARNING: Can't set IPv6 TOS yet")
+    return nil
+  }
+
 	f, err := tcpConn.File()
 
-    if err != nil {
-		fmt.Printf("While setting TOS to %d on %v: %v\n", tos, f, err)
-        return err
-    }
+  if err != nil {
+  fmt.Printf("While setting TOS to %d on %v: %v\n", tos, f, err)
+      return err
+  }
 
-    err = syscall.SetsockoptInt(int(f.Fd()), syscall.IPPROTO_IP, syscall.IP_TOS, tos)
-    if err != nil {
-		fmt.Printf("While setting TOS to %d: %v\n", tos, err)
-    }
+  err = syscall.SetsockoptInt(int(f.Fd()), syscall.IPPROTO_IP, syscall.IP_TOS, tos)
+  if err != nil {
+  fmt.Printf("While setting TOS to %d: %v\n", tos, err)
+  }
 	return err
 }
 

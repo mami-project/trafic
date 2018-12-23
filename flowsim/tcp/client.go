@@ -7,6 +7,7 @@ import (
 	"io"
 	"time"
 	"math/rand"
+  "strconv"
 )
 
 func mkTransfer (conn *net.TCPConn, iter int, total int, tsize int, t time.Time) {
@@ -25,21 +26,23 @@ func mkTransfer (conn *net.TCPConn, iter int, total int, tsize int, t time.Time)
 
 
 func Client(host string, port int, iter int, interval int, burst int, tos int) {
-	// connect to this socket
-	serverAddr := fmt.Sprintf("%s:%d",host,port)
-	server, err := net.ResolveTCPAddr("tcp", serverAddr)
+
+	serverAddrStr := 	net.JoinHostPort(host,strconv.Itoa(port))
+
+	server, err := net.ResolveTCPAddr("tcp", serverAddrStr)
 	if err != nil {
-		fmt.Printf("Error resolving %s: %v\n", serverAddr, err)
+		fmt.Printf("Error resolving %s: %v\n", serverAddrStr, err)
 		return
 	}
 	conn, err := net.DialTCP("tcp", nil, server)
 	if err != nil {
-		fmt.Printf("Error connecting to %s: %v\n", serverAddr, err)
+		fmt.Printf("Error connecting to %s: %v\n", serverAddrStr, err)
 		return
 	}
 	defer closeFdSocket (conn)
-	fmt.Printf("Talking to %s\n",serverAddr)
-	err = setTos (conn, tos)
+	fmt.Printf("Talking to %s\n",serverAddrStr)
+
+	err = setTos (conn, tos, net.IP.To4(server.IP) == nil)
 	if err != nil {
 		log.Fatal(err)
 		return
