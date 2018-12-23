@@ -7,12 +7,15 @@ import (
 	"log"
 	"time"
 	"math/rand"
+  "strconv"
+  "net"
 	quic "github.com/lucas-clemente/quic-go"
 )
 
 func Client(ip string, port int, iter int, interval int, bunch int) error {
 
-	addr := fmt.Sprintf("%s:%d", ip, port)
+	addr := net.JoinHostPort(ip,strconv.Itoa(port))
+
 	session, err := quic.DialAddr(addr, &tls.Config{InsecureSkipVerify: true}, nil)
 	if err != nil {
 		return err

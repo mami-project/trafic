@@ -1,4 +1,5 @@
 package quic
+
 import (
 	"crypto/rand"
 	"crypto/rsa"
@@ -12,26 +13,16 @@ import (
 	"regexp"
 	"strconv"
 	"errors"
-	//	"strings"
-	//	"log"
+  "net"
 
 	quic "github.com/lucas-clemente/quic-go"
 )
 
-// const addr = "localhost:4242"
-
-// We start a server echoing data on the first stream the client opens,
-// then connect with a client, send the message, and wait for its receipt.
-// func main() {
-// 	err := Server("localhost", 4242)
-// 	if err != nil {
-// 		panic(err)
-// 	}
-// }
-
 // Start a server that echos all data on the first stream opened by the client
 func Server(ip string, port int, single bool) error {
-	addr := fmt.Sprintf("%s:%d", ip, port)
+
+	addr := net.JoinHostPort(ip,strconv.Itoa(port))
+
 	listener, err := quic.ListenAddr(addr, generateTLSConfig(), nil)
 	if err != nil {
 		return err
