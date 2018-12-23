@@ -7,7 +7,8 @@ import (
 	"io"
 	"time"
 	"math/rand"
-  "strconv"
+	"strconv"
+	common "github.com/mami-project/trafic/flowsim/common"
 )
 
 func mkTransfer (conn *net.TCPConn, iter int, total int, tsize int, t time.Time) {
@@ -42,10 +43,15 @@ func Client(host string, port int, iter int, interval int, burst int, tos int) {
 	defer closeFdSocket (conn)
 	fmt.Printf("Talking to %s\n",serverAddrStr)
 
-	err = setTos (conn, tos, net.IP.To4(server.IP) == nil)
+	f,err := conn.File()
 	if err != nil {
-		log.Fatal(err)
-		return
+		fmt.Printf("Error %v getting fd for connection\n",err)
+	} else {
+		err = common.SetTos (f, tos, net.IP.To4(server.IP) == nil)
+		if err != nil {
+			log.Fatal(err)
+			return
+		}
 	}
 	fmt.Printf("Starting at  %v\n",time.Now())
     r := rand.New(rand.NewSource(time.Now().UnixNano()))

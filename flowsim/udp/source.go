@@ -4,8 +4,9 @@ import (
 	"fmt"
 	"net"
 	"time"
-	"syscall"
+	// "syscall"
 	"strconv"
+	common "github.com/mami-project/trafic/flowsim/common"
 )
 
 func Source(ip string, port int, localip string,duration int, pps int, psize int, tos int, verbose bool) {
@@ -28,7 +29,11 @@ func Source(ip string, port int, localip string,duration int, pps int, psize int
   Conn, err := net.DialUDP("udp", LocalAddr, ServerAddr)
   CheckError(err)
 
-	err = setTos (Conn, tos, net.IP.To4(ServerAddr.IP) == nil)
+	f, err := Conn.File()
+	if err != nil {
+		CheckError(err)
+	}
+	err = common.SetTos (f, tos, net.IP.To4(ServerAddr.IP) == nil)
 	CheckError(err)
 
 	fmt.Printf("Starting to send to %v\n",ServerAddr)
@@ -62,25 +67,4 @@ func Source(ip string, port int, localip string,duration int, pps int, psize int
 			return
 		}
 	}
-}
-
-func setTos(Conn *net.UDPConn, tos int,ipv6 bool) (error) {
-  if ipv6 {
-    fmt.Println("WARNING: Can't set IPv6 TOS yet!")
-    return nil
-  }
-
-	f, err := Conn.File()
-
-  if err != nil {
-  fmt.Printf("While setting TOS to %d on %v: %v\n", tos, f, err)
-    return err
-  }
-
-  err = syscall.SetsockoptInt(int(f.Fd()), syscall.IPPROTO_IP, syscall.IP_TOS, tos)
-  if err != nil {
-    fmt.Printf("While setting TOS to %d: %v\n", tos, err)
-  }
-
-	return err
 }

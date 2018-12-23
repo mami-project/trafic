@@ -12,6 +12,7 @@ import (
 	"errors"
 	"net"
 	// "syscall"
+	common "github.com/mami-project/trafic/flowsim/common"
 )
 
 func matcher(cmd string) (string, string, string, error) {
@@ -101,9 +102,15 @@ func Server(ip string, port int, single bool, tos int) {
 			fmt.Printf("Error accepting connection\n")
 			continue
 		}
-    err = setTos (conn, tos, net.IP.To4(listenAddr.IP) == nil)
+		f, err:= conn.File()
 		if err != nil {
-			continue
+			fmt.Printf("Error getting file for connection\n")
+		} else {
+			err = common.SetTos (f, tos, net.IP.To4(listenAddr.IP) == nil)
+
+			if err != nil {
+				continue
+			}
 		}
 		if single {
 			handleConn(conn)
