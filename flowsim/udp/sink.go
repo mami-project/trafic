@@ -11,14 +11,14 @@ import (
 // Handled in stats.go
 //
 func Sink(ip string, port int, multi bool, verbose bool) {
-  destAddrStr := net.JoinHostPort(ip,strconv.Itoa(port))
-	if verbose {
-		fmt.Printf("Starting UDP sink at %s\n", destAddrStr)
-	}
+    destAddrStr := net.JoinHostPort(ip,strconv.Itoa(port))
+        if verbose {
+            fmt.Printf("Starting UDP sink at %s\n", destAddrStr)
+        }
 
 
-  ServerAddr,err := net.ResolveUDPAddr("udp",destAddrStr)
-  CheckError(err)
+    ServerAddr,err := net.ResolveUDPAddr("udp",destAddrStr)
+    CheckError(err)
 	Conn, err := net.ListenUDP("udp", ServerAddr)
 	CheckError(err)
 	defer Conn.Close()

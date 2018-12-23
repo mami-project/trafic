@@ -21,13 +21,13 @@ func Source(ip string, port int, localip string,duration int, pps int, psize int
 	fmt.Println("To   ",destAddrStr)
 	fmt.Println("From ",srcAddrStr)
 
-  ServerAddr,err := net.ResolveUDPAddr("udp",destAddrStr)
-  CheckError(err)
-  LocalAddr, err := net.ResolveUDPAddr("udp", srcAddrStr)
-  CheckError(err)
+    ServerAddr,err := net.ResolveUDPAddr("udp",destAddrStr)
+    CheckError(err)
+    LocalAddr, err := net.ResolveUDPAddr("udp", srcAddrStr)
+    CheckError(err)
 
-  Conn, err := net.DialUDP("udp", LocalAddr, ServerAddr)
-  CheckError(err)
+    Conn, err := net.DialUDP("udp", LocalAddr, ServerAddr)
+    CheckError(err)
 
 	f, err := Conn.File()
 	if err != nil {
