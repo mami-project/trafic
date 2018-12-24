@@ -1,16 +1,16 @@
 package tcp
 
 import (
-	"fmt"
 	"bufio"
-	"strings"
-	"strconv"
-	"regexp"
+	"fmt"
 	"io"
+	"regexp"
+	"strconv"
+	"strings"
 	// "log"
-	"os"
 	"errors"
 	"net"
+	"os"
 	// "syscall"
 	common "github.com/mami-project/trafic/flowsim/common"
 )
@@ -19,12 +19,12 @@ func matcher(cmd string) (string, string, string, error) {
 	expr := regexp.MustCompile(`GET (\d+)/(\d+) (\d+)`)
 	parsed := expr.FindStringSubmatch(cmd)
 	if len(parsed) == 4 {
-        return parsed[1], parsed[2], parsed[3], nil
+		return parsed[1], parsed[2], parsed[3], nil
 	}
-	return "", "", "", errors.New(fmt.Sprintf("Unexpected request %s",cmd))
+	return "", "", "", errors.New(fmt.Sprintf("Unexpected request %s", cmd))
 }
 
-func handleConn (conn *net.TCPConn) {
+func handleConn(conn *net.TCPConn) {
 	var run, total, bunch string
 
 	defer closeFdSocket(conn)
@@ -46,9 +46,9 @@ func handleConn (conn *net.TCPConn) {
 			continue
 		}
 		// fmt.Println(run, total, bunch)
-		run_iter,   _ := strconv.Atoi(run)
+		run_iter, _ := strconv.Atoi(run)
 		total_iter, _ := strconv.Atoi(total)
-		bunch_len,  _ := strconv.Atoi(bunch)
+		bunch_len, _ := strconv.Atoi(bunch)
 
 		// conn.Write([]byte(fmt.Sprintf("run %d of %d... should send %d bytes\n",run_iter, total_iter, bunch_len)))
 
@@ -59,7 +59,7 @@ func handleConn (conn *net.TCPConn) {
 		if common.CheckError(err) != nil {
 			continue
 		}
-		fmt.Printf("Sending %d bytes...\n",numRead)
+		fmt.Printf("Sending %d bytes...\n", numRead)
 		conn.Write(testBunch)
 		if run_iter == total_iter {
 			// fmt.Println("This should kill this TCP server thread")
@@ -71,7 +71,7 @@ func handleConn (conn *net.TCPConn) {
 
 func Server(ip string, port int, single bool, tos int) {
 
-	listenAddrStr := net.JoinHostPort(ip,strconv.Itoa(port))
+	listenAddrStr := net.JoinHostPort(ip, strconv.Itoa(port))
 
 	listenAddr, err := net.ResolveTCPAddr("tcp", listenAddrStr)
 	if common.CheckErrorf(err, "Error resolving %s:%d (%v)\n", ip, port, err) != nil {
@@ -83,7 +83,7 @@ func Server(ip string, port int, single bool, tos int) {
 		return
 	}
 
-	fmt.Printf("Listening at %s\n",listenAddr)
+	fmt.Printf("Listening at %s\n", listenAddr)
 	for {
 		// accept connection on port
 		conn, err := ln.AcceptTCP()
@@ -91,7 +91,7 @@ func Server(ip string, port int, single bool, tos int) {
 			continue
 		}
 
-		err = common.SetTcpTos (conn, tos, net.IP.To4(listenAddr.IP) == nil)
+		err = common.SetTcpTos(conn, tos)
 		if common.CheckErrorln(err, "Error setting TOS") != nil {
 			continue
 		}

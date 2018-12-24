@@ -1,17 +1,17 @@
 package tcp
 
 import (
-	"net"
 	"fmt"
+	"net"
 	// "log"
+	common "github.com/mami-project/trafic/flowsim/common"
 	"io"
-	"time"
 	"math/rand"
 	"strconv"
-	common "github.com/mami-project/trafic/flowsim/common"
+	"time"
 )
 
-func mkTransfer (conn *net.TCPConn, iter int, total int, tsize int, t time.Time) {
+func mkTransfer(conn *net.TCPConn, iter int, total int, tsize int, t time.Time) {
 	fmt.Printf("Launching at %v\n", t)
 	// send to socket
 	fmt.Fprintf(conn, fmt.Sprintf("GET %d/%d %d\n", iter, total, tsize))
@@ -23,10 +23,9 @@ func mkTransfer (conn *net.TCPConn, iter int, total int, tsize int, t time.Time)
 	fmt.Printf("Effectively read %d bytes\n", readBytes)
 }
 
-
 func Client(host string, port int, iter int, interval int, burst int, tos int) {
 
-	serverAddrStr := 	net.JoinHostPort(host,strconv.Itoa(port))
+	serverAddrStr := net.JoinHostPort(host, strconv.Itoa(port))
 
 	server, err := net.ResolveTCPAddr("tcp", serverAddrStr)
 	if common.CheckErrorf(err, "Error resolving %s\n", serverAddrStr) != nil {
@@ -36,33 +35,33 @@ func Client(host string, port int, iter int, interval int, burst int, tos int) {
 	if common.CheckErrorf(err, "Error connecting to %s: %v\n", serverAddrStr) != nil {
 		return
 	}
-	defer closeFdSocket (conn)
-	fmt.Printf("Talking to %s\n",serverAddrStr)
+	defer closeFdSocket(conn)
+	fmt.Printf("Talking to %s\n", serverAddrStr)
 
-	err = common.SetTcpTos (conn, tos, net.IP.To4(server.IP) == nil)
+	err = common.SetTcpTos(conn, tos)
 	common.CheckError(err)
 
-	fmt.Printf("Starting at  %v\n",time.Now())
-    r := rand.New(rand.NewSource(time.Now().UnixNano()))
-	initWait := r.Intn(interval * 50) / 100.0
+	fmt.Printf("Starting at  %v\n", time.Now())
+	r := rand.New(rand.NewSource(time.Now().UnixNano()))
+	initWait := r.Intn(interval*50) / 100.0
 	time.Sleep(time.Duration(initWait) * time.Second)
 
 	ticker := time.NewTicker(time.Duration(interval) * time.Second)
 	defer ticker.Stop()
 
 	currIter := 1
-	mkTransfer (conn , currIter, iter, burst,time.Now())
+	mkTransfer(conn, currIter, iter, burst, time.Now())
 
-	if (iter > 1) {
-		done := make(chan bool,1)
+	if iter > 1 {
+		done := make(chan bool, 1)
 		for {
 			select {
 			case t := <-ticker.C:
-				currIter ++
-				if (currIter >= iter) {
+				currIter++
+				if currIter >= iter {
 					close(done)
 				}
-				mkTransfer (conn , currIter, iter, burst,t)
+				mkTransfer(conn, currIter, iter, burst, t)
 			case <-done:
 				fmt.Printf("\nFinished...\n\n")
 				return
