@@ -22,19 +22,15 @@ func Source(ip string, port int, localip string,duration int, pps int, psize int
 	fmt.Println("From ",srcAddrStr)
 
     ServerAddr,err := net.ResolveUDPAddr("udp",destAddrStr)
-    CheckError(err)
+    common.CheckError(err)
     LocalAddr, err := net.ResolveUDPAddr("udp", srcAddrStr)
-    CheckError(err)
+    common.CheckError(err)
 
     Conn, err := net.DialUDP("udp", LocalAddr, ServerAddr)
-    CheckError(err)
+    common.CheckError(err)
 
-	f, err := Conn.File()
-	if err != nil {
-		CheckError(err)
-	}
-	err = common.SetTos (f, tos, net.IP.To4(ServerAddr.IP) == nil)
-	CheckError(err)
+	err = common.SetUdpTos (Conn, tos, net.IP.To4(ServerAddr.IP) == nil)
+	common.CheckError(err)
 
 	fmt.Printf("Starting to send to %v\n",ServerAddr)
     defer Conn.Close()

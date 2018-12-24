@@ -3,7 +3,7 @@ package tcp
 import (
 	"net"
 	"fmt"
-	"log"
+	// "log"
 	"io"
 	"time"
 	"math/rand"
@@ -19,9 +19,7 @@ func mkTransfer (conn *net.TCPConn, iter int, total int, tsize int, t time.Time)
 	readBuffer := make([]byte, tsize)
 	fmt.Printf("Trying to read %d bytes back...", len(readBuffer))
 	readBytes, err := io.ReadFull(conn, readBuffer)
-	if err != nil {
-		log.Fatal(err)
-	}
+	common.CheckError(err)
 	fmt.Printf("Effectively read %d bytes\n", readBytes)
 }
 
@@ -31,28 +29,19 @@ func Client(host string, port int, iter int, interval int, burst int, tos int) {
 	serverAddrStr := 	net.JoinHostPort(host,strconv.Itoa(port))
 
 	server, err := net.ResolveTCPAddr("tcp", serverAddrStr)
-	if err != nil {
-		fmt.Printf("Error resolving %s: %v\n", serverAddrStr, err)
+	if common.CheckErrorf(err, "Error resolving %s\n", serverAddrStr) != nil {
 		return
 	}
 	conn, err := net.DialTCP("tcp", nil, server)
-	if err != nil {
-		fmt.Printf("Error connecting to %s: %v\n", serverAddrStr, err)
+	if common.CheckErrorf(err, "Error connecting to %s: %v\n", serverAddrStr) != nil {
 		return
 	}
 	defer closeFdSocket (conn)
 	fmt.Printf("Talking to %s\n",serverAddrStr)
 
-	f,err := conn.File()
-	if err != nil {
-		fmt.Printf("Error %v getting fd for connection\n",err)
-	} else {
-		err = common.SetTos (f, tos, net.IP.To4(server.IP) == nil)
-		if err != nil {
-			log.Fatal(err)
-			return
-		}
-	}
+	err = common.SetTcpTos (conn, tos, net.IP.To4(server.IP) == nil)
+	common.CheckError(err)
+
 	fmt.Printf("Starting at  %v\n",time.Now())
     r := rand.New(rand.NewSource(time.Now().UnixNano()))
 	initWait := r.Intn(interval * 50) / 100.0

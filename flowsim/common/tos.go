@@ -2,11 +2,27 @@ package common
 
 import (
 	"fmt"
-	// "net"
+	"net"
 	"os"
 	"syscall"
 )
 
+
+func SetTcpTos(Conn *net.TCPConn, tos int,ipv6 bool) (error) {
+	f, err := Conn.File()
+	if err != nil {
+		return err
+	}
+	return SetTos(f, tos, ipv6)
+}
+
+func SetUdpTos(Conn *net.UDPConn, tos int,ipv6 bool) (error) {
+	f, err := Conn.File()
+	if err != nil {
+		return err
+	}
+	return SetTos(f, tos, ipv6)
+}
 
 func SetTos(f *os.File, tos int,ipv6 bool) (error) {
 

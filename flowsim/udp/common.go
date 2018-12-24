@@ -4,6 +4,7 @@ import (
 	"time"
 	"encoding/binary"
 	"bytes"
+	common "github.com/mami-project/trafic/flowsim/common"
 )
 
 type myStruct struct {
@@ -21,15 +22,15 @@ func DecodePacket(pkt []byte) myStruct {
 	binbuf := bytes.NewReader(pkt)
 
 	err := binary.Read(binbuf, binary.BigEndian, &vuelta)
-	CheckError(err)
+	common.CheckError(err)
 	result.pktId = vuelta
 
 	err = binary.Read(binbuf, binary.BigEndian, &vuelta)
-	CheckError(err)
+	common.CheckError(err)
 	result.total = vuelta
 
 	err = binary.Read(binbuf, binary.BigEndian, &vuelta)
-	CheckError(err)
+	common.CheckError(err)
 	result.tStamp = vuelta
 	// result.padding = pkt[16:]
 	return result
@@ -40,12 +41,6 @@ func EncodePacket(input myStruct, plen int) []byte {
 	binary.Write(&binbuf, binary.BigEndian, input)
 
 	return binbuf.Bytes()[:plen]
-}
-
-func CheckError(err error) {
-	if err != nil {
-		panic (err)
-	}
 }
 
 func MakeTimestamp() int64 {

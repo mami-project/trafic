@@ -3,7 +3,8 @@ package udp
 import (
 	"fmt"
 	"net"
-  "strconv"
+	"strconv"
+	common "github.com/mami-project/trafic/flowsim/common"
 )
 
 //
@@ -18,9 +19,9 @@ func Sink(ip string, port int, multi bool, verbose bool) {
 
 
     ServerAddr,err := net.ResolveUDPAddr("udp",destAddrStr)
-    CheckError(err)
+    common.CheckError(err)
 	Conn, err := net.ListenUDP("udp", ServerAddr)
-	CheckError(err)
+	common.CheckError(err)
 	defer Conn.Close()
 
 	buf      := make([]byte, 64 * 1024)

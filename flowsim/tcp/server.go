@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"regexp"
 	"io"
-	"log"
+	// "log"
 	"os"
 	"errors"
 	"net"
@@ -24,23 +24,17 @@ func matcher(cmd string) (string, string, string, error) {
 	return "", "", "", errors.New(fmt.Sprintf("Unexpected request %s",cmd))
 }
 
-
-
-
 func handleConn (conn *net.TCPConn) {
 	var run, total, bunch string
 
-	//	defer conn.Close()
 	defer closeFdSocket(conn)
 	zero, err := os.Open("/dev/zero")
 	defer zero.Close()
-	if err != nil {
-		log.Fatal(err)
-	}
+	common.CheckError(err)
 	for {
 		// will listen for message to process ending in newline (\n)
 		message, err := bufio.NewReader(conn).ReadString('\n')
-		if err != nil {
+		if common.CheckError(err) != nil {
 			return
 		}
 		// output message received
@@ -48,8 +42,7 @@ func handleConn (conn *net.TCPConn) {
 
 		// Checked in the client
 		run, total, bunch, err = matcher(strings.ToUpper(string(message)))
-		if err != nil {
-			log.Fatal(err)
+		if common.CheckError(err) != nil {
 			continue
 		}
 		// fmt.Println(run, total, bunch)
@@ -63,8 +56,7 @@ func handleConn (conn *net.TCPConn) {
 		numRead, err := io.ReadFull(zero, testBunch)
 
 		// fmt.Printf("Read %d bytes from /dev/zero\n",len(testBunch))
-		if err != nil {
-			log.Fatal(err)
+		if common.CheckError(err) != nil {
 			continue
 		}
 		fmt.Printf("Sending %d bytes...\n",numRead)
@@ -74,7 +66,6 @@ func handleConn (conn *net.TCPConn) {
 			break
 		}
 	}
-
 	fmt.Println("Connection closed...")
 }
 
@@ -83,14 +74,12 @@ func Server(ip string, port int, single bool, tos int) {
 	listenAddrStr := net.JoinHostPort(ip,strconv.Itoa(port))
 
 	listenAddr, err := net.ResolveTCPAddr("tcp", listenAddrStr)
-	if err != nil {
-		fmt.Printf("Error resolving %s:%d (%v)\n", ip, port, err)
+	if common.CheckErrorf(err, "Error resolving %s:%d (%v)\n", ip, port, err) != nil {
 		return
 	}
 
 	ln, err := net.ListenTCP("tcp", listenAddr)
-	if err != nil {
-		fmt.Printf("Error binding server to %s\n", listenAddr)
+	if common.CheckErrorf(err, "Error binding server to %s\n", listenAddr) != nil {
 		return
 	}
 
@@ -98,20 +87,15 @@ func Server(ip string, port int, single bool, tos int) {
 	for {
 		// accept connection on port
 		conn, err := ln.AcceptTCP()
-		if err != nil {
-			fmt.Printf("Error accepting connection\n")
+		if common.CheckErrorln(err, "Error accepting connection") != nil {
 			continue
 		}
-		f, err:= conn.File()
-		if err != nil {
-			fmt.Printf("Error getting file for connection\n")
-		} else {
-			err = common.SetTos (f, tos, net.IP.To4(listenAddr.IP) == nil)
 
-			if err != nil {
-				continue
-			}
+		err = common.SetTcpTos (conn, tos, net.IP.To4(listenAddr.IP) == nil)
+		if common.CheckErrorln(err, "Error setting TOS") != nil {
+			continue
 		}
+
 		if single {
 			handleConn(conn)
 			break
