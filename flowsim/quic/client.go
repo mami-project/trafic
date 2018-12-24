@@ -3,18 +3,18 @@ package quic
 import (
 	"crypto/tls"
 	"fmt"
-	"io"
-	"time"
-	"math/rand"
-	"strconv"
-	"net"
 	quic "github.com/lucas-clemente/quic-go"
 	common "github.com/mami-project/trafic/flowsim/common"
+	"io"
+	"math/rand"
+	"net"
+	"strconv"
+	"time"
 )
 
 func Client(ip string, port int, iter int, interval int, bunch int) error {
 
-	addr := net.JoinHostPort(ip,strconv.Itoa(port))
+	addr := net.JoinHostPort(ip, strconv.Itoa(port))
 
 	session, err := quic.DialAddr(addr, &tls.Config{InsecureSkipVerify: true}, nil)
 	if common.CheckError(err) != nil {
@@ -27,22 +27,22 @@ func Client(ip string, port int, iter int, interval int, bunch int) error {
 	if common.CheckError(err) != nil {
 		return err
 	}
-    r := rand.New(rand.NewSource(time.Now().UnixNano()))
-	initWait := r.Intn(interval * 50) / 100.0
+	r := rand.New(rand.NewSource(time.Now().UnixNano()))
+	initWait := r.Intn(interval*50) / 100.0
 	time.Sleep(time.Duration(initWait) * time.Second)
 
 	currIter := 1
 	ticker := time.NewTicker(time.Duration(interval) * time.Second)
 	defer ticker.Stop()
-	mkTransfer (stream, buf, currIter, iter, time.Now())
+	mkTransfer(stream, buf, currIter, iter, time.Now())
 
 	if iter > 1 {
-		done := make(chan bool,1)
+		done := make(chan bool, 1)
 		for {
 			select {
 			case t := <-ticker.C:
-				mkTransfer (stream, buf, currIter, iter, t)
-				currIter ++
+				mkTransfer(stream, buf, currIter, iter, t)
+				currIter++
 				if currIter > iter {
 					close(done)
 				}
@@ -55,7 +55,7 @@ func Client(ip string, port int, iter int, interval int, bunch int) error {
 	return nil
 }
 
-func mkTransfer (stream quic.Stream, buf []byte, current int, iter int,t time.Time) error {
+func mkTransfer(stream quic.Stream, buf []byte, current int, iter int, t time.Time) error {
 
 	message := fmt.Sprintf("GET %d/%d %d\n", current, iter, len(buf))
 	fmt.Printf("Client: (%v) Sending > %s", t, message)
