@@ -34,7 +34,6 @@ func Source(ip string, port int, localip string,duration int, pps int, psize int
 
 	fmt.Printf("Starting to send to %v\n",ServerAddr)
     defer Conn.Close()
-	var msg string
 	var packet myStruct
 
 	packet.total = maxpackets
@@ -47,9 +46,8 @@ func Source(ip string, port int, localip string,duration int, pps int, psize int
 		case t := <-ticker.C:
 			packet.tStamp = toTimestamp(t)
 			_,err := Conn.Write(EncodePacket(packet, psize))
-			if err != nil {
-				fmt.Println(msg, err)
-			}
+			common.CheckError(err)
+
 			if verbose {
 				fmt.Printf("Sent %4d of %4d at %v\n", packet.pktId, maxpackets, t)
 			}

@@ -46,8 +46,7 @@ func Sink(ip string, port int, multi bool, verbose bool) {
 		if verbose {
 			fmt.Printf("stats: %v\n",stats)
 		}
-		if err != nil {
-			fmt.Println("Error: ",err)
+		if common.CheckError(err) != nil {
 			continue
 		}
 		info := DecodePacket(buf[0:n])
@@ -72,9 +71,7 @@ func Sink(ip string, port int, multi bool, verbose bool) {
 		//
 		if (info.pktId == info.total) {
 			_,_,err := Conn.ReadFromUDP(buf) // discard last resort packet
-			if err != nil {
-				fmt.Printf("Error: %v\n",err)
-			}
+			common.CheckError(err)
 			PrintStats(fmt.Sprintf("%v",fromUDP), stats[srcs],  "us")
 			if multi {
 				continue

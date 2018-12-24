@@ -4,12 +4,12 @@ import (
 	"crypto/tls"
 	"fmt"
 	"io"
-	"log"
 	"time"
 	"math/rand"
-  "strconv"
-  "net"
+	"strconv"
+	"net"
 	quic "github.com/lucas-clemente/quic-go"
+	common "github.com/mami-project/trafic/flowsim/common"
 )
 
 func Client(ip string, port int, iter int, interval int, bunch int) error {
@@ -17,14 +17,14 @@ func Client(ip string, port int, iter int, interval int, bunch int) error {
 	addr := net.JoinHostPort(ip,strconv.Itoa(port))
 
 	session, err := quic.DialAddr(addr, &tls.Config{InsecureSkipVerify: true}, nil)
-	if err != nil {
+	if common.CheckError(err) != nil {
 		return err
 	}
 	defer session.Close()
 	fmt.Printf("Opened session for %s\n", addr)
 	buf := make([]byte, bunch)
 	stream, err := session.OpenStreamSync()
-	if err != nil {
+	if common.CheckError(err) != nil {
 		return err
 	}
     r := rand.New(rand.NewSource(time.Now().UnixNano()))
@@ -61,14 +61,12 @@ func mkTransfer (stream quic.Stream, buf []byte, current int, iter int,t time.Ti
 	fmt.Printf("Client: (%v) Sending > %s", t, message)
 
 	_, err := stream.Write([]byte(message))
-	if err != nil {
+	if common.CheckError(err) != nil {
 		return err
 	}
 
 	n, err := io.ReadFull(stream, buf)
-	if err != nil {
-		log.Fatal(err)
-	}
+	common.CheckError(err)
 	fmt.Printf("Client: Got %d bytes back\n", n)
 	return nil
 }
