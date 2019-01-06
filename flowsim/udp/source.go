@@ -35,27 +35,33 @@ func Source(ip string, port int, localip string, duration int, pps int, psize in
 
 	fmt.Printf("Starting to send to %v\n", ServerAddr)
 	defer Conn.Close()
+
+	// Initialise packet structure
 	var packet myStruct
 	_, err = rand.Read(packet.padding[:])
 	common.CheckError(err)
 	packet.total = maxpackets
-	done := make(chan bool, 1)
+	packet.pktId = 1
+
+	done := make(chan bool, 1) // signal end of task, kill ticker
+
 	ticker := time.NewTicker(time.Duration(1000000/pps) * time.Microsecond)
 	defer ticker.Stop()
-	packet.pktId = 1
 	for {
 		select {
 		case t := <-ticker.C:
-			packet.tStamp = toTimestamp(t)
+			packet.tStamp = toTimestamp(t) // refresh packet timestamp
 			_, err := Conn.Write(EncodePacket(packet, psize))
 			common.CheckError(err)
 
 			if verbose {
 				fmt.Printf("Sent %4d of %4d at %v\n", packet.pktId, maxpackets, t)
 			}
-			packet.pktId++
+
+			packet.pktId++ // prepare for next packet
 			if packet.pktId > maxpackets {
-				packet.pktId = -1
+				packet.tStamp = toTimestamp(t) // not strictly needed, but anyhow
+				packet.pktId = -1              // signal end of measurement
 				_, err = Conn.Write(EncodePacket(packet, psize))
 				close(done)
 			}

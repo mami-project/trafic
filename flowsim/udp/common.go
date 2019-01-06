@@ -1,21 +1,21 @@
 package udp
 
 import (
-	"time"
-	"encoding/binary"
 	"bytes"
+	"encoding/binary"
 	common "github.com/mami-project/trafic/flowsim/common"
+	"time"
 )
 
 type myStruct struct {
-    pktId   int64
+	pktId   int64
 	total   int64
-    tStamp  int64
-	padding [64 * 1024 - 24]byte
+	tStamp  int64
+	padding [64*1024 - 24]byte
 }
 
 func DecodePacket(pkt []byte) myStruct {
-    var result myStruct
+	var result myStruct
 	var vuelta int64
 
 	// fmt.Printf("Received packet with %d bytes\n -> % x\n",len(pkt),pkt)
@@ -44,10 +44,10 @@ func EncodePacket(input myStruct, plen int) []byte {
 }
 
 func MakeTimestamp() int64 {
-    return time.Now().UnixNano() / (int64(time.Microsecond)/int64(time.Nanosecond));
+	return time.Now().UnixNano() / (int64(time.Microsecond) / int64(time.Nanosecond))
 }
 
 func toTimestamp(t time.Time) int64 {
 	// fmt.Println("toTimestamp (",t,")");
-	return t.UnixNano() / (int64(time.Microsecond)/int64(time.Nanosecond));
+	return t.UnixNano() / (int64(time.Microsecond) / int64(time.Nanosecond))
 }
