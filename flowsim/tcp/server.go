@@ -3,15 +3,17 @@ package tcp
 import (
 	"bufio"
 	"fmt"
-	"io"
 	"regexp"
 	"strconv"
 	"strings"
-	// "log"
+
 	"errors"
 	"net"
-	"os"
-	// "syscall"
+	// "io"
+	// "os"
+
+	"crypto/rand"
+
 	common "github.com/mami-project/trafic/flowsim/common"
 )
 
@@ -28,9 +30,9 @@ func handleConn(conn *net.TCPConn) {
 	var run, total, bunch string
 
 	defer closeFdSocket(conn)
-	zero, err := os.Open("/dev/zero")
-	defer zero.Close()
-	common.CheckError(err)
+	// zero, err := os.Open("/dev/zero")
+	// defer zero.Close()
+	// common.CheckError(err)
 	for {
 		// will listen for message to process ending in newline (\n)
 		message, err := bufio.NewReader(conn).ReadString('\n')
@@ -45,7 +47,7 @@ func handleConn(conn *net.TCPConn) {
 		if common.CheckError(err) != nil {
 			continue
 		}
-		// fmt.Println(run, total, bunch)
+
 		run_iter, _ := strconv.Atoi(run)
 		total_iter, _ := strconv.Atoi(total)
 		bunch_len, _ := strconv.Atoi(bunch)
@@ -53,8 +55,8 @@ func handleConn(conn *net.TCPConn) {
 		// conn.Write([]byte(fmt.Sprintf("run %d of %d... should send %d bytes\n",run_iter, total_iter, bunch_len)))
 
 		testBunch := make([]byte, bunch_len)
-		numRead, err := io.ReadFull(zero, testBunch)
-
+		// numRead, err := io.ReadFull(zero, testBunch)
+		numRead, err := rand.Read(testBunch)
 		// fmt.Printf("Read %d bytes from /dev/zero\n",len(testBunch))
 		if common.CheckError(err) != nil {
 			continue

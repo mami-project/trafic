@@ -1,10 +1,11 @@
 package udp
 
 import (
+	"crypto/rand"
 	"fmt"
 	"net"
 	"time"
-	// "syscall"
+
 	common "github.com/mami-project/trafic/flowsim/common"
 	"strconv"
 )
@@ -35,7 +36,8 @@ func Source(ip string, port int, localip string, duration int, pps int, psize in
 	fmt.Printf("Starting to send to %v\n", ServerAddr)
 	defer Conn.Close()
 	var packet myStruct
-
+	_, err = rand.Read(packet.padding[:])
+	common.CheckError(err)
 	packet.total = maxpackets
 	done := make(chan bool, 1)
 	ticker := time.NewTicker(time.Duration(1000000/pps) * time.Microsecond)

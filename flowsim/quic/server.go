@@ -8,21 +8,21 @@ import (
 	"encoding/pem"
 	"math/big"
 
-	"fmt"
 	"bufio"
+	"errors"
+	"fmt"
+	"net"
 	"regexp"
 	"strconv"
-	"errors"
-	"net"
 
-	common "github.com/mami-project/trafic/flowsim/common"
 	quic "github.com/lucas-clemente/quic-go"
+	common "github.com/mami-project/trafic/flowsim/common"
 )
 
 // Start a server that echos all data on the first stream opened by the client
 func Server(ip string, port int, single bool) error {
 
-	addr := net.JoinHostPort(ip,strconv.Itoa(port))
+	addr := net.JoinHostPort(ip, strconv.Itoa(port))
 
 	listener, err := quic.ListenAddr(addr, generateTLSConfig(), nil)
 	if common.CheckError(err) != nil {
@@ -61,7 +61,7 @@ func quicHandler(sess quic.Session) error {
 		if common.CheckError(err) != nil {
 			return err
 		}
-		_,err = stream.Write(wbuf)
+		_, err = stream.Write(wbuf)
 		if common.CheckError(err) != nil {
 			return err
 		}
@@ -77,24 +77,33 @@ func matcher(cmd string) (string, string, string, error) {
 	expr := regexp.MustCompile(`GET (\d+)/(\d+) (\d+)`)
 	parsed := expr.FindStringSubmatch(cmd)
 	if len(parsed) == 4 {
-        return parsed[1], parsed[2], parsed[3], nil
+		return parsed[1], parsed[2], parsed[3], nil
 	}
-	return "", "", "", errors.New(fmt.Sprintf("Unexpected request %s",cmd))
+	return "", "", "", errors.New(fmt.Sprintf("Unexpected request %s", cmd))
 }
 
+/*
+* Purpuse: parse get Command from client
+*         and generate a buffer with random bytes
+* Return: byte buffer to send or nil on error
+*         boolean: true id last bunch
+*         error or nil if all went well
+*
+* Uses crypto/rand, which is already imported for key handling
+ */
 func parseCmd(strb string) ([]byte, bool, error) {
-	stop := false
 	fmt.Printf("Server: Got %s", strb)
 	iter, total, bunchStr, err := matcher(strb)
 	if err == nil {
 		bunch, _ := strconv.Atoi(bunchStr) // ignore error, wouldn't have parsed the command
-		nb := make([]byte,bunch,bunch)
-		if iter == total {
-			stop = true
+		nb := make([]byte, bunch, bunch)
+		_, err := rand.Read(nb)
+		if err != nil {
+			fmt.Println("ERROR while filling random buffer: ", err)
+			return nil, iter == total, err
 		}
-		// fmt.Printf("Sending %v\n", nb)
 		fmt.Printf("Sending %d bytes\n", len(nb))
-		return nb, stop, err
+		return nb, iter == total, err
 	}
 	return nil, false, err
 }
