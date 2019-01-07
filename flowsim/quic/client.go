@@ -1,40 +1,61 @@
 package quic
 
 import (
-	"crypto/tls"
 	"fmt"
-	quic "github.com/lucas-clemente/quic-go"
-	common "github.com/mami-project/trafic/flowsim/common"
 	"io"
-	"math/rand"
 	"net"
 	"strconv"
 	"time"
+
+	"crypto/tls"
+	quic "github.com/lucas-clemente/quic-go"
+	common "github.com/mami-project/trafic/flowsim/common"
+	"math/rand"
 )
 
-func Client(ip string, port int, iter int, interval int, bunch int) error {
+func Client(ip string, port int, iter int, interval int, bunch int, dscp int) error {
+
+	ipAddr, err := net.ResolveIPAddr("ip", ip)
+	if common.FatalError(err) != nil {
+		return err
+	}
 
 	addr := net.JoinHostPort(ip, strconv.Itoa(port))
+	updAddr, err := net.ResolveUDPAddr("udp", addr)
+	if common.FatalError(err) != nil {
+		return err
+	}
 
-	session, err := quic.DialAddr(addr, &tls.Config{InsecureSkipVerify: true}, nil)
-	if common.CheckError(err) != nil {
+	udpConn, err := net.ListenUDP("udp", &net.UDPAddr{IP: net.IPv4zero, Port: 0})
+	if common.FatalError(err) != nil {
+		return err
+	}
+
+	common.SetUdpTos(udpConn, dscp, ipAddr.IP.To4() == nil)
+	// if common.FatalError(err) != nil {
+	// 	return err
+	// }
+
+	session, err := quic.Dial(udpConn, updAddr, addr, &tls.Config{InsecureSkipVerify: true}, nil)
+	if common.FatalError(err) != nil {
 		return err
 	}
 	defer session.Close()
+
 	fmt.Printf("Opened session for %s\n", addr)
 	buf := make([]byte, bunch)
 	stream, err := session.OpenStreamSync()
-	if common.CheckError(err) != nil {
+	if common.FatalError(err) != nil {
 		return err
 	}
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 	initWait := r.Intn(interval*50) / 100.0
 	time.Sleep(time.Duration(initWait) * time.Second)
 
-	currIter := 1
 	ticker := time.NewTicker(time.Duration(interval) * time.Second)
 	defer ticker.Stop()
-	mkTransfer(stream, buf, currIter, iter, time.Now())
+	mkTransfer(stream, buf, 1, iter, time.Now())
+	currIter := 2
 
 	if iter > 1 {
 		done := make(chan bool, 1)
@@ -61,12 +82,12 @@ func mkTransfer(stream quic.Stream, buf []byte, current int, iter int, t time.Ti
 	fmt.Printf("Client: (%v) Sending > %s", t, message)
 
 	_, err := stream.Write([]byte(message))
-	if common.CheckError(err) != nil {
+	if common.FatalError(err) != nil {
 		return err
 	}
 
 	n, err := io.ReadFull(stream, buf)
-	common.CheckError(err)
+	common.FatalError(err)
 	fmt.Printf("Client: Got %d bytes back\n", n)
 	return nil
 }

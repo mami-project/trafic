@@ -20,18 +20,37 @@ import (
 )
 
 // Start a server that echos all data on the first stream opened by the client
-func Server(ip string, port int, single bool) error {
+func Server(ip string, port int, single bool, dscp int) error {
+
+	ipAddr, err := net.ResolveIPAddr("ip", ip)
+	if common.FatalError(err) != nil {
+		return err
+	}
 
 	addr := net.JoinHostPort(ip, strconv.Itoa(port))
+	udpAddr, err := net.ResolveUDPAddr("udp", addr)
+	if common.FatalError(err) != nil {
+		return err
+	}
 
-	listener, err := quic.ListenAddr(addr, generateTLSConfig(), nil)
-	if common.CheckError(err) != nil {
+	conn, err := net.ListenUDP("udp", udpAddr)
+	if common.FatalError(err) != nil {
+		return err
+	}
+
+	err = common.SetUdpTos(conn, dscp, ipAddr.IP.To4() == nil)
+	if common.FatalError(err) != nil {
+		return err
+	}
+
+	listener, err := quic.Listen(conn, generateTLSConfig(), nil)
+	if common.FatalError(err) != nil {
 		return err
 	}
 
 	for {
 		sess, err := listener.Accept()
-		if common.CheckError(err) != nil {
+		if common.FatalError(err) != nil {
 			return err
 		}
 		if single {
@@ -46,7 +65,7 @@ func quicHandler(sess quic.Session) error {
 
 	// fmt.Println("Entering quicHandler")
 	stream, err := sess.AcceptStream()
-	if common.CheckError(err) != nil {
+	if common.FatalError(err) != nil {
 		return err
 	}
 
@@ -54,15 +73,15 @@ func quicHandler(sess quic.Session) error {
 	for {
 		// fmt.Println("In server loop")
 		cmd, err := reader.ReadString('\n')
-		if common.CheckError(err) != nil {
+		if common.FatalError(err) != nil {
 			return err
 		}
 		wbuf, end, err := parseCmd(cmd)
-		if common.CheckError(err) != nil {
+		if common.FatalError(err) != nil {
 			return err
 		}
 		_, err = stream.Write(wbuf)
-		if common.CheckError(err) != nil {
+		if common.FatalError(err) != nil {
 			return err
 		}
 		if end {
@@ -111,19 +130,19 @@ func parseCmd(strb string) ([]byte, bool, error) {
 // Setup a bare-bones TLS config for the server
 func generateTLSConfig() *tls.Config {
 	key, err := rsa.GenerateKey(rand.Reader, 1024)
-	if common.CheckError(err) != nil {
+	if common.FatalError(err) != nil {
 		return nil
 	}
 	template := x509.Certificate{SerialNumber: big.NewInt(1)}
 	certDER, err := x509.CreateCertificate(rand.Reader, &template, &template, &key.PublicKey, key)
-	if common.CheckError(err) != nil {
+	if common.FatalError(err) != nil {
 		return nil
 	}
 	keyPEM := pem.EncodeToMemory(&pem.Block{Type: "RSA PRIVATE KEY", Bytes: x509.MarshalPKCS1PrivateKey(key)})
 	certPEM := pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE", Bytes: certDER})
 
 	tlsCert, err := tls.X509KeyPair(certPEM, keyPEM)
-	if common.CheckError(err) != nil {
+	if common.FatalError(err) != nil {
 		return nil
 	}
 	return &tls.Config{Certificates: []tls.Certificate{tlsCert}}

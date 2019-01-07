@@ -14,6 +14,11 @@ func Source(ip string, port int, localip string, duration int, pps int, psize in
 	fmt.Printf("Starting server at %s:%d for %d secs at %d pps for %d byte packets (TOS: %02x)\n",
 		ip, port, duration, pps, psize, tos)
 
+	ipAddr, err := net.ResolveIPAddr("ip", ip)
+	if common.FatalError(err) != nil {
+		return
+	}
+
 	var maxpackets int64
 	maxpackets = int64(duration * pps)
 
@@ -23,15 +28,15 @@ func Source(ip string, port int, localip string, duration int, pps int, psize in
 	fmt.Println("From ", srcAddrStr)
 
 	ServerAddr, err := net.ResolveUDPAddr("udp", destAddrStr)
-	common.CheckError(err)
+	common.FatalError(err)
 	LocalAddr, err := net.ResolveUDPAddr("udp", srcAddrStr)
-	common.CheckError(err)
+	common.FatalError(err)
 
 	Conn, err := net.DialUDP("udp", LocalAddr, ServerAddr)
-	common.CheckError(err)
+	common.FatalError(err)
 
-	err = common.SetUdpTos(Conn, tos)
-	common.CheckError(err)
+	err = common.SetUdpTos(Conn, tos, ipAddr.IP.To4() == nil)
+	common.FatalError(err)
 
 	fmt.Printf("Starting to send to %v\n", ServerAddr)
 	defer Conn.Close()
@@ -39,7 +44,7 @@ func Source(ip string, port int, localip string, duration int, pps int, psize in
 	// Initialise packet structure
 	var packet myStruct
 	_, err = rand.Read(packet.padding[:])
-	common.CheckError(err)
+	common.FatalError(err)
 	packet.total = maxpackets
 	packet.pktId = 1
 
@@ -52,7 +57,7 @@ func Source(ip string, port int, localip string, duration int, pps int, psize in
 		case t := <-ticker.C:
 			packet.tStamp = toTimestamp(t) // refresh packet timestamp
 			_, err := Conn.Write(EncodePacket(packet, psize))
-			common.CheckError(err)
+			common.FatalError(err)
 
 			if verbose {
 				fmt.Printf("Sent %4d of %4d at %v\n", packet.pktId, maxpackets, t)

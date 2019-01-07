@@ -32,11 +32,11 @@ func handleConn(conn *net.TCPConn) {
 	defer closeFdSocket(conn)
 	// zero, err := os.Open("/dev/zero")
 	// defer zero.Close()
-	// common.CheckError(err)
+	// common.FatalError(err)
 	for {
 		// will listen for message to process ending in newline (\n)
 		message, err := bufio.NewReader(conn).ReadString('\n')
-		if common.CheckError(err) != nil {
+		if common.FatalError(err) != nil {
 			return
 		}
 		// output message received
@@ -44,7 +44,7 @@ func handleConn(conn *net.TCPConn) {
 
 		// Checked in the client
 		run, total, bunch, err = matcher(strings.ToUpper(string(message)))
-		if common.CheckError(err) != nil {
+		if common.FatalError(err) != nil {
 			continue
 		}
 
@@ -58,7 +58,7 @@ func handleConn(conn *net.TCPConn) {
 		// numRead, err := io.ReadFull(zero, testBunch)
 		numRead, err := rand.Read(testBunch)
 		// fmt.Printf("Read %d bytes from /dev/zero\n",len(testBunch))
-		if common.CheckError(err) != nil {
+		if common.FatalError(err) != nil {
 			continue
 		}
 		fmt.Printf("Sending %d bytes...\n", numRead)
@@ -76,12 +76,12 @@ func Server(ip string, port int, single bool, tos int) {
 	listenAddrStr := net.JoinHostPort(ip, strconv.Itoa(port))
 
 	listenAddr, err := net.ResolveTCPAddr("tcp", listenAddrStr)
-	if common.CheckErrorf(err, "Error resolving %s:%d (%v)\n", ip, port, err) != nil {
+	if common.FatalErrorf(err, "Error resolving %s:%d (%v)\n", ip, port, err) != nil {
 		return
 	}
 
 	ln, err := net.ListenTCP("tcp", listenAddr)
-	if common.CheckErrorf(err, "Error binding server to %s\n", listenAddr) != nil {
+	if common.FatalErrorf(err, "Error binding server to %s\n", listenAddr) != nil {
 		return
 	}
 
@@ -89,12 +89,12 @@ func Server(ip string, port int, single bool, tos int) {
 	for {
 		// accept connection on port
 		conn, err := ln.AcceptTCP()
-		if common.CheckErrorln(err, "Error accepting connection") != nil {
+		if common.FatalErrorln(err, "Error accepting connection") != nil {
 			continue
 		}
 
 		err = common.SetTcpTos(conn, tos)
-		if common.CheckErrorln(err, "Error setting TOS") != nil {
+		if common.FatalErrorln(err, "Error setting TOS") != nil {
 			continue
 		}
 

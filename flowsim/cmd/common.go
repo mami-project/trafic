@@ -2,27 +2,26 @@ package cmd
 
 // A couple of commodity functions to mimic the iperf3 cli
 import (
-	"fmt"
 	"errors"
+	"fmt"
 )
 
 const (
-        kilo float64 = 1024.0
-        mega float64 = kilo * kilo
-        giga float64 = mega * kilo
-        tera float64 = giga * kilo
+	kilo float64 = 1024.0
+	mega float64 = kilo * kilo
+	giga float64 = mega * kilo
+	tera float64 = giga * kilo
 )
 
 // Convert a string to a float
 
-var conv = map[rune] float64 {
+var conv = map[rune]float64{
 	'\000': 1,
-	'k': kilo, 'K': kilo,
+	'k':    kilo, 'K': kilo,
 	'm': mega, 'M': mega,
 	'g': giga, 'G': giga,
 	't': tera, 'T': tera,
 }
-
 
 func utoi(s string) (int, error) {
 	v, e := utof(s)
@@ -34,8 +33,8 @@ func utoi(s string) (int, error) {
 
  Try convert the input string to a float (convert kmgtKMGT abbrevs)
  Accepts plain number
- */
-func utof (s string) (float64, error) {
+*/
+func utof(s string) (float64, error) {
 	var val float64
 	var unit rune
 
@@ -48,7 +47,7 @@ func utof (s string) (float64, error) {
 		return mult * val, nil
 	}
 
-	return val, errors.New(fmt.Sprintf ("Unknown multiplier '%s'", string(unit)))
+	return val, errors.New(fmt.Sprintf("Unknown multiplier '%s'", string(unit)))
 }
 
 // A dictionary to map DSCP labels to values
@@ -79,16 +78,16 @@ var dscpDict = map[string]int{
 }
 
 func Dscp(s string) (int, error) {
-	var val int
 	if val, ok := dscpDict[s]; ok {
 		return val, nil
+	} else {
+		_, err := fmt.Sscanf(s, "%d", &val)
+		if err != nil {
+			return 0, errors.New("Unknown DSCP ID ")
+		}
+		if val < 0 || val > 64 {
+			return 0, errors.New("Value out of range [0,64)")
+		}
+		return val, nil
 	}
-	_, err := fmt.Sscanf(s, "%d", &val)
-	if err != nil {
-		return 0, errors.New("Unknown DSCP ID ")
-	}
-	if val < 0 || val > 64 {
-		return 0, errors.New("Value out of range [0,64)")
-	}
-	return val, nil
 }

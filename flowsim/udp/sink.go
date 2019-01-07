@@ -19,9 +19,9 @@ func Sink(ip string, port int, multi bool, verbose bool) {
 
 
     ServerAddr,err := net.ResolveUDPAddr("udp",destAddrStr)
-    common.CheckError(err)
+    common.FatalError(err)
 	Conn, err := net.ListenUDP("udp", ServerAddr)
-	common.CheckError(err)
+	common.FatalError(err)
 	defer Conn.Close()
 
 	buf      := make([]byte, 64 * 1024)
@@ -46,7 +46,7 @@ func Sink(ip string, port int, multi bool, verbose bool) {
 		if verbose {
 			fmt.Printf("stats: %v\n",stats)
 		}
-		if common.CheckError(err) != nil {
+		if common.FatalError(err) != nil {
 			continue
 		}
 		info := DecodePacket(buf[0:n])
@@ -71,7 +71,7 @@ func Sink(ip string, port int, multi bool, verbose bool) {
 		//
 		if (info.pktId == info.total) {
 			_,_,err := Conn.ReadFromUDP(buf) // discard last resort packet
-			common.CheckError(err)
+			common.FatalError(err)
 			PrintStats(fmt.Sprintf("%v",fromUDP), stats[srcs],  "us")
 			if multi {
 				continue

@@ -22,15 +22,15 @@ func DecodePacket(pkt []byte) myStruct {
 	binbuf := bytes.NewReader(pkt)
 
 	err := binary.Read(binbuf, binary.BigEndian, &vuelta)
-	common.CheckError(err)
+	common.FatalError(err)
 	result.pktId = vuelta
 
 	err = binary.Read(binbuf, binary.BigEndian, &vuelta)
-	common.CheckError(err)
+	common.FatalError(err)
 	result.total = vuelta
 
 	err = binary.Read(binbuf, binary.BigEndian, &vuelta)
-	common.CheckError(err)
+	common.FatalError(err)
 	result.tStamp = vuelta
 	// result.padding = pkt[16:]
 	return result

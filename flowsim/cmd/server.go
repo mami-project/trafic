@@ -21,16 +21,15 @@ It will basically sit there and wait for the client to request bunches of data
 over a TCP or QUIC connection
 Payload is filled with random bytes`,
 	Run: func(cmd *cobra.Command, args []string) {
+		tos, err := Dscp(serverTos)
+		if err != nil {
+			fmt.Printf("Warning: %v, TOS will be %d instead of %s \n", err, tos, serverTos)
+		}
 		if serverQuic {
-			fmt.Println("Warning: QUIC doesn't support setting DSCP yet!")
-			quic.Server(serverIp, serverPort, serverSingle)
+			// fmt.Println("Warning: QUIC doesn't support setting DSCP yet!")
+			quic.Server(serverIp, serverPort, serverSingle, tos*4)
 		} else {
-			tos, err := Dscp(serverTos)
-			if err != nil {
-				fmt.Printf("Error decoding DSCP (%s): %v\n", serverTos, err)
-			} else {
-				tcp.Server(serverIp, serverPort, serverSingle, tos*4)
-			}
+			tcp.Server(serverIp, serverPort, serverSingle, tos*4)
 		}
 	},
 }

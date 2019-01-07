@@ -1,29 +1,41 @@
 package common
 
 import (
-	"log"
 	"fmt"
+	"log"
 )
 
-func CheckError(err error) error {
+func WarnErrorf(err error, format string, v ...interface{}) error {
 	if err != nil {
-		log.Fatal (err)
+		log.Printf("Warning: %v %s", err, fmt.Sprintf(format, v...))
 	}
 	return err
 }
 
-func CheckErrorf(err error, format string, a ...interface{}) error {
+func WarnError(err error) error {
 	if err != nil {
-		log.Fatal(err)
-		log.Fatal(fmt.Sprintf(format,a ...))
+		log.Printf("Warning: %v\n", err)
 	}
 	return err
 }
 
-func CheckErrorln(err error, message string) error {
+func FatalError(err error) error {
 	if err != nil {
-		log.Fatal(err)
-		log.Fatal(message)
+		log.Fatalf("Error: %v\n", err)
+	}
+	return err
+}
+
+func FatalErrorf(err error, format string, a ...interface{}) error {
+	if err != nil {
+		log.Fatalf("Error: %v %s", err, fmt.Sprintf(format, a...))
+	}
+	return err
+}
+
+func FatalErrorln(err error, message string) error {
+	if err != nil {
+		log.Fatalf("Error: %v %s\n", err, message)
 	}
 	return err
 }
