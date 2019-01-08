@@ -14,11 +14,6 @@ func Source(ip string, port int, localip string, duration int, pps int, psize in
 	fmt.Printf("Starting server at %s:%d for %d secs at %d pps for %d byte packets (TOS: %02x)\n",
 		ip, port, duration, pps, psize, tos)
 
-	ipAddr, err := net.ResolveIPAddr("ip", ip)
-	if common.FatalError(err) != nil {
-		return
-	}
-
 	var maxpackets int64
 	maxpackets = int64(duration * pps)
 
@@ -35,7 +30,7 @@ func Source(ip string, port int, localip string, duration int, pps int, psize in
 	Conn, err := net.DialUDP("udp", LocalAddr, ServerAddr)
 	common.FatalError(err)
 
-	err = common.SetUdpTos(Conn, tos, ipAddr.IP.To4() == nil)
+	err = common.SetUdpTos(Conn, tos)
 	common.FatalError(err)
 
 	fmt.Printf("Starting to send to %v\n", ServerAddr)

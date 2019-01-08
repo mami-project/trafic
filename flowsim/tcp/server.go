@@ -29,10 +29,8 @@ func matcher(cmd string) (string, string, string, error) {
 func handleConn(conn *net.TCPConn) {
 	var run, total, bunch string
 
-	defer closeFdSocket(conn)
-	// zero, err := os.Open("/dev/zero")
-	// defer zero.Close()
-	// common.FatalError(err)
+	defer conn.Close()
+
 	for {
 		// will listen for message to process ending in newline (\n)
 		message, err := bufio.NewReader(conn).ReadString('\n')

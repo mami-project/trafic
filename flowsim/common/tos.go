@@ -1,38 +1,34 @@
 package common
 
 import (
-	// "fmt"
+	//  "fmt"
+	// 	"os"
+	// 	"syscall"
+	"golang.org/x/net/ipv4"
+	"golang.org/x/net/ipv6"
 	"net"
-	"os"
-	"syscall"
 )
 
-func SetTcpTos(Conn *net.TCPConn, tos int) error {
-	f, err := Conn.File()
+func SetTcpTos(conn *net.TCPConn, dscp int) error {
+	err := ipv4.NewConn(conn).SetTOS(dscp)
 	if err != nil {
-		return err
+		// common.WarnErrorf(err, "while setting TOS")
+		err = ipv6.NewConn(conn).SetTrafficClass(dscp)
 	}
-	host, _, _ := net.SplitHostPort(Conn.LocalAddr().String())
-	// fmt.Printf("Local host is: %s\n", host)
-
-	ip, err := net.ResolveIPAddr("ip", host)
-	if err != nil {
-		return err
-	}
-	// fmt.Printf("Check IPv6 %v\n", ip.IP.To4() == nil)
-	return SetTos(f, tos, ip.IP.To4() == nil)
+	return err
 }
 
-func SetUdpTos(conn *net.UDPConn, tos int, isIpv6 bool) error {
-
-	f, err := conn.File()
+func SetUdpTos(conn *net.UDPConn, dscp int) error {
+	err := ipv4.NewConn(conn).SetTOS(dscp)
 	if err != nil {
-		return err
+		// common.WarnErrorf(err, "while setting TOS")
+		err = ipv6.NewConn(conn).SetTrafficClass(dscp)
 	}
-	// fmt.Printf("Check IPv6 %v\n", isIpv6)
-	return SetTos(f, tos, isIpv6)
+
+	return err
 }
 
+/*
 func SetTos(f *os.File, tos int, ipv6 bool) error {
 
 	proto := syscall.IPPROTO_IP
@@ -54,3 +50,5 @@ func SetTos(f *os.File, tos int, ipv6 bool) error {
 
 	return err
 }
+
+*/

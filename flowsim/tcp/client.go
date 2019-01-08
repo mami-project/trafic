@@ -35,13 +35,13 @@ func Client(host string, port int, iter int, interval int, burst int, tos int) {
 	if common.FatalErrorf(err, "Error connecting to %s: %v\n", serverAddrStr) != nil {
 		return
 	}
-	defer closeFdSocket(conn)
+	defer conn.Close()
 	fmt.Printf("Talking to %s\n", serverAddrStr)
 
 	err = common.SetTcpTos(conn, tos)
 	common.FatalError(err)
 
-	fmt.Printf("Starting at  %v\n", time.Now())
+	// fmt.Printf("Starting at  %v\n", time.Now())
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 	initWait := r.Intn(interval*50) / 100.0
 	time.Sleep(time.Duration(initWait) * time.Second)
@@ -62,7 +62,7 @@ func Client(host string, port int, iter int, interval int, burst int, tos int) {
 				}
 				mkTransfer(conn, currIter, iter, burst, t)
 			case <-done:
-				fmt.Printf("\nFinished...\n\n")
+				fmt.Printf("Finished...\n\n")
 				return
 			}
 		}

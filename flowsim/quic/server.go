@@ -22,11 +22,6 @@ import (
 // Start a server that echos all data on the first stream opened by the client
 func Server(ip string, port int, single bool, dscp int) error {
 
-	ipAddr, err := net.ResolveIPAddr("ip", ip)
-	if common.FatalError(err) != nil {
-		return err
-	}
-
 	addr := net.JoinHostPort(ip, strconv.Itoa(port))
 	udpAddr, err := net.ResolveUDPAddr("udp", addr)
 	if common.FatalError(err) != nil {
@@ -38,7 +33,7 @@ func Server(ip string, port int, single bool, dscp int) error {
 		return err
 	}
 
-	err = common.SetUdpTos(conn, dscp, ipAddr.IP.To4() == nil)
+	err = common.SetUdpTos(conn, dscp)
 	if common.FatalError(err) != nil {
 		return err
 	}

@@ -8,17 +8,13 @@ import (
 	"time"
 
 	"crypto/tls"
+	"math/rand"
+
 	quic "github.com/lucas-clemente/quic-go"
 	common "github.com/mami-project/trafic/flowsim/common"
-	"math/rand"
 )
 
 func Client(ip string, port int, iter int, interval int, bunch int, dscp int) error {
-
-	ipAddr, err := net.ResolveIPAddr("ip", ip)
-	if common.FatalError(err) != nil {
-		return err
-	}
 
 	addr := net.JoinHostPort(ip, strconv.Itoa(port))
 	updAddr, err := net.ResolveUDPAddr("udp", addr)
@@ -31,10 +27,10 @@ func Client(ip string, port int, iter int, interval int, bunch int, dscp int) er
 		return err
 	}
 
-	common.SetUdpTos(udpConn, dscp, ipAddr.IP.To4() == nil)
-	// if common.FatalError(err) != nil {
-	// 	return err
-	// }
+	err = common.SetUdpTos(udpConn, dscp)
+	if common.FatalError(err) != nil {
+		return err
+	}
 
 	session, err := quic.Dial(udpConn, updAddr, addr, &tls.Config{InsecureSkipVerify: true}, nil)
 	if common.FatalError(err) != nil {
