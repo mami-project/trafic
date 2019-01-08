@@ -1,7 +1,7 @@
 package common
 
 import (
-	//  "fmt"
+	"fmt"
 	// 	"os"
 	// 	"syscall"
 	"errors"
@@ -60,9 +60,9 @@ func FirstIP(host string, ipv6 bool) (string, error) {
 			}
 		}
 		if ipv6 {
-			return "", errors.New(fmt.Printf("Couldn't find IPv6 address for %s\n", host))
+			return "", errors.New(fmt.Sprintf("Couldn't find IPv6 address for %s\n", host))
 		}
-		return "", errors.New(fmt.Printf("Couldn't find IPv4 address for %s\n", host))
+		return "", errors.New(fmt.Sprintf("Couldn't find IPv4 address for %s\n", host))
 	}
 	return "", err
 }
