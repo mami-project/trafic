@@ -32,21 +32,14 @@ and try to talk to a flowsim UPD sink.`,
 		tos, err := Dscp(sourceTos)
 		if err != nil {
 			fmt.Printf("Error decoding DSCP (%s): %v\n", sourceTos, err)
-		} else {
-			useIp, err := common.FirstIP(sourceIp, sourceIpv6)
-			common.FatalError(err)
-			if useIp == "" {
-				if sourceIpv6 {
-					fmt.Printf("Couldn't find IPv6 address for %s\n", sourceIp)
-				} else {
-					fmt.Printf("Couldn't find IPv4 address for %s\n", sourceIp)
-				}
-			} else {
-				udp.Source(useIp, sourcePort, sourceLocal,
-					sourceTime, sourcePps,
-					pktsize, tos*4, sourceVerbose)
-			}
 		}
+		useIp, err := common.FirstIP(sourceIp, sourceIpv6)
+		common.FatalError(err)
+
+		udp.Source(useIp, sourcePort, sourceLocal,
+			sourceTime, sourcePps,
+			pktsize, tos*4, sourceVerbose)
+
 	},
 }
 

@@ -22,15 +22,7 @@ and print stats like mean delay and mean jitter for the CBR flow at the end`,
 	Run: func(cmd *cobra.Command, args []string) {
 		useIp, err := common.FirstIP(sinkIp, sinkIpv6)
 		common.FatalError(err)
-		if useIp == "" {
-			if sinkIpv6 {
-				fmt.Printf("Couldn't find IPv6 address for %s\n", sinkIp)
-			} else {
-				fmt.Printf("Couldn't find IPv4 address for %s\n", sinkIp)
-			}
-		} else {
-			udp.Sink(useIp, sinkPort, sinkMulti, sinkVerbose)
-		}
+		udp.Sink(useIp, sinkPort, sinkMulti, sinkVerbose)
 	},
 }
 
