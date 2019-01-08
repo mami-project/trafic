@@ -42,3 +42,22 @@ func UdpFamily(ip string) (string, error) {
 	}
 	return "", err
 }
+
+func FirstIP(host string, ipv6 bool) (string, error) {
+
+	ips, err := net.LookupIP(host)
+	if err == nil {
+		for _, ip := range ips {
+			if ip.To4() == nil {
+				if ipv6 {
+					return ip.String(), nil
+				}
+			} else {
+				if ipv6 == false {
+					return ip.String(), nil
+				}
+			}
+		}
+	}
+	return "", err
+}

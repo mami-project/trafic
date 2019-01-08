@@ -2,8 +2,9 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/spf13/cobra"
+	common "github.com/mami-project/trafic/flowsim/common"
 	"github.com/mami-project/trafic/flowsim/udp"
+	"github.com/spf13/cobra"
 )
 
 var sourceIp string
@@ -14,6 +15,7 @@ var sourceTime int
 var sourceTos string
 var sourcePacket string
 var sourceVerbose bool
+var sourceIpv6 bool
 
 // sourceCmd represents the source command
 var sourceCmd = &cobra.Command{
@@ -31,9 +33,19 @@ and try to talk to a flowsim UPD sink.`,
 		if err != nil {
 			fmt.Printf("Error decoding DSCP (%s): %v\n", sourceTos, err)
 		} else {
-			udp.Source(sourceIp, sourcePort, sourceLocal,
-				sourceTime, sourcePps,
-				pktsize, tos * 4, sourceVerbose)
+			useIp, err := common.FirstIP(sourceIp, sourceIpv6)
+			common.FatalError(err)
+			if useIp == "" {
+				if sourceIpv6 {
+					fmt.Printf("Couldn't find IPv6 address for %s\n", sourceIp)
+				} else {
+					fmt.Printf("Couldn't find IPv4 address for %s\n", sourceIp)
+				}
+			} else {
+				udp.Source(useIp, sourcePort, sourceLocal,
+					sourceTime, sourcePps,
+					pktsize, tos*4, sourceVerbose)
+			}
 		}
 	},
 }
@@ -41,7 +53,7 @@ and try to talk to a flowsim UPD sink.`,
 func init() {
 	rootCmd.AddCommand(sourceCmd)
 
-	sourceCmd.PersistentFlags().StringVarP(&sourceIp, "ip", "I", "127.0.0.1", "IP address or host name of the flowsim UDP sink to talk to")
+	sourceCmd.PersistentFlags().StringVarP(&sourceIp, "ip", "I", "localhost", "IP address or host name of the flowsim UDP sink to talk to")
 	sourceCmd.PersistentFlags().IntVarP(&sourcePort, "port", "p", 8081, "UDP port of the flowsim UDP sink")
 	sourceCmd.PersistentFlags().StringVarP(&sourceLocal, "local", "L", "", "Outgoing source IP address to use; determins interface (default: empyt-any interface)")
 	sourceCmd.PersistentFlags().IntVarP(&sourceTime, "time", "t", 6, "Total time sending")
@@ -49,4 +61,5 @@ func init() {
 	sourceCmd.PersistentFlags().StringVarP(&sourcePacket, "packet", "N", "1k", "Size of each packet (as x(.xxx)?[kmgtKMGT]?)")
 	sourceCmd.PersistentFlags().StringVarP(&sourceTos, "TOS", "T", "CS0", "Value of the DSCP field in the IP packets (valid int or DSCP-Id)")
 	sourceCmd.PersistentFlags().BoolVarP(&sourceVerbose, "verbose", "v", false, "Print info re. all generated packets")
+	sourceCmd.PersistentFlags().BoolVarP(&sourceIpv6, "ipv6", "6", false, "Use IPv6 (default is IPv4)")
 }
