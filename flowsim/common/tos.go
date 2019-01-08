@@ -29,26 +29,16 @@ func SetUdpTos(conn *net.UDPConn, dscp int) error {
 }
 
 /*
-func SetTos(f *os.File, tos int, ipv6 bool) error {
-
-	proto := syscall.IPPROTO_IP
-	call := syscall.IP_TOS
-	errmsg := "TOS"
-
-	if ipv6 {
-		proto = syscall.IPPROTO_IPV6
-		call = syscall.IPV6_TCLASS
-		errmsg = "TCLASS"
+ * Check whether the IP destination is IPv4 or IPv6
+ * and set the UDP family to 'udp4' or 'udp6'
+ */
+func UdpFamily(ip string) (string, error) {
+	ipAddr, err := net.ResolveIPAddr("ip", ip)
+	if err == nil {
+		if ipAddr.IP.To4() == nil {
+			return "udp6", nil
+		}
+		return "udp4", nil
 	}
-	// fmt.Printf("Setting %s to 0x%x\n", errmsg, tos)
-
-	err := syscall.SetsockoptInt(int(f.Fd()), proto, call, tos)
-
-	if err != nil {
-		WarnErrorf(err, "while setting %s to %02x", errmsg, tos)
-	}
-
-	return err
+	return "", err
 }
-
-*/

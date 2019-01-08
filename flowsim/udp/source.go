@@ -17,17 +17,20 @@ func Source(ip string, port int, localip string, duration int, pps int, psize in
 	var maxpackets int64
 	maxpackets = int64(duration * pps)
 
+	udpFamily, err := common.UdpFamily(ip)
+	common.FatalError(err)
+
 	destAddrStr := net.JoinHostPort(ip, strconv.Itoa(port))
-	srcAddrStr := net.JoinHostPort(localip, "0")
-	fmt.Println("To   ", destAddrStr)
-	fmt.Println("From ", srcAddrStr)
+	// srcAddrStr := net.JoinHostPort(localip, "0")
+	// fmt.Println("To   ", destAddrStr)
+	// fmt.Println("From ", srcAddrStr)
 
-	ServerAddr, err := net.ResolveUDPAddr("udp", destAddrStr)
+	ServerAddr, err := net.ResolveUDPAddr(udpFamily, destAddrStr)
 	common.FatalError(err)
-	LocalAddr, err := net.ResolveUDPAddr("udp", srcAddrStr)
-	common.FatalError(err)
+	// LocalAddr, err := net.ResolveUDPAddr("udp", srcAddrStr)
+	// common.FatalError(err)
 
-	Conn, err := net.DialUDP("udp", LocalAddr, ServerAddr)
+	Conn, err := net.DialUDP(udpFamily, &net.UDPAddr{IP: net.IPv4zero, Port: 0}, ServerAddr)
 	common.FatalError(err)
 
 	err = common.SetUdpTos(Conn, tos)

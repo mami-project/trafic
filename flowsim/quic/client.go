@@ -16,13 +16,18 @@ import (
 
 func Client(ip string, port int, iter int, interval int, bunch int, dscp int) error {
 
-	addr := net.JoinHostPort(ip, strconv.Itoa(port))
-	updAddr, err := net.ResolveUDPAddr("udp", addr)
+	udpFamily, err := common.UdpFamily(ip)
 	if common.FatalError(err) != nil {
 		return err
 	}
 
-	udpConn, err := net.ListenUDP("udp", &net.UDPAddr{IP: net.IPv4zero, Port: 0})
+	addr := net.JoinHostPort(ip, strconv.Itoa(port))
+	updAddr, err := net.ResolveUDPAddr(udpFamily, addr)
+	if common.FatalError(err) != nil {
+		return err
+	}
+
+	udpConn, err := net.ListenUDP(udpFamily, &net.UDPAddr{IP: net.IPv4zero, Port: 0})
 	if common.FatalError(err) != nil {
 		return err
 	}
