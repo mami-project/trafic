@@ -18,7 +18,8 @@ var sinkCmd = &cobra.Command{
 	Use:   "sink",
 	Short: "Start a flowsim UDP sink",
 	Long: `Will run flowsim as a one-of UDP CBR sink
-and print stats like mean delay and mean jitter for the CBR flow at the end`,
+and print stats like mean delay and mean jitter for the CBR flow at the end.
+This is a pure sink, set DSCP in the source`,
 	Run: func(cmd *cobra.Command, args []string) {
 		useIp, err := common.FirstIP(sinkIp, sinkIpv6)
 		common.FatalError(err)
